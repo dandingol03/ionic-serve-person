@@ -58,6 +58,12 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/register/register.html'
         })
 
+        .state('orderDetail',{
+          url:'/orderDetail',
+          controller:'orderDetailController',
+          templateUrl:'views/order_detail/order_detail.html'
+        })
+
       $urlRouterProvider.otherwise('/register');
     })
 

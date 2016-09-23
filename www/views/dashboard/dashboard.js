@@ -31,7 +31,9 @@ angular.module('starter')
       $scope.detail=null;
     }
 
-
+    $scope.showOrderDetail=function(order){
+      $state.go('orderDetail',{order:order});
+    }
 
     $scope.go_back=function(){
       window.history.back();

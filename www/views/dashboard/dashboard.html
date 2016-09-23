@@ -41,11 +41,11 @@
     </div>
 
 
-    <div style="border:1px solid #ddd;border-top:0px;">
+    <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;">
       <!-- tab区域 -->
       <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
 
-        <ul class="ul-tabs dark-theme" style="background: rgb(203,203,203)">
+        <ul class="ul-tabs dark-theme" style="background: #2D2A2A">
           <li style="width:25%;">
             <div class="cell"
                  ng-class="{true: 'selected', false: ''}[tabIndex==0]"
@@ -101,15 +101,15 @@
       </div>
 
       <!-- 分类订单 -->
-      <ion-scroll style="height: 100%;margin-top:2px;">
+      <ion-scroll style="height: 100%;margin-top:2px;border-bottom: 0px;">
 
         <div class="list list-inset" ng-if="detail==undefined||detail==null">
 
           <div ng-repeat="order in orders[tabIndex]">
             <ul class="list">
 
-              <li class="item item-icon-right" ng-click="go_detail(order)"
-                  style="padding-right:34px;position: relative;border-left:0px;border-right: 0px;">
+              <li class="item item-icon-right" ng-click="showOrderDetail(order)"
+                  style="padding-right:34px;position: relative;border-top:0px;border-left:0px;border-right: 0px;">
                 <div style="display:inline-block;width:95%;">
                   <h2>订单号:{{order.num}}</h2>
                   <span style="margin-right:5%;">时间:{{order.time}}</span>
