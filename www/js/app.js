@@ -52,7 +52,13 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/dashboard/dashboard.html'
         })
 
-      $urlRouterProvider.otherwise('/login');
+        .state('register',{
+          url:'/register',
+          controller:'registerController',
+          templateUrl:'views/register/register.html'
+        })
+
+      $urlRouterProvider.otherwise('/register');
     })
 
 

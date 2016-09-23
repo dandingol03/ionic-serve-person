@@ -37,10 +37,5 @@ angular.module('starter')
       window.history.back();
     };
 
-    $scope.go_to=function(){
-      $state.go();
-    };
-
-
 
   });
