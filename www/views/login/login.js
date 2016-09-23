@@ -3,7 +3,7 @@
  */
 angular.module('starter')
 
-  .controller('loginController',function($scope,$state,$ionicLoading,$http){
+  .controller('loginController',function($scope,$state,$ionicLoading,$http,$rootScope){
 
     $scope.user={};
 
@@ -21,8 +21,8 @@ angular.module('starter')
 
       }).success(function(response){
 
-        var access_token=response.access_token;
-
+        $rootScope.access_token=response.access_token;
+        $state.go('dashboard');
 
       }).error(function(err){
         var error='';

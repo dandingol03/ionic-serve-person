@@ -1,1 +1,54 @@
 /* Empty. Add your own CSS if you like */
+.ul-tabs{
+  height:50px;
+  border-bottom: 1px solid #eee;
+  padding-left: 10%;
+  padding-right: 10%;
+}
+
+
+.ul-tabs li{
+  float:left;
+  display: block;
+  height:100%;
+  text-align: center;
+  position: relative;
+}
+
+
+.ul-tabs li .cell{
+  position:absolute;
+  left:0%;
+  top:4%;
+  display:  inline-block;
+  height: 100%;
+  width: 100%;
+  background:#fff;
+  border-bottom: 1px solid #eee;
+}
+
+.ul-tabs.dark-theme li .cell{
+  background: transparent;
+  color:#fff;
+}
+
+.ul-tabs li .cell.selected{
+  border-top:1px solid #eee;
+  border-left:1px solid #eee;
+  border-right: 1px solid #eee;
+  border-bottom:transparent;
+  background: #fff;
+  color:#444444;
+
+}
+
+.item-detail.ng-enter{
+  -webkit-animation: fadeInLeft .4s;
+  animation: fadeInLeft .4s;
+}
+
+.item-detail.ng-leave{
+  -webkit-animation: fadeOutRight 0s;
+  animation: fadeOutRight 0s;
+}
+

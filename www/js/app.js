@@ -46,6 +46,12 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/login/login.html'
         })
 
+        .state('dashboard',{
+          url:'/dashboard',
+          controller: 'dashboardController',
+          templateUrl:'views/dashboard/dashboard.html'
+        })
+
       $urlRouterProvider.otherwise('/login');
     })
 
