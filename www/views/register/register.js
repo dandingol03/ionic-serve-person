@@ -117,13 +117,14 @@ angular.module('starter')
             item[field] = sr[index];
             return true;
           },
-          cssClass:'motor_insurance_actionsheet'
+          cssClass:'service_person_register_modal'
         });
       });
     };
 
 
     $scope.fetch=function(cmd,data){
+
       var deferred=$q.defer();
       if(cmd!==undefined&&cmd!==null) {
         $http({
@@ -144,13 +145,13 @@ angular.module('starter')
           for(var field in err)
             str+=err[field];
           console.error('error=\r\n' + str);
+          deferred.reject({re: -1});
         })
       }else{
         deferred.resolve({re: 1, data: data});
       }
-      return deferred;
+      return deferred.promise;
     };
-
 
 
     $scope.postPersonInfo=function(){
@@ -167,8 +168,10 @@ angular.module('starter')
         }
       }).
       success(function (response) {
-        console.log('success');
-      })
+          console.log('success');
+      }).finally(function () {
+          $state.go('tabs.dashboard');
+        });
     };
 
 
