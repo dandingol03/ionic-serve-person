@@ -95,10 +95,10 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/order_detail/order_detail.html'
         })
 
-        .state('maintenance_license',{
-          url:'/maintenance_license',
-          controller:'maintenanceLicenseController',
-          templateUrl:'views/maintenance_license/maintenance_license.html'
+        .state('photo',{
+          url:'/photo/:photoType',
+          controller:'photoController',
+          templateUrl:'views/photo/photo.html'
         })
 
 

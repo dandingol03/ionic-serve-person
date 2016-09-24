@@ -9,8 +9,11 @@ angular.module('starter')
       window.history.back();
     };
 
-    $scope.goto=function(state){
-      $state.go(state);
+    $scope.goto=function(state,type){
+      if(type!==undefined&&type!==null)
+        $state.go(state,{photoType:type});
+      else
+        $state.go(state);
     }
 
     //接口抽离
