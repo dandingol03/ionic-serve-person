@@ -172,6 +172,26 @@ angular.module('starter')
     };
 
 
+
+    $scope.creatCarServicePerson=function(){
+      $http({
+        method: "POST",
+        url: "/proxy/node_server/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data:
+        {
+          request:'createCarServicePerson',
+          info:$scope.carServicePersonInfo
+        }
+      }).
+      success(function (response) {
+        console.log('success');
+      })
+    };
+
+
     $scope.go_back=function(){
       window.history.back();
     };
