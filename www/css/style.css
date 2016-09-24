@@ -52,3 +52,18 @@
   animation: fadeOutRight 0s;
 }
 
+.service_person_register_modal .action-sheet-group{
+
+}
+
+.service_person_register_modal .action-sheet-group .action-sheet-title{
+  text-align:center;
+  font-size: 1.1em;
+  border-bottom:1px solid #e8e8e8;
+}
+
+.service_person_register_modal .action-sheet-group button.action-sheet-option{
+  text-align: center;
+  color:#00f;
+}
+
