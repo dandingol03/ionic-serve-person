@@ -22,7 +22,7 @@ angular.module('starter')
       }).success(function(response){
 
         $rootScope.access_token=response.access_token;
-        $state.go('dashboard');
+        $state.go('tabs.dashboard');
 
       }).error(function(err){
         var error='';
