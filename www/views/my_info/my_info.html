@@ -33,14 +33,17 @@
 
       <ion-item
         class="item item-icon-right"
-        ng-click=""
+        ng-click="Select(null,['维修救援','车驾管','钣喷'],'选择您的接单偏好',myInfo,'prefer')"
         style="border-top:0px;border-right: 0px;border-left:0px;margin-bottom:2px;"
         >
-        <span>
+        <span style="display: inline-block;width: 50%;">
           <i class="ion-levels" ng-style="{fontSize:'2em',color:'#00f'}" ng-if="$index%2!=0"></i>
             接单偏好设置
         </span>
-        <i class="icon ion-chevron-right" style="font-size: 1.2em;"></i>
+         <span style="width: 50%;display: inline-block">
+            {{myInfo.prefer}}
+          </span>
+        <i class="icon ion-chevron-down" style="font-size: 1.2em;"></i>
       </ion-item>
 
       <ion-item

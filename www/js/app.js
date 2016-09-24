@@ -103,7 +103,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
 
-      $urlRouterProvider.otherwise('/register');
+      $urlRouterProvider.otherwise('/login');
     })
 
 
