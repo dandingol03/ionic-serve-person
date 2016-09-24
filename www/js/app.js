@@ -40,16 +40,47 @@ angular.module('starter', ['ionic','ngCordova'])
       $ionicConfigProvider.platform.android.views.transition('android');
 
       $stateProvider
+
+        .state('tabs',{
+          url:'/tabs',
+          abstract:true,
+          templateUrl:'views/tabs/tabs.html'
+        })
+
         .state('login',{
           url:'/login',
           controller: 'loginController',
           templateUrl:'views/login/login.html'
         })
 
-        .state('dashboard',{
+        .state('tabs.dashboard',{
           url:'/dashboard',
-          controller: 'dashboardController',
-          templateUrl:'views/dashboard/dashboard.html'
+          views:{
+            'dashboard-tab':{
+              controller:'dashboardController',
+              templateUrl:'views/dashboard/dashboard.html'
+            }
+          }
+        })
+
+        .state('tabs.myInfo',{
+          url:'/myInfo',
+          views:{
+            'myInfo-tab':{
+              controller:'myInfoController',
+              templateUrl:'views/my_info/my_info.html'
+            }
+          }
+        })
+
+        .state('tabs.servicing',{
+          url:'/servicing',
+          views:{
+            'servicing-tab':{
+              controller:'servicingController',
+              templateUrl:'views/servicing/servicing.html'
+            }
+          }
         })
 
         .state('register',{
@@ -63,6 +94,14 @@ angular.module('starter', ['ionic','ngCordova'])
           controller:'orderDetailController',
           templateUrl:'views/order_detail/order_detail.html'
         })
+
+        .state('maintenance_license',{
+          url:'/maintenance_license',
+          controller:'maintenanceLicenseController',
+          templateUrl:'views/maintenance_license/maintenance_license.html'
+        })
+
+
 
       $urlRouterProvider.otherwise('/register');
     })

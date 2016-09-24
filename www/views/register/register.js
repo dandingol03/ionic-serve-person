@@ -98,7 +98,7 @@ angular.module('starter')
 
     $scope.goDoshBoard=function()
     {
-      $state.go('dashboard');
+      $state.go('tabs.dashboard');
     }
 
     $scope.Select=function(cmd,data,title,item,field) {

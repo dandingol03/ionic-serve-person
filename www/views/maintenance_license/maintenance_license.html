@@ -1,0 +1,73 @@
+<ion-view view-title="所在维修厂营业执照">
+  <ion-nav-bar class="bar-assertive" align-title="center" >
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear bar_arr" ng-click="go_back()">
+        <i class="ion-chevron-left"></i>
+      </button>
+    </ion-nav-buttons>
+    <ion-nav-buttons side="right">
+      <button class="button button-icon button-clear" ng-click="goto('/#/tabs/dashboard')">
+        <i class="ion-ios-search-strong"></i>
+      </button>
+    </ion-nav-buttons>
+
+  </ion-nav-bar>
+
+  <ion-content>
+    <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;">
+
+      <div class="list padding" style="margin-bottom: 0px;padding-bottom: 0px;">
+        <ul class="ul-tabs">
+          <!-- 维修厂营业执照 -->
+          <li style="width:50%;">
+            <div class="cell"
+                 ng-class="{true: 'selected', false: ''}[photoType=='maintenance_license']"
+                 ng-click="photoType='maintenance_license'">
+                   <span style="font-size: 1.2em;position: absolute;left: 10%;top: 30%;">
+                     维修厂营业执照
+                   </span>
+            </div>
+          </li>
+
+          <!-- 运输许可证 -->
+          <li style="width:50%">
+            <div class="cell"
+                 ng-class="{true: 'selected', false: ''}[photoType=='transport_permit']"
+                 ng-click="photoType='transport_permit'">
+                   <span style="font-size: 1.2em;position: absolute;left: 20%;top:30%;">
+                     运输许可证
+                   </span>
+            </div>
+          </li>
+
+        </ul>
+
+      </div>
+
+      <div class="padding list" style="padding-top: 1px;">
+        <div class="item" style="border-top:0px;text-align: center;border-bottom: 0px;">
+          <span style="font-size: 10em;">
+            <i class="ion-android-person"></i>
+          </span>
+        </div>
+        <div class="item" style="border-top:0px;text-align: center">
+          <button
+            class="button button-block button-assertive comm_btn" ng-click="save()"
+            style="width: 20%;display: inline-block "
+            >
+            保存
+          </button>
+          <button
+            class="button button-block button-positive comm_btn" ng-click="save()"
+            style="width: 20%;display: inline-block"
+            >
+            编辑
+          </button>
+        </div>
+      </div>
+
+
+    </div>
+  </ion-content>
+
+</ion-view>

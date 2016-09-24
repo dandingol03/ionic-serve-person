@@ -1,0 +1,77 @@
+<ion-view>
+
+  <ion-content scroll="true" class="padding" lazy-scroll>
+
+    <ul class="list">
+
+      <li class="item item-icon-right" style="height: 200px;">
+        <span>
+           广告位........
+        </span>
+      </li>
+    </ul>
+
+    <ion-list>
+
+      <div class="item" style="margin:1px;border-top:0px;border-left:0px;border-right:0px;padding:16px;">
+             <span class="input-label" style="display: inline-block;width: 40%;">
+              身份证号:
+            </span>
+        <input type="text" placeholder="输入本人身份证号"
+               style="display: inline-block;width: 60%;"  ng-value="myInfo.perIdCard"
+               ng-model="myInfo.perIdCard"/>
+      </div>
+
+      <div class="item" style="margin:1px;border-top:0px;border-left:0px;border-right:0px;padding:16px;">
+             <span class="input-label" style="display: inline-block;width: 40%;">
+              企业负责人身份证:
+            </span>
+        <input type="text" placeholder="输入企业负责人身份证号"
+               style="display: inline-block;width: 60%;"  ng-value="myInfo.companyPerIdCard"
+               ng-model="myInfo.perIdCard"/>
+      </div>
+
+      <ion-item
+        class="item item-icon-right"
+        ng-click=""
+        style="border-top:0px;border-right: 0px;border-left:0px;margin-bottom:2px;"
+        >
+        <span>
+          <i class="ion-levels" ng-style="{fontSize:'2em',color:'#00f'}" ng-if="$index%2!=0"></i>
+            接单偏好设置
+        </span>
+        <i class="icon ion-chevron-right" style="font-size: 1.2em;"></i>
+      </ion-item>
+
+      <ion-item
+        class="item item-icon-right"
+        ng-click="goto('maintenance_license')"
+        style="border-top:0px;border-right: 0px;border-left:0px;margin-bottom: 2px;"
+        >
+        <span>
+          <i class="ion-clipboard" ng-style="{fontSize:'2em',color:'#f00'}" ng-if="$index%2!=0"></i>
+            所在维修厂营业执照
+        </span>
+        <i class="icon ion-camera" style="font-size: 1.4em;"></i>
+      </ion-item>
+
+      <ion-item
+        class="item item-icon-right"
+        ng-click=""
+        style="border-top:0px;border-right: 0px;border-left:0px;margin-bottom: 2px;"
+        >
+        <span>
+          <i class="ion-clipboard" ng-style="{fontSize:'2em',color:'#0f0'}" ng-if="$index%2!=0"></i>
+            交通运输许可证
+        </span>
+        <i class="icon ion-camera" style="font-size: 1.4em;"></i>
+      </ion-item>
+
+
+
+    </ion-list>
+
+
+
+  </ion-content>
+</ion-view>
