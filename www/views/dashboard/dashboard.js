@@ -3,7 +3,7 @@
  */
 angular.module('starter')
 
-  .controller('dashboardController',function($scope,$state,$http){
+  .controller('dashboardController',function($scope,$state,$http,$rootScope){
 
 
     $scope.orders=[
@@ -38,6 +38,8 @@ angular.module('starter')
     $scope.go_back=function(){
       window.history.back();
     };
-
+    $scope.goto=function(){
+      $state.go('register');
+    };
 
   });

@@ -3,9 +3,9 @@
  */
 angular.module('starter')
 
-  .controller('registerController',function($scope,$ionicActionSheet,$http,$q,$state){
+  .controller('registerController',function($scope,$ionicActionSheet,$http,$q,$state,$rootScope){
 
-    $scope.carOwner={
+    $scope.carServicePersonInfo={
     }
 
     //1.附件,通过图库
@@ -149,6 +149,26 @@ angular.module('starter')
         deferred.resolve({re: 1, data: data});
       }
       return deferred;
+    };
+
+
+
+    $scope.postPersonInfo=function(){
+      $http({
+        method: "POST",
+        url: "/proxy/node_server/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data:
+        {
+          request:'createInfoPersonInfo',
+          info:$scope.carServicePersonInfo
+        }
+      }).
+      success(function (response) {
+        console.log('success');
+      })
     };
 
 
