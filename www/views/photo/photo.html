@@ -44,7 +44,12 @@
 
       </div>
 
-      <div class="padding list" style="padding-top: 1px;">
+      <!-- 营业执照 -->
+      <div
+        class="padding list"
+        style="padding-top: 1px;"
+        ng-if="photoType=='maintenance_license'"
+        >
         <div class="item" style="border-top:0px;text-align: center;border-bottom: 0px;">
           <span style="font-size: 10em;">
             <i class="ion-android-person"></i>
@@ -52,13 +57,42 @@
         </div>
         <div class="item" style="border-top:0px;text-align: center">
           <button
-            class="button button-block button-assertive comm_btn" ng-click="save()"
+            class="button button-block button-assertive comm_btn" ng-click="upload(unit,'maintenance_license_img')"
             style="width: 20%;display: inline-block "
             >
             保存
           </button>
           <button
-            class="button button-block button-positive comm_btn" ng-click="save()"
+            class="button button-block button-positive comm_btn"
+            ng-click="addAttachment(unit,'maintenance_license_img')"
+            style="width: 20%;display: inline-block"
+            >
+            编辑
+          </button>
+        </div>
+      </div>
+
+      <!-- 运输许可证 -->
+      <div
+        class="padding list"
+        style="padding-top: 1px;"
+        ng-if="photoType=='transport_permit'"
+        >
+        <div class="item" style="border-top:0px;text-align: center;border-bottom: 0px;">
+          <span style="font-size: 10em;">
+            <i class="ion-android-person"></i>
+          </span>
+        </div>
+        <div class="item" style="border-top:0px;text-align: center">
+          <button
+            class="button button-block button-assertive comm_btn" ng-click="upload(unit,'transport_permit_img')"
+            style="width: 20%;display: inline-block "
+            >
+            保存
+          </button>
+          <button
+            class="button button-block button-positive comm_btn"
+            ng-click="addAttachment(unit,'transport_permit_img')"
             style="width: 20%;display: inline-block"
             >
             编辑
