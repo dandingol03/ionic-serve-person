@@ -20,6 +20,18 @@ angular.module('starter', ['ionic','ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    window.plugins.jPushPlugin.init();
+    window.plugins.jPushPlugin.setDebugMode(true);
+    var onGetRegistradionID = function(data) {
+      try{
+        alert("JPushPlugin:registrationID is"+data);
+      }catch(exception){
+      }
+    };
+    window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
+
+
   });
   })
 
