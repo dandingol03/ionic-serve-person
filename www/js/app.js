@@ -29,9 +29,24 @@ angular.module('starter', ['ionic','ngCordova'])
       }catch(exception){
       }
     };
+
+    //获取自定义消息的回调
+    var onReceiveMessage = function(event) {
+      try{
+        var message
+        if(device.platform == "Android") {
+          message = event.message;
+        } else {
+          message = event.content;
+        }
+        alert('message=' + message);
+      } catch(exception) {
+        console.log("JPushPlugin:onReceiveMessage-->" + exception);
+      }
+    }
+
     window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
-
-
+    document.addEventListener("jpush.receiveMessage", onReceiveMessage, false);
   });
   })
 
@@ -113,6 +128,11 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/photo/photo.html'
         })
 
+        .state('chatter',{
+          url:'/chatter',
+          controller:'chatterController',
+          templateUrl:'views/chatter/chatter.html'
+        })
 
 
       $urlRouterProvider.otherwise('/login');
