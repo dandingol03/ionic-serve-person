@@ -18,21 +18,61 @@ angular.module('starter')
           'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
           'Content-Type': 'application/x-www-form-urlencoded'
         }
+      }).then(function(response){
 
-      }).success(function(response){
+        $rootScope.access_token=response.data.access_token;
+        return   $http({
+          method: "post",
+          url: "/proxy/node_server/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data:
+          {
+            request:'activatePersonOnline',
+            info:{
+              registrationId:$rootScope.registrationId
+            }
+          }
+        });
+      }).then(function(res) {
+        var json=res.data;
+        if(json.re==1)
+        {
 
-        $rootScope.access_token=response.access_token;
+        }
         $state.go('tabs.dashboard');
-
-      }).error(function(err){
+      }).catch(function(err){
         var error='';
         for(var field in err)
         {
           error+=err[field]+'\r\n';
         }
         alert('error=' + error);
+        $state.go('tabs.dashboard');
       });
 
+    }
+
+    $scope.searchFreeServicePerson=function(){
+      $http({
+        method:"POST",
+        url: "/proxy/node_server/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token
+        },
+        data:
+        {
+          request:'searchFreeServicePerson'
+        }
+      }).then(function(res) {
+
+      }).catch(function(err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        alert('err=\r\n' + str);
+      });
     }
 
 

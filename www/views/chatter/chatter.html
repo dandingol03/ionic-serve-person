@@ -10,36 +10,7 @@
 
   <ion-content>
 
-    <div class="list" style="margin-bottom: 0px;">
-      <div class="item" style="border: 0px;background: #525252;color:#fff;">
-        <div style="margin-bottom:5%;">
-          <span>
-            <i class="ion-person" style="font-size: 2em;"></i>
-            接单中
-          </span>
-        </div>
-        <div>
-          <span style="width:60%;display: inline-block">
-            <i class="ion-social-usd" style="font-size: 2em;"></i>
-             今日收入
-          </span>
-          <span style="width: 40%;font-size: 2em;color:#AD2929">
-            $5000
-          </span>
-        </div>
-      </div>
 
-
-      <ul class="item item-icon-right" style="border-left:0px;padding:0px;border-bottom: 0px;">
-        <li
-          style="display: inline-block;width: 50%;border-right: 1px solid #2D2A2A;text-align: center;padding: 10px;">
-          接单数:
-        </li>
-        <li style="display: inline-block;width: 50%;text-align: center;padding: 10px;">
-          指派接单数:
-        </li>
-      </ul>
-    </div>
 
 
     <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;">
@@ -70,43 +41,42 @@
               </div>
             </div>
           </li>
-
         </ul>
-
       </div>
 
-      <!-- 分类订单 -->
-      <ion-scroll style="height: 100%;margin-top:2px;border-bottom: 0px;">
-
-        <div class="list list-inset">
-
-          <div ng-repeat="order in orders[tabIndex]" style="">
-            <ul class="list" style="margin-bottom:0px;">
-              <li class="item item-icon-right"
-                  style="padding-right:34px;position: relative;border:0px;">
-                <div style="display:inline-block;width:95%;">
-                  <div>订单号:{{order.orderNum}}</div>
-                </div>
-              </li>
-            </ul>
-            <ul class="list">
-              <li class="item item-icon-right" ng-click="showOrderDetail(order)"
-                  style="padding-right:34px;padding-top:4px;padding-bottom:4px;position: relative;border-top:0px;border-left:0px;border-right: 0px;">
-                <div style="display:inline-block;width:95%;">
-                  <div style="margin-right:5%;">预计时间:{{order.orderDate}}</div>
-                  <div style="margin-right:5%;">类型:{{order.serviceType}}</div>
-                </div>
-                <div style="display:inline-block;width:5%;align-items:center;position: absolute;top:20%;font-size: 2em;">
-                  <i class="ion-ios-arrow-forward"></i>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-
-      </ion-scroll>
     </div>
+
+    <div class="list padding">
+
+      <div
+        ng-repeat="msg in messages"
+        style="position: relative"
+        >
+        <div style="display: inline-block;width: 10%;position: absolute;bottom:4%;left:4%;">
+             <span>user:</span>
+        </div>
+        <div
+          class="item item-text-wrap chat-bubble chat-bubble-left"
+          style="border: 0px;display: inline-block;width: 80%;margin-left:20%;background-color: #9F91E6"
+          >
+          <div ng-bind-html="msg.text"></div>
+        </div>
+      </div>
+
+    </div>
+
+
+      <ion-footer-bar class="bar-stable item-input-inset message-footer" keyboard-attach>
+        <label class="item-input-wrapper">
+          <span class="input-label">to danding:</span>
+          <input type="text" placeholder="echoing......">
+        </label>
+        <div class="footer-btn-wrap">
+          <button class="button button-icon icon ion-android-send footer-btn" type="submit"
+                  ng-disabled="!input.message || input.message === ''">
+          </button>
+        </div>
+      </ion-footer-bar>
 
 
   </ion-content>

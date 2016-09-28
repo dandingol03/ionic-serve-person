@@ -28,22 +28,6 @@
         </span>
       </div>
 
-      <div class="item" style="margin-bottom: 15%;">
-        <div class="padding">
-          <span style="width: 30%;display: inline-block">
-            服务城市:
-          </span>
-          <span style="width: 50%;display: inline-block">
-            {{carServicePersonInfo.city}}
-          </span>
-          <span style="width: 20%;display: inline-block;font-size: 1.2em;"
-                ng-click="Select(null,['北京','上海','成都'],'选择您所在的城市',carServicePersonInfo,'city')"
-                ng-model="carServicePersonInfo.city">
-            <i class="ion-chevron-down"></i>
-          </span>
-        </div>
-      </div>
-
 
       <div class="item">
         <div style="padding-left:10px;padding-right: 10px;  ">
@@ -67,45 +51,11 @@
         </div>
       </div>
 
-      <div class="item">
-        <div class="padding">
-          <span style="width: 30%;display: inline-block">
-            获取日期:
-          </span>
-          <span style="width: 50%;display: inline-block">
-          </span>
-          <span style="width: 20%;display: inline-block;font-size: 1.2em;" ng-click="">
-            <i class="ion-chevron-down"></i>
-          </span>
-        </div>
-      </div>
-
-      <div class="item" style="margin-bottom: 10%;">
-        <div class="padding">
-          <span style="width: 30%;display: inline-block">
-            接单偏好:
-          </span>
-          <span style="width: 50%;display: inline-block">
-            {{carServicePersonInfo.prefer}}
-          </span>
-          <span
-            style="width: 20%;display: inline-block;font-size: 1.2em;"
-            ng-click="Select(null,['维修救援','车驾管','钣喷'],'选择您的接单偏好',carServicePersonInfo,'prefer')">
-            <i class="ion-chevron-down"></i>
-          </span>
-        </div>
-      </div>
-
 
 
       <div class="bar bar-footer  bar-assertive"
-           style="position: static" ng-click="postPersonInfo()">
+           style="position: static;margin-top:100px;" ng-click="postPersonInfo();">
         <h1 class="title">下一步</h1>
-      </div>
-
-      <div class="bar bar-footer  bar-assertive"
-           style="position: static" ng-click="creatCarServicePerson()">
-        <h1 class="title">creatCarServicePersons</h1>
       </div>
 
     </div>
