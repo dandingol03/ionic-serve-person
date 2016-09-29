@@ -13,7 +13,7 @@ angular.module('starter')
       $http({
         method:"POST",
         data:"grant_type=password&password=" + $scope.user.password + "&username=" + $scope.user.username,
-        url:"/proxy/node_server/login",
+        url:"http://192.168.1.106:3000/login",
         headers: {
           'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -21,9 +21,10 @@ angular.module('starter')
       }).then(function(response){
 
         $rootScope.access_token=response.data.access_token;
+        alert('access_token=' + $rootScope.access_token);
         return   $http({
           method: "post",
-          url: "/proxy/node_server/svr/request",
+          url: "http://192.168.1.106:3000/svr/request",
           headers: {
             'Authorization': "Bearer " + $rootScope.access_token,
           },
