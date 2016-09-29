@@ -20,6 +20,48 @@ angular.module('starter', ['ionic','ngCordova'])
     if(window.StatusBar) {
       StatusBar.styleDefault();
     }
+
+    window.plugins.jPushPlugin.init();
+    window.plugins.jPushPlugin.setDebugMode(true);
+    var onGetRegistradionID = function(data) {
+      try{
+        $rootScope.registrationId=data;
+        console.log('registrationId=\r\n' + data);
+      }catch(exception){
+      }
+    };
+
+    //获取自定义消息的回调
+    var onReceiveMessage = function(event) {
+      try{
+        var message
+        if(device.platform == "Android") {
+          message = event.message;
+        } else {
+          message = event.content;
+        }
+        alert('message=' + message);
+      } catch(exception) {
+        console.log("JPushPlugin:onReceiveMessage-->" + exception);
+      }
+    }
+
+    var onTagsWithAlias = function(event) {
+      try {
+        console.log("onTagsWithAlias");
+        var result = "result code:" + event.resultCode + " ";
+        result += "tags:" + event.tags + " ";
+        result += "alias:" + event.alias + " ";
+        alert('result=\r\n' + result);
+      } catch(exception) {
+        console.log(exception);
+      }
+    }
+
+    window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
+    window.plugins.jPushPlugin.setTags(['game']);
+    document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
+    document.addEventListener("jpush.receiveMessage", onReceiveMessage, false);
   });
   })
 
@@ -101,10 +143,31 @@ angular.module('starter', ['ionic','ngCordova'])
           templateUrl:'views/photo/photo.html'
         })
 
+        .state('chatter',{
+          url:'/chatter',
+          controller:'chatterController',
+          templateUrl:'views/chatter/chatter.html'
+        })
 
 
-      $urlRouterProvider.otherwise('/register');
+      $urlRouterProvider.otherwise('/login');
     })
 
+
+
+
+.directive('textareaAuto', function ($timeout) {
+  return {
+    restrict: 'A',
+    link: function(scope, element, attr) {
+      console.log(element[0].nodeName)
+      //判断是否是    TEXTAREA
+      if("TEXTAREA"==element[0].nodeName&&attr.textareaAuto){
+        //自适应高度
+        //$(element).autoTextarea()
+      }
+    }
+  };
+})
 
 

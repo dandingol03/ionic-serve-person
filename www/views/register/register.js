@@ -194,6 +194,13 @@ angular.module('starter')
       })
     };
 
+    //导航栏切换
+    $scope.slideChanged=function(i)
+    {
+      $scope.tabIndex=i;
+      console.log('.......');
+    }
+
 
     $scope.go_back=function(){
       window.history.back();

@@ -71,6 +71,7 @@
             </div>
           </li>
 
+
           <li style="width:25%;">
             <div class="cell"
                  ng-class="{true: 'selected', false: ''}[tabIndex==2]"
@@ -104,14 +105,14 @@
       <!-- 分类订单 -->
       <ion-scroll style="height: 100%;margin-top:2px;border-bottom: 0px;">
 
-        <div class="list list-inset" ng-if="detail==undefined||detail==null">
+        <div class="list list-inset">
 
           <div ng-repeat="order in orders[tabIndex]" style="">
             <ul class="list" style="margin-bottom:0px;">
-              <li class="item item-icon-right" ng-click="showOrderDetail(order)"
+              <li class="item item-icon-right"
                   style="padding-right:34px;position: relative;border:0px;">
                 <div style="display:inline-block;width:95%;">
-                  <div>订单号:{{order.num}}</div>
+                  <div>订单号:{{order.orderNum}}</div>
                 </div>
               </li>
             </ul>
@@ -119,8 +120,8 @@
               <li class="item item-icon-right" ng-click="showOrderDetail(order)"
                   style="padding-right:34px;padding-top:4px;padding-bottom:4px;position: relative;border-top:0px;border-left:0px;border-right: 0px;">
                 <div style="display:inline-block;width:95%;">
-                  <div style="margin-right:5%;">预计时间:{{order.time}}</div>
-                  <div style="margin-right:5%;">类型:{{order.type}}</div>
+                  <div style="margin-right:5%;">预计时间:{{order.orderDate}}</div>
+                  <div style="margin-right:5%;">类型:{{order.serviceType}}</div>
                 </div>
                 <div style="display:inline-block;width:5%;align-items:center;position: absolute;top:20%;font-size: 2em;">
                   <i class="ion-ios-arrow-forward"></i>
@@ -128,50 +129,9 @@
               </li>
             </ul>
           </div>
-
-
         </div>
 
-        <!-- 订单详情 -->
-        <div class="list list-inset item-detail"
-             ng-if="detail!=undefined&&detail!=null">
-          <div class="item item-divider" style="position: relative">
-            <div style="font-size: 1.8em;width: 20%;display: inline-block" ng-click="go_back_from_detail()">
-              <i class="ion-ios-arrow-left"></i>
-            </div>
 
-            <div style="display: inline-block;position: absolute;left:40%;">
-              <span>订单详情</span>
-            </div>
-          </div>
-
-          <div class="item" style="margin:1px;border-top:0px;border-left:0px;border-right:0px;padding:10px;">
-            <span class="input-label" style="display: inline-block;">
-              时间:
-            </span>
-            <span class="input-label" style="display: inline-block;">
-              2016-07-10
-            </span>
-          </div>
-          <div class="item" style="margin:1px;border-top:0px;border-left:0px;border-right:0px;padding:10px;">
-             <span class="input-label" style="display: inline-block;">
-              地点:
-            </span>
-            <span class="input-label" style="display: inline-block;">
-              B2K摩托公园
-            </span>
-          </div>
-
-          <div class="item" style="margin:1px;border: 0px;padding:10px;">
-             <span class="input-label" style="display: inline-block;">
-              服务内容:
-            </span>
-            <span class="input-label" style="display: inline-block;">
-              换轮胎
-            </span>
-          </div>
-
-        </div>
       </ion-scroll>
     </div>
 
