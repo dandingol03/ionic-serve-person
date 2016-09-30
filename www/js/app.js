@@ -128,6 +128,16 @@ angular.module('starter', ['ionic','ngCordova'])
           }
         })
 
+        .state('tabs.chatter',{
+          url:'/chatter',
+          views:{
+            'chatter-tab':{
+              controller:'chatterController',
+              templateUrl:'views/chatter/chatter.html'
+            }
+          }
+        })
+
         .state('register',{
           url:'/register',
           controller:'registerController',

@@ -72,7 +72,7 @@ angular.module('starter')
           });
         }
       }).then(function(json) {
-        alert('got it ');
+        $state.go('tabs.dashboard');
       }).catch(function(err) {
         var str='';
         for(var field in err)
