@@ -35,5 +35,25 @@ angular.module('starter')
       console.log('...');
     }
 
+    $scope.sendMsg=function(){
+      if($scope.input.message!==undefined&&$scope.input.message!==null)
+      {
+        $http({
+          method: "post",
+          url: "http://192.168.3.2:3000/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data:
+          {
+            request:'pushTextMsg',
+            info:{
+              msg:$scope.input.message,
+              type:'servicePerson'
+            }
+          }
+        })
+      }
+    }
 
   });

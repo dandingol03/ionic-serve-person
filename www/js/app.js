@@ -5,7 +5,7 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('starter', ['ionic','ngCordova'])
 
-.run(function($ionicPlatform) {
+.run(function($ionicPlatform,$rootScope) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -26,15 +26,15 @@ angular.module('starter', ['ionic','ngCordova'])
     var onGetRegistradionID = function(data) {
       try{
         $rootScope.registrationId=data;
-        console.log('registrationId=\r\n' + data);
+        alert('registrationId=\r\n' + data);
       }catch(exception){
+        alert('error=\r\n' + exception.toString());
       }
     };
-
     //获取自定义消息的回调
     var onReceiveMessage = function(event) {
       try{
-        var message
+        var message=null;
         if(device.platform == "Android") {
           message = event.message;
         } else {
@@ -42,7 +42,7 @@ angular.module('starter', ['ionic','ngCordova'])
         }
         alert('message=' + message);
       } catch(exception) {
-        console.log("JPushPlugin:onReceiveMessage-->" + exception);
+        alert("JPushPlugin:onReceiveMessage-->" + exception);
       }
     }
 
@@ -58,10 +58,13 @@ angular.module('starter', ['ionic','ngCordova'])
       }
     }
 
+    //f9bb743849fe5fbe67ea6d81
+
     window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
     window.plugins.jPushPlugin.setTags(['game']);
     document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
     document.addEventListener("jpush.receiveMessage", onReceiveMessage, false);
+
   });
   })
 
@@ -121,6 +124,16 @@ angular.module('starter', ['ionic','ngCordova'])
             'servicing-tab':{
               controller:'servicingController',
               templateUrl:'views/servicing/servicing.html'
+            }
+          }
+        })
+
+        .state('tabs.chatter',{
+          url:'/chatter',
+          views:{
+            'chatter-tab':{
+              controller:'chatterController',
+              templateUrl:'views/chatter/chatter.html'
             }
           }
         })
