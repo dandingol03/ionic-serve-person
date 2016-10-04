@@ -145,7 +145,7 @@ angular.module('starter', ['ionic','ngCordova'])
         })
 
         .state('orderDetail',{
-          url:'/orderDetail',
+          url:'/orderDetail/:order',
           controller:'orderDetailController',
           templateUrl:'views/order_detail/order_detail.html'
         })
