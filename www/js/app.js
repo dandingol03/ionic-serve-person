@@ -5,6 +5,10 @@
 // the 2nd parameter is an array of 'requires'
 angular.module('starter', ['ionic','ngCordova'])
 
+
+
+
+
   .run(function($ionicPlatform,$rootScope) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
@@ -183,6 +187,17 @@ angular.module('starter', ['ionic','ngCordova'])
       }
     };
   })
+      .factory('Proxy', function() {
+            var ob={
+              local:function(){
+                if(window.cordova!==undefined&&window.cordova!==null)
+                  return "http://192.168.1.110:3000";
+                else
+                  return "/proxy/node_server";
+              }
+            }
+            return ob;
+          })
 
   .factory('Proxy', function() {
     var ob={
