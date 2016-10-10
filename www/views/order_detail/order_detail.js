@@ -16,8 +16,7 @@ angular.module('starter')
 
     $http({
       method:"post",
-      url:"http://192.168.1.106:3000/svr/request",
-      //url:"/proxy/node_server/svr/request",
+      url:Proxy.local()+"/svr/request",
       headers:{
         'Authorization': "Bearer " + $rootScope.access_token,
       },
@@ -75,8 +74,7 @@ angular.module('starter')
     $scope.takeOrders = function(){
       $http({
         method: "post",
-        url: "/proxy/node_server/svr/request",
-        //url:"http://192.168.1.106:3000/svr/request",
+        url:Proxy.local()+"/svr/request",
         headers: {
           'Authorization': "Bearer " + $rootScope.access_token,
         },
@@ -105,8 +103,7 @@ angular.module('starter')
     $scope.changeOrderState = function(state){
       $http({
         method: "post",
-        url: "/proxy/node_server/svr/request",
-        //url:"http://192.168.1.106:3000/svr/request",
+        url:Proxy.local()+"/svr/request",
         headers: {
           'Authorization': "Bearer " + $rootScope.access_token,
         },

@@ -23,8 +23,7 @@ angular.module('starter')
                            31:'鈑喷'};
     $http({
       method: "post",
-      url: "http://192.168.1.106:3000/svr/request",
-      //url: "/proxy/node_server/svr/request",
+      url:Proxy.local()+"/svr/request",
       headers: {
         'Authorization': "Bearer " + $rootScope.access_token,
       },
