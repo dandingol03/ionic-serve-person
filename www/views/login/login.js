@@ -3,7 +3,7 @@
  */
 angular.module('starter')
 
-  .controller('loginController',function($scope,$state,$ionicLoading,$http,$rootScope){
+  .controller('loginController',function($scope,$state,$ionicLoading,$http,$rootScope,Proxy){
 
     $scope.user={};
 
@@ -43,7 +43,8 @@ angular.module('starter')
       $http({
         method:"POST",
         data:"grant_type=password&password=" + $scope.user.password + "&username=" + $scope.user.username,
-        url:"http://192.168.1.110:3000/login",
+        url:Proxy.local()+"/login",
+        url:"http://192.168.1.106:3000/login",
         headers: {
           'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
           'Content-Type': 'application/x-www-form-urlencoded'
@@ -55,7 +56,7 @@ angular.module('starter')
         {
           return   $http({
             method: "post",
-            url: "http://192.168.1.110:3000/svr/request",
+            url: Proxy.local()+"/svr/request",
             headers: {
               'Authorization': "Bearer " + $rootScope.access_token,
             },
@@ -161,8 +162,6 @@ angular.module('starter')
     }
 
 
-
-
-
-
   });
+
+
