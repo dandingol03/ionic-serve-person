@@ -21,20 +21,16 @@ angular.module('starter', ['ionic','ngCordova'])
       StatusBar.styleDefault();
     }
 
+    alert('init before');
     window.plugins.jPushPlugin.init();
     window.plugins.jPushPlugin.setDebugMode(true);
-    var onGetRegistradionID = function(data) {
-      try{
-        $rootScope.registrationId=data;
-        alert('registrationId=\r\n' + data);
-      }catch(exception){
-        alert('error=\r\n' + exception.toString());
-      }
-    };
+
     //获取自定义消息的回调
-    var onReceiveMessage = function(event) {
+    $rootScope.onReceiveMessage = function(event) {
       try{
         var message=null;
+        alert('go into');
+        alert('message=' + event.message);
         if(device.platform == "Android") {
           message = event.message;
         } else {
@@ -60,10 +56,11 @@ angular.module('starter', ['ionic','ngCordova'])
 
     //f9bb743849fe5fbe67ea6d81
 
-    window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
-    window.plugins.jPushPlugin.setTags(['game']);
+
+    window.plugins.jPushPlugin.setTags(['custom']);
+    alert('init end');
     document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
-    document.addEventListener("jpush.receiveMessage", onReceiveMessage, false);
+
 
   });
   })
