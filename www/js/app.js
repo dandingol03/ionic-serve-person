@@ -28,7 +28,6 @@ angular.module('starter', ['ionic','ngCordova'])
       $rootScope.onReceiveMessage = function(event) {
         try{
           var message=null;
-
           if(device.platform == "Android") {
             message = event.message;
           } else {

@@ -108,6 +108,11 @@ angular.module('starter')
         var json=res.data;
         if(json.re==1) {
           unit=json.data;
+          var mobilePhone=null;
+          if(unit.mobilePhone!==undefined&&unit.mobilePhone!==null)
+            mobilePhone=unit.mobilePhone;
+          else if(unit.phone!==undefined&&unit.phone!==null)
+            mobilePhone=unit.phone;
           return  $http({
             method: "post",
             url:Proxy.local()+"/svr/request",
@@ -119,7 +124,7 @@ angular.module('starter')
               request:'sendCustomMessage',
               info:{
                 unitName:unit.unitName,
-                mobilePhone:unit.mobilePhone,
+                mobilePhone:mobilePhone,
                 type:'to-customer',
                 order:$scope.order
               }
