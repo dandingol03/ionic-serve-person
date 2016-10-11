@@ -28,8 +28,7 @@ angular.module('starter', ['ionic','ngCordova'])
       $rootScope.onReceiveMessage = function(event) {
         try{
           var message=null;
-          alert('go into');
-          alert('message=' + event.message);
+
           if(device.platform == "Android") {
             message = event.message;
           } else {
@@ -55,9 +54,19 @@ angular.module('starter', ['ionic','ngCordova'])
 
       //f9bb743849fe5fbe67ea6d81
 
+      var onGetRegistradionID = function(data) {
+        try{
+          alert('go waiting....');
+          $rootScope.registrationId=data;
+          alert('registrationId=\r\n' + data);
+        }catch(exception){
+          alert('error=\r\n' + exception.toString());
+        }
+      };
 
+      window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
       window.plugins.jPushPlugin.setTags(['custom']);
-      alert('init end');
+      document.addEventListener("jpush.receiveMessage", $rootScope.onReceiveMessage, false);
       document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
 
 
@@ -190,3 +199,14 @@ angular.module('starter', ['ionic','ngCordova'])
         return ob;
       })
 
+  .factory('Proxy', function() {
+    var ob={
+      local:function(){
+        if(window.cordova!==undefined&&window.cordova!==null)
+          return "http://192.168.1.106:3000";
+        else
+          return "/proxy/node_server";
+      }
+    }
+    return ob;
+  })
