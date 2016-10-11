@@ -3,11 +3,10 @@
  */
 angular.module('starter')
 
-  .controller('loginController',function($scope,$state,$ionicLoading,$http,$rootScope,Proxy){
+  .controller('loginController',function($scope,$state,$ionicLoading,
+                                         $http,$rootScope,Proxy){
 
     $scope.user={};
-
-
 
 
     $scope.tt=function(){
@@ -21,7 +20,7 @@ angular.module('starter')
         }
       }).success(function(res) {
         var access_token=res.access_token;
-        alert('access_token=' + access_token);
+        console.log('access_token=' + access_token);
       }).error(function(err) {
         alert('error=\r\n' + err.toString());
       })
@@ -51,7 +50,7 @@ angular.module('starter')
       }).then(function(res) {
         var json=res.data;
         $rootScope.access_token=json.access_token;
-        alert('access_token' + $rootScope.access_token);
+        console.log('access_token=\r\n' + $rootScope.access_token);
         if(json.access_token!==undefined&&json.access_token!==null)
         {
           return   $http({
@@ -84,6 +83,15 @@ angular.module('starter')
       if($rootScope.registrationId==undefined||$rootScope.registrationId==null||$rootScope.registrationId=='')
       {
         $scope.login();
+        if(window.cordova!==undefined&&window.cordova!==null)
+        {
+          alert('get id again');
+          window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
+          $scope.login();
+        }
+        else
+          $scope.login();
+
       }else{
         $scope.login();
       }

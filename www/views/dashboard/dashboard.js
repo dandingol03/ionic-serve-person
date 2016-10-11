@@ -6,16 +6,6 @@ angular.module('starter')
   .controller('dashboardController',function($scope,$state,$http,$rootScope,Proxy){
 
 
-    // $scope.orders=[
-    //   [ {num:'000001',time:'2016-9-14',carNum:'鲁A00001',adr:'经十路',type:'日常保养',content:''},
-    //     {num:'000002',time:'2016-9-14',carNum:'鲁A00002',adr:'经十路',type:'日常保养',content:''},
-    //     {num:'000003',time:'2016-9-14',carNum:'鲁A00003',adr:'经十路',type:'日常保养',content:''}
-    //     ],//全部订单
-    //   [{num:'000001',time:'2016-9-14',carNum:'鲁A00001',adr:'经十路',type:'日常保养',content:''}],//维修订单数组
-    //   [{num:'000002',time:'2016-9-14',carNum:'鲁A00002',adr:'经十路',type:'日常保养',content:''}],//救援订单数组
-    //   [{num:'000003',time:'2016-9-14',carNum:'鲁A00003',adr:'经十路',type:'日常保养',content:''}]//鈑喷订单数组
-    //
-    // ];
 
     $scope.orders=[,[],[],[]];
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
