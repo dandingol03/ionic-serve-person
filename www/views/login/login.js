@@ -56,7 +56,6 @@ angular.module('starter')
         {
           return   $http({
             method: "post",
-
             url:Proxy.local()+"/svr/request",
             headers: {
               'Authorization': "Bearer " + $rootScope.access_token,
@@ -84,7 +83,7 @@ angular.module('starter')
 
       if($rootScope.registrationId==undefined||$rootScope.registrationId==null||$rootScope.registrationId=='')
       {
-
+        $scope.login();
       }else{
         $scope.login();
       }

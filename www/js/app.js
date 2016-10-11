@@ -210,3 +210,4 @@ angular.module('starter', ['ionic','ngCordova'])
     }
     return ob;
   })
+
