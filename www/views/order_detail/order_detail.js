@@ -3,7 +3,8 @@
  */
 angular.module('starter')
 
-  .controller('orderDetailController',function($scope,$stateParams,$http,$rootScope,$cordovaFileTransfer){
+  .controller('orderDetailController',function($scope,$stateParams,$http,
+                                               $rootScope,$cordovaFileTransfer,Proxy){
 
     $scope.order=$stateParams.order;
 
@@ -70,8 +71,10 @@ angular.module('starter')
     }
 
 
-
-    $scope.takeOrders = function(){
+    //愿意接单
+    $scope.takeOrder = function(){
+      var servicePersonId=null;
+      var unit=null;
       $http({
         method: "post",
         url:Proxy.local()+"/svr/request",
@@ -80,25 +83,63 @@ angular.module('starter')
         },
         data:
         {
-          request:'updateServiceOrderStateAndServicePersonId',
-          info:{
-            order:$scope.order,
-            orderState:2
-          }
+          request:'getServicePersonIdByPersonId'
         }
       }).then(function(res) {
-              var json=res.data;
-              if(json.re==1) {
-                console.log('service order has been generated');
+        var json=res.data;
+        if(json.re==1) {
+          servicePersonId=json.data;
+          return  $http({
+            method: "post",
+            url:Proxy.local()+"/svr/request",
+            headers: {
+              'Authorization': "Bearer " + $rootScope.access_token,
+            },
+            data:
+            {
+              request:'getUnitByServicePerson',
+              info:{
+                servicePersonId:servicePersonId
               }
-            }).catch(function(err) {
-              var str='';
-              for(var field in err)
-                str+=err[field];
-              console.error('error=\r\n' + str);
-            });
+            }
+          });
+        }
+      }).then(function(res) {
+        var json=res.data;
+        if(json.re==1) {
+          unit=json.data;
+          return  $http({
+            method: "post",
+            url:Proxy.local()+"/svr/request",
+            headers: {
+              'Authorization': "Bearer " + $rootScope.access_token
+            },
+            data:
+            {
+              request:'sendCustomMessage',
+              info:{
+                unitName:unit.unitName,
+                mobilePhone:unit.mobilePhone,
+                type:'to-customer',
+                order:$scope.order
+              }
+            }
+          });
+        }
+      }).then(function(res) {
+        var json=res.data;
+        if(json.re==1) {
+          console.log('service order has been generated');
+          $scope.go_back();
+        }
+      }).catch(function(err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error(str);
+      });
 
-    };
+    }
 
     $scope.changeOrderState = function(state){
       $http({

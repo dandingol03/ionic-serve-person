@@ -20,7 +20,7 @@ angular.module('starter', ['ionic','ngCordova'])
         StatusBar.styleDefault();
       }
 
-      alert('init before');
+
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
 
@@ -57,6 +57,15 @@ angular.module('starter', ['ionic','ngCordova'])
       var onGetRegistradionID = function(data) {
         try{
           alert('go waiting....');
+          $rootScope.registrationId=data;
+          alert('registrationId=\r\n' + data);
+        }catch(exception){
+          alert('error=\r\n' + exception.toString());
+        }
+      };
+
+      $rootScope.onGetRegistradionId=function(data) {
+        try{
           $rootScope.registrationId=data;
           alert('registrationId=\r\n' + data);
         }catch(exception){
@@ -104,6 +113,7 @@ angular.module('starter', ['ionic','ngCordova'])
       })
 
       .state('tabs.dashboard',{
+        cache:false,
         url:'/dashboard',
         views:{
           'dashboard-tab':{
@@ -187,23 +197,12 @@ angular.module('starter', ['ionic','ngCordova'])
       }
     };
   })
-  .factory('Proxy', function() {
-        var ob={
-          local:function(){
-            if(window.cordova!==undefined&&window.cordova!==null)
-              return "http://192.168.1.110:3000";
-            else
-              return "/proxy/node_server";
-          }
-        }
-        return ob;
-      })
 
   .factory('Proxy', function() {
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.106:3000";
+          return "http://192.168.1.110:3000";
         else
           return "/proxy/node_server";
       }
