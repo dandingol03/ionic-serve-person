@@ -87,6 +87,8 @@ angular.module('starter')
         {
           alert('get id again');
           window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
+
+
           $scope.login();
         }
         else
@@ -97,11 +99,7 @@ angular.module('starter')
       }
 
 
-
-
     }
-
-
 
 
     //登录

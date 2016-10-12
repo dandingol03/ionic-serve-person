@@ -12,6 +12,7 @@ angular.module('starter')
                            21:'车驾管-审车',22:'车驾管-审证',23:'车驾管-接送机',24:'车驾管-取送车',
                            31:'鈑喷'};
 
+
     $scope.page_orders=[[],[],[],[]];
     $scope.pageLimit=3;
     $scope.pageIndexForAllOrders=0;
@@ -53,6 +54,7 @@ angular.module('starter')
             else
               break;
           }
+
           console.log('success');
 
         }
@@ -75,6 +77,7 @@ angular.module('starter')
           else
             break;
         }
+
       }
     }
 
@@ -99,8 +102,6 @@ angular.module('starter')
 
 
     $scope.orderIndex=0;
-
-
 
     $scope.tabIndex=0;
 
