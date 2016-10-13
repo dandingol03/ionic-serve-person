@@ -9,7 +9,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
 
-  .run(function($ionicPlatform,$rootScope) {
+  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
 
@@ -24,20 +24,40 @@ angular.module('starter', ['ionic','ngCordova'])
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
 
+
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
         try{
+          alert('got message');
           var message=null;
           if(device.platform == "Android") {
             message = event.message;
           } else {
             message = event.content;
           }
-          alert('message=' + message);
-        } catch(exception) {
-          alert("JPushPlugin:onReceiveMessage-->" + exception);
+          if(Object.prototype.toString.call(message)!='[object Object]')
+          {
+            message = JSON.parse(message);
+          }else{}
+
+          //TODO:message classify
+          var confirmPopup = $ionicPopup.confirm({
+            title: '新订单:'+message.order.orderNum,
+            template: '客户已下单,请查看'
+          });
+          confirmPopup.then(function(res) {
+            if(res) {
+             $state.go('tabs.dashboard');
+            } else {
+              console.log('You are not sure');
+            }
+          });
+        }catch(e){
+          alert('exception=\r\n' + e.toString());
         }
       }
+
+
 
       var onTagsWithAlias = function(event) {
         try {
@@ -201,10 +221,11 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.110:3000";
+          return "http://192.168.1.106:3000";
         else
           return "/proxy/node_server";
       }
     }
     return ob;
   })
+
