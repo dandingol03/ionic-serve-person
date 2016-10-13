@@ -26,6 +26,7 @@ angular.module('starter')
       data:
       {
         request:'getOrdersFromServiceCandidate',
+
       }
     })
       .then(function (res) {

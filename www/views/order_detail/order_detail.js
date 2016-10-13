@@ -75,6 +75,7 @@ angular.module('starter')
     $scope.takeOrder = function(){
       var servicePersonId=null;
       var unit=null;
+      var servicePersonName=null;
       $http({
         method: "post",
         url:Proxy.local()+"/svr/request",
@@ -84,11 +85,13 @@ angular.module('starter')
         data:
         {
           request:'getServicePersonIdByPersonId'
+
         }
       }).then(function(res) {
         var json=res.data;
         if(json.re==1) {
           servicePersonId=json.data;
+
           return  $http({
             method: "post",
             url:Proxy.local()+"/svr/request",
@@ -105,8 +108,10 @@ angular.module('starter')
           });
         }
       }).then(function(res) {
+
         var json=res.data;
         if(json.re==1) {
+          alert('send')
           unit=json.data;
           var mobilePhone=null;
           if(unit.mobilePhone!==undefined&&unit.mobilePhone!==null)
@@ -132,8 +137,31 @@ angular.module('starter')
           });
         }
       }).then(function(res) {
-        var json=res.data;
-        if(json.re==1) {
+          var json=res.data;
+          if(json.re==1){
+
+            alert('dddddd');
+            return $http({
+              method: "post",
+              url: Proxy.local() + "/svr/request",
+              headers: {
+                'Authorization': "Bearer " + $rootScope.access_token
+              },
+              data: {
+                request: 'updateCandidateStateByServicePersonId',
+                info: {
+                  orderId: $scope.order.orderId,
+                  servicePersonId: servicePersonId,
+                  candidateState:2
+                }
+              }
+            });
+
+          }
+
+      }).then(function(res) {
+
+        if(res.re==1) {
           console.log('service order has been generated');
           $scope.go_back();
         }
