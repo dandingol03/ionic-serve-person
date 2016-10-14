@@ -85,11 +85,16 @@ angular.module('starter')
         $scope.login();
         if(window.cordova!==undefined&&window.cordova!==null)
         {
-          alert('get id again');
-          window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
 
+          try{
+            alert('get id again');
+            window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
+            $scope.login();
+          }catch(e)
+          {
+            alert(e);
+          }
 
-          $scope.login();
         }
         else
           $scope.login();
