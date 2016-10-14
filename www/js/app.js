@@ -9,7 +9,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
 
-  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup) {
+  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$http) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
 
@@ -21,8 +21,10 @@ angular.module('starter', ['ionic','ngCordova'])
       }
 
 
+
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
+
 
 
       //获取自定义消息的回调
@@ -47,7 +49,10 @@ angular.module('starter', ['ionic','ngCordova'])
           });
           confirmPopup.then(function(res) {
             if(res) {
-             $state.go('tabs.dashboard');
+              //TODO:进入相应订单详情页
+              //message里就是存的order
+              alert('已进入确认框回调');
+              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order})});
             } else {
               console.log('You are not sure');
             }
@@ -133,7 +138,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
       .state('tabs.dashboard',{
         cache:false,
-        url:'/dashboard',
+        url:'/dashboard/:action',
         views:{
           'dashboard-tab':{
             controller:'dashboardController',
