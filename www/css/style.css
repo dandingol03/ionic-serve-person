@@ -24,7 +24,7 @@
   height: 100%;
   width: 100%;
   background:#fff;
-  border-bottom: 2px solid #eee;
+  border-bottom: 1px solid #222;
 }
 
 .ul-tabs.dark-theme li .cell{
@@ -33,9 +33,9 @@
 }
 
 .ul-tabs li .cell.selected{
-  border-top:1px solid #eee;
-  border-left:1px solid #eee;
-  border-right: 1px solid #eee;
+  border-top:1px solid #222;
+  border-left:1px solid #222;
+  border-right: 1px solid #222;
   border-bottom:transparent;
   background: #fff;
   color:#444444;
