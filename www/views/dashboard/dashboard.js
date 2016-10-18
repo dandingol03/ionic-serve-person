@@ -3,8 +3,23 @@
  */
 angular.module('starter')
 
-  .controller('dashboardController',function($scope,$state,$http,$rootScope,Proxy){
+  .controller('dashboardController',function($scope,$state,$http,$rootScope,Proxy,$stateParams){
 
+
+   if($stateParams.action!==undefined&&$stateParams.action!==null&&$stateParams.action!=='')
+   {
+     alert('t1');
+     var action=$stateParams.action;
+     if(Object.prototype.toString.call(action)=='[object String]')
+       action = JSON.parse(action);
+     alert('actionType='+action.type);
+     if(action.type=='redirect')
+     {
+       alert('t2');
+       $scope.newOrder=action.order;
+       $state.go('orderDetail', {order: JSON.stringify($scope.newOrder)});
+     }
+   }
 
 
     $scope.orders=[,[],[],[]];
