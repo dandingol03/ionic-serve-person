@@ -11,16 +11,16 @@
   <ion-content>
 
     <div class="list" style="margin-bottom: 0px;">
-      <div class="item" style="border: 0px;background: #525252;color:#fff;">
-        <div style="margin-bottom:5%;">
+      <div class="item" style="border: 0px;background: #525252;color:#fff;padding: 0px;">
+        <div style="margin-bottom:0%;margin-left:5%;">
           <span>
-            <i class="ion-person" style="font-size: 2em;"></i>
+            <i class="ion-person" style="font-size: 1.3em;"></i>
             接单中
           </span>
         </div>
-        <div>
+        <div style="margin-left:5%;">
           <span style="width:60%;display: inline-block">
-            <i class="ion-social-usd" style="font-size: 2em;"></i>
+            <i class="ion-social-usd" style="font-size: 1.3em;"></i>
              今日收入
           </span>
           <span style="width: 40%;font-size: 2em;color:#AD2929">
@@ -46,7 +46,7 @@
       <!-- tab区域 -->
       <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
 
-        <ul class="ul-tabs dark-theme" style="background: #525252">
+        <ul class="ul-tabs dark-theme" style="background: #525252;height: 40px;">
           <li style="width:25%;">
             <div class="cell"
                  ng-class="{true: 'selected', false: ''}[tabIndex==0]"
@@ -103,58 +103,57 @@
       </div>
 
       <!-- 分类订单 -->
-      <ion-scroll style="height: 40%;margin-top:2px;border-bottom: 0px;">
 
         <div class="list list-inset">
 
           <div class="item item-divider">
             <span
             style="width: 20%;display: inline-block;text-align: center"
-            ng-click="page_previous()"
+            ng-click="page_previous(tabIndex)"
             >
             <i class="ion-chevron-left"></i>
             </span>
             <span style="width: 60%;display: inline-block;text-align: center">
-             {{'第'+(pageIndexForAllOrders+1)+'页'}}
+             {{'第'+(pageIndexes[tabIndex]+1)+'页'}}
             </span>
             <span
               style="width: 20%;display: inline-block;text-align: center"
-              ng-click="page_next()"
+              ng-click="page_next(tabIndex)"
             >
             <i class="ion-chevron-right"></i>
             </span>
           </div>
 
-          <ion-scroll style="height: 75%;">
-            <div ng-repeat="order in page_orders[tabIndex]" style="">
-              <ul class="list" style="margin-bottom:0px;">
-                <li class="item item-icon-right"
-                    style="padding-right:34px;position: relative;border:0px;">
-                  <div style="display:inline-block;width:95%;">
-                    <div>订单号:{{order.orderNum}}</div>
-                  </div>
-                </li>
-              </ul>
-              <ul class="list">
-                <li class="item item-icon-right" ng-click="showOrderDetail(order)"
-                    style="padding-right:34px;padding-top:4px;padding-bottom:4px;position: relative;border-top:0px;border-left:0px;border-right: 0px;">
-                  <div style="display:inline-block;width:95%;">
-                    <div style="margin-right:5%;">预计时间:{{order.orderDate}}</div>
-                    <div style="margin-right:5%;">类型:{{order.serviceName}}</div>
-                  </div>
-                  <div style="display:inline-block;width:5%;align-items:center;position: absolute;top:20%;font-size: 2em;">
-                    <i class="ion-ios-arrow-forward"></i>
-                  </div>
-                </li>
-              </ul>
-            </div>
+          <div style="height: 100%;">
+
+              <div ng-repeat="order in page_orders[tabIndex] track by $index" style="">
+                <ul class="list" style="margin-bottom:0px;">
+                  <li class="item item-icon-right"
+                      style="padding-right:34px;position: relative;border:0px;">
+                    <div style="display:inline-block;width:95%;">
+                      <div>订单号:{{order.orderNum}}</div>
+                    </div>
+                  </li>
+                </ul>
+                <ul class="list">
+                  <li class="item item-icon-right" ng-click="showOrderDetail(order)"
+                      style="padding-right:34px;padding-top:4px;padding-bottom:4px;position: relative;border-top:0px;border-left:0px;border-right: 0px;">
+                    <div style="display:inline-block;width:95%;">
+                      <div style="margin-right:5%;">预计时间:{{order.orderDate}}</div>
+                      <div style="margin-right:5%;">类型:{{order.serviceName}}</div>
+                    </div>
+                    <div style="display:inline-block;width:5%;align-items:center;position: absolute;top:20%;font-size: 2em;">
+                      <i class="ion-ios-arrow-forward"></i>
+                    </div>
+                  </li>
+                </ul>
+              </div>
+
+          </div>
         </div>
-          </ion-scroll>
 
-      </ion-scroll>
+
     </div>
-
-
   </ion-content>
 
 </ion-view>

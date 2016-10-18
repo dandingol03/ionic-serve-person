@@ -8,14 +8,12 @@ angular.module('starter')
 
    if($stateParams.action!==undefined&&$stateParams.action!==null&&$stateParams.action!=='')
    {
-     alert('t1');
      var action=$stateParams.action;
      if(Object.prototype.toString.call(action)=='[object String]')
        action = JSON.parse(action);
-     alert('actionType='+action.type);
+     console.log('actionType.....\r\n'+action.type);
      if(action.type=='redirect')
      {
-       alert('t2');
        $scope.newOrder=action.order;
        $state.go('orderDetail', {order: JSON.stringify($scope.newOrder)});
      }
@@ -30,7 +28,7 @@ angular.module('starter')
 
     $scope.page_orders=[[],[],[],[]];
     $scope.pageLimit=3;
-    $scope.pageIndexForAllOrders=0;
+    $scope.pageIndexes=[0,0,0,0];
 
     $http({
       method: "post",
@@ -52,16 +50,16 @@ angular.module('starter')
           $scope.orders[0]=json.data.orders;
           $scope.allOrders.map(function(order,i) {
             order.serviceName=$scope.serviceTypeMap[order.serviceType];
-            if(order.serviceType==11||order.serviceType==12||order.serviceType==13)
+            if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
               $scope.orders[1].push(order);
-            if(order.serviceType==21||order.serviceType==22||order.serviceType==23||order.serviceType==24)
+            if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
               $scope.orders[2].push(order);
-            if(order.serviceType==31)
+            if(order.serviceType=='31')
               $scope.orders[3].push(order);
           });
          //initial first-page data
           var j=0;
-          for(var i=$scope.pageIndexForAllOrders*$scope.pageLimit;i<$scope.orders[0].length;i++) {
+          for(var i=$scope.pageIndexes[0]*$scope.pageLimit;i<$scope.orders[0].length;i++) {
             if(j<$scope.pageLimit)
             {
               $scope.page_orders[0].push($scope.orders[0][i]);
@@ -71,23 +69,46 @@ angular.module('starter')
               break;
           }
 
-          console.log('success');
+          //initial maintain-page data
+          j=0;
+          for(var i=$scope.pageIndexes[1]*$scope.pageLimit;i<$scope.orders[1].length;i++) {
+            if(j<$scope.pageLimit)
+            {
+              $scope.page_orders[1].push($scope.orders[1][i]);
+              j++;
+            }
+            else
+              break;
+          }
+
+          //initial car-manage data
+          j=0;
+          for(var i=$scope.pageIndexes[2]*$scope.pageLimit;i<$scope.orders[2].length;i++) {
+            if(j<$scope.pageLimit)
+            {
+              $scope.page_orders[2].push($scope.orders[2][i]);
+              j++;
+            }
+            else
+              break;
+          }
+
 
         }
 
       });
 
-    $scope.page_previous=function(){
-      var curIndex=($scope.pageIndexForAllOrders-1)*$scope.pageLimit;
+    $scope.page_previous=function(index){
+      var curIndex=($scope.pageIndexes[index]-1)*$scope.pageLimit;
       if(curIndex>=0) {
-        $scope.pageIndexForAllOrders--;
+        $scope.pageIndexes[index]--;
         var j=0;
-        $scope.page_orders[0]=[];
-        for(var i=curIndex;i<$scope.orders[0].length;i++)
+        $scope.page_orders[index]=[];
+        for(var i=curIndex;i<$scope.orders[index].length;i++)
         {
           if(j<$scope.pageLimit)
           {
-            $scope.page_orders[0].push($scope.orders[0][i]);
+            $scope.page_orders[index].push($scope.orders[index][i]);
             j++;
           }
           else
@@ -97,17 +118,17 @@ angular.module('starter')
       }
     }
 
-    $scope.page_next=function(){
-      var curIndex=($scope.pageIndexForAllOrders+1)*$scope.pageLimit;
-      if(curIndex<$scope.orders[0].length) {
-        $scope.pageIndexForAllOrders++;
+    $scope.page_next=function(index){
+      var curIndex=($scope.pageIndexes[index]+1)*$scope.pageLimit;
+      if(curIndex<$scope.orders[index].length) {
+        $scope.pageIndexes[index]++;
         var j=0;
-        $scope.page_orders[0]=[];
-        for(var i=curIndex;i<$scope.orders[0].length;i++)
+        $scope.page_orders[index]=[];
+        for(var i=curIndex;i<$scope.orders[index].length;i++)
         {
           if(j<$scope.pageLimit)
           {
-            $scope.page_orders[0].push($scope.orders[0][i]);
+            $scope.page_orders[index].push($scope.orders[index][i]);
             j++;
           }
           else
