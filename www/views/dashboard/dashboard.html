@@ -8,7 +8,7 @@
 
   </ion-nav-bar>
 
-  <ion-content>
+  <ion-content scroll="false">
 
     <div class="list" style="margin-bottom: 0px;">
       <div class="item" style="border: 0px;background: #525252;color:#fff;padding: 0px;">
@@ -42,75 +42,76 @@
     </div>
 
 
-    <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;">
-      <!-- tab区域 -->
-      <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
+      <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;height: 100%;">
 
-        <ul class="ul-tabs dark-theme" style="background: #525252;height: 40px;">
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==0]"
-                 ng-click="tab_change(0)">
-              <div style="margin-top:10%;">
+        <!-- tab区域 -->
+        <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
+
+          <ul class="ul-tabs dark-theme" style="background: #525252;height: 40px;">
+            <li style="width:25%;">
+              <div class="cell"
+                   ng-class="{true: 'selected', false: ''}[tabIndex==0]"
+                   ng-click="tab_change(0)">
+                <div style="margin-top:10%;">
                   <span>
                     全部
                   </span>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
 
-          <li style="width:25%">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==1]"
-                 ng-click="tab_change(1)">
-              <div style="margin-top:10%;">
+            <li style="width:25%">
+              <div class="cell"
+                   ng-class="{true: 'selected', false: ''}[tabIndex==1]"
+                   ng-click="tab_change(1)">
+                <div style="margin-top:10%;">
                   <span>
                     维修
                   </span>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
 
 
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==2]"
-                 ng-click="tab_change(2)">
-              <div style="margin-top:10%;">
+            <li style="width:25%;">
+              <div class="cell"
+                   ng-class="{true: 'selected', false: ''}[tabIndex==2]"
+                   ng-click="tab_change(2)">
+                <div style="margin-top:10%;">
                   <span>
                     车驾管
                   </span>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
 
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==3]"
-                 ng-click="tab_change(3)">
-              <div style="margin-top:10%;">
+            <li style="width:25%;">
+              <div class="cell"
+                   ng-class="{true: 'selected', false: ''}[tabIndex==3]"
+                   ng-click="tab_change(3)">
+                <div style="margin-top:10%;">
                   <span>
                     鈑喷
                   </span>
+                </div>
               </div>
-            </div>
-          </li>
+            </li>
 
 
 
-        </ul>
+          </ul>
 
-      </div>
+        </div>
 
-      <!-- 分类订单 -->
+        <!-- 分类订单 -->
 
-        <div class="list list-inset">
+        <div class="list list-inset" style="height: 100%;">
 
           <div class="item item-divider">
             <span
-            style="width: 20%;display: inline-block;text-align: center"
-            ng-click="page_previous(tabIndex)"
-            >
+              style="width: 20%;display: inline-block;text-align: center"
+              ng-click="page_previous(tabIndex)"
+              >
             <i class="ion-chevron-left"></i>
             </span>
             <span style="width: 60%;display: inline-block;text-align: center">
@@ -119,13 +120,12 @@
             <span
               style="width: 20%;display: inline-block;text-align: center"
               ng-click="page_next(tabIndex)"
-            >
+              >
             <i class="ion-chevron-right"></i>
             </span>
           </div>
-
-          <div style="height: 100%;">
-
+          <ion-scroll style="height: 60%;">
+            <div style="height: 100%;">
               <div ng-repeat="order in page_orders[tabIndex] track by $index" style="">
                 <ul class="list" style="margin-bottom:0px;">
                   <li class="item item-icon-right"
@@ -148,12 +148,14 @@
                   </li>
                 </ul>
               </div>
+            </div>
+          </ion-scroll>
 
-          </div>
         </div>
 
+      </div>
 
-    </div>
+
   </ion-content>
 
 </ion-view>

@@ -3,7 +3,8 @@
  */
 angular.module('starter')
 
-  .controller('dashboardController',function($scope,$state,$http,$rootScope,Proxy,$stateParams){
+  .controller('dashboardController',function($scope,$state,$http,$rootScope,
+                                             Proxy,$stateParams){
 
 
    if($stateParams.action!==undefined&&$stateParams.action!==null&&$stateParams.action!=='')
