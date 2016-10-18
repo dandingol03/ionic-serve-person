@@ -28,17 +28,6 @@
           </span>
         </div>
       </div>
-
-
-      <ul class="item item-icon-right" style="border-left:0px;padding:0px;border-bottom: 0px;">
-        <li
-          style="display: inline-block;width: 50%;border-right: 1px solid #2D2A2A;text-align: center;padding: 10px;">
-          接单数:
-        </li>
-        <li style="display: inline-block;width: 50%;text-align: center;padding: 10px;">
-          指派接单数:
-        </li>
-      </ul>
     </div>
 
 
@@ -47,7 +36,8 @@
         <!-- tab区域 -->
         <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
 
-          <ul class="ul-tabs dark-theme" style="background: #525252;height: 40px;">
+          <ul class="ul-tabs " style="height: 40px;border-bottom: 0px;">
+
             <li style="width:25%;">
               <div class="cell"
                    ng-class="{true: 'selected', false: ''}[tabIndex==0]"
