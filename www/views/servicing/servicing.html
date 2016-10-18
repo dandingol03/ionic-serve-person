@@ -11,64 +11,6 @@
   <ion-content>
 
     <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;">
-      <!-- tab区域 -->
-      <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
-
-        <ul class="ul-tabs dark-theme" style="background: #525252">
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==0]"
-                 ng-click="tab_change(0)">
-              <div style="margin-top:10%;">
-                  <span>
-                    全部
-                  </span>
-              </div>
-            </div>
-          </li>
-
-          <li style="width:25%">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==1]"
-                 ng-click="tab_change(1)">
-              <div style="margin-top:10%;">
-                  <span>
-                    维修
-                  </span>
-              </div>
-            </div>
-          </li>
-
-
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==2]"
-                 ng-click="tab_change(2)">
-              <div style="margin-top:10%;">
-                  <span>
-                    车驾管
-                  </span>
-              </div>
-            </div>
-          </li>
-
-          <li style="width:25%;">
-            <div class="cell"
-                 ng-class="{true: 'selected', false: ''}[tabIndex==3]"
-                 ng-click="tab_change(3)">
-              <div style="margin-top:10%;">
-                  <span>
-                    鈑喷
-                  </span>
-              </div>
-            </div>
-          </li>
-
-
-
-        </ul>
-
-      </div>
 
       <!-- 分类订单 -->
       <ion-scroll style="height: 100%;margin-top:2px;border-bottom: 0px;">
