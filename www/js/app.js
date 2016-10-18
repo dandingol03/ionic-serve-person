@@ -226,7 +226,7 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.106:3000";
+          return "http://192.168.1.105:3000";
         else
           return "/proxy/node_server";
       }
