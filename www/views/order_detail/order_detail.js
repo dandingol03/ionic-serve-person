@@ -7,6 +7,7 @@ angular.module('starter')
                                                $rootScope,$cordovaFileTransfer,Proxy,
                                                 $interval){
 
+
      var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
@@ -16,19 +17,26 @@ angular.module('starter')
     }
 
     //TODO:计时
-    if(order.timeout!==undefined&&order.timeout!==null&&order.timeout<120)
+    if(order.timeout!==undefined&&order.timeout!==null)
     {
-      $scope.timeout=order.timeout;
       $scope.timer=$interval(function(){
-        $scope.timeout++;
-        if($scope.timeout>=120)
+
+        $rootScope.candidates[$scope.order.orderId].timeout++;
+        $scope.timeout=$rootScope.candidates[$scope.order.orderId].timeout;
+        console.log('timeout=' + $rootScope.candidates[$scope.order.orderId].timeout);
+        if($rootScope.candidates[$scope.order.orderId].timeout>=120)
+        {
           $interval.cancel($scope.timer);
+          delete $rootScope.candidates[$scope.order.orderId];
+        }
         },1000);
     }
 
 
 
     $scope.go_back=function(){
+      if($scope.timer!==undefined&&$scope.timer!==null)
+        $interval.cancel($scope.timer);
       window.history.back();
     };
 

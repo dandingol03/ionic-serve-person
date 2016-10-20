@@ -13,11 +13,15 @@ angular.module('starter')
      if(Object.prototype.toString.call(action)=='[object String]')
        action = JSON.parse(action);
 
+     alert('type=' + action.type);
      if(action.type=='redirect')
      {
+       alert('from=' + action.from);
        $scope.newOrder=action.order;
        if(action.from!==undefined&&action.from!==null)
-          $state.go('orderDetail', {order: JSON.stringify({content:action.order,from:action.from,timeout:0})});
+       {
+         $state.go('orderDetail', {order: JSON.stringify({content:action.order,from:action.from,timeout:action.timeout})});
+       }
        else
          $state.go('orderDetail', {order: JSON.stringify({content:action.order})});
      }
@@ -43,7 +47,6 @@ angular.module('starter')
       data:
       {
         request:'getOrdersFromServiceCandidate',
-
       }
     })
       .then(function (res) {
@@ -159,7 +162,16 @@ angular.module('starter')
     }
 
     $scope.showOrderDetail=function(order){
-      $state.go('orderDetail',{order:JSON.stringify({content:order})});
+      //TODO:sync timeout with $rootScope
+      if($rootScope.candidates[order.orderId]!==undefined&&$rootScope.candidates[order.orderId]!==null)
+      {
+        if($rootScope.candidates[order.orderId].timeout!==undefined&&$rootScope.candidates[order.orderId].timeout!==null)
+          $state.go('orderDetail',{order:JSON.stringify({content:order,timeout:$rootScope.candidates[order.orderId].timeout})});
+        else
+          $state.go('orderDetail',{order:JSON.stringify({content:order})});
+      }else{
+        $state.go('orderDetail',{order:JSON.stringify({content:order})});
+      }
     }
 
     $scope.go_back=function(){
