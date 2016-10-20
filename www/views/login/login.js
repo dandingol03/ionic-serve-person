@@ -87,7 +87,6 @@ angular.module('starter')
         {
 
           try{
-            alert('get id again');
             window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
             $scope.login();
           }catch(e)
