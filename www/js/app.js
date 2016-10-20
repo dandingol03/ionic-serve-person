@@ -20,7 +20,7 @@ angular.module('starter', ['ionic','ngCordova'])
         StatusBar.styleDefault();
       }
 
-
+      $rootScope.candidates={};
 
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
@@ -51,7 +51,8 @@ angular.module('starter', ['ionic','ngCordova'])
             if(res) {
               //TODO:进入相应订单详情页
               //message里就是存的order
-              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order,from:message.from})});
+              $rootScope.candidates[message.order.orderId] = {timeout: 0};
+              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order,from:message.from,timeout:0})});
             } else {}
           });
         }catch(e){
@@ -224,7 +225,7 @@ angular.module('starter', ['ionic','ngCordova'])
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
 
-          return "http://192.168.1.105:3000";
+          return "http://192.168.0.198:3000";
 
         else
           return "/proxy/node_server";
