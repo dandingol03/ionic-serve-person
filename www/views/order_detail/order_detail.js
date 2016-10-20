@@ -4,16 +4,38 @@
 angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
-                                               $rootScope,$cordovaFileTransfer,Proxy){
+                                               $rootScope,$cordovaFileTransfer,Proxy,
+                                                $interval){
 
-    $scope.order=$stateParams.order;
+     var order=$stateParams.order;
+    if(order!==undefined&&order!==null)
+    {
+      if(Object.prototype.toString.call(order)=='[object String]')
+        order = JSON.parse(order);
+      $scope.order=order.content;
+    }
 
-    if(Object.prototype.toString.call($scope.order)=='[object String]')
-      $scope.order = JSON.parse($scope.order);
+    //TODO:计时
+    if(order.timeout!==undefined&&order.timeout!==null&&order.timeout<120)
+    {
+      $scope.timeout=order.timeout;
+      $scope.timer=$interval(function(){
+        $scope.timeout++;
+        if($scope.timeout>=120)
+          $interval.cancel($scope.timer);
+        },1000);
+    }
+
+
 
     $scope.go_back=function(){
       window.history.back();
     };
+
+    $scope.$on("$destroy", function() {
+      if($scope.timer!==undefined&&$scope.timer!==null)
+        $interval.cancel($scope.timer);
+    })
 
     $http({
       method:"post",

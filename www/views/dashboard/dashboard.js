@@ -12,11 +12,14 @@ angular.module('starter')
      var action=$stateParams.action;
      if(Object.prototype.toString.call(action)=='[object String]')
        action = JSON.parse(action);
-     console.log('actionType.....\r\n'+action.type);
+
      if(action.type=='redirect')
      {
        $scope.newOrder=action.order;
-       $state.go('orderDetail', {order: JSON.stringify($scope.newOrder)});
+       if(action.from!==undefined&&action.from!==null)
+          $state.go('orderDetail', {order: JSON.stringify({content:action.order,from:action.from,timeout:0})});
+       else
+         $state.go('orderDetail', {order: JSON.stringify({content:action.order})});
      }
    }
 
@@ -156,7 +159,7 @@ angular.module('starter')
     }
 
     $scope.showOrderDetail=function(order){
-      $state.go('orderDetail',{order:JSON.stringify(order)});
+      $state.go('orderDetail',{order:JSON.stringify({content:order})});
     }
 
     $scope.go_back=function(){

@@ -51,11 +51,8 @@ angular.module('starter', ['ionic','ngCordova'])
             if(res) {
               //TODO:进入相应订单详情页
               //message里就是存的order
-              alert('已进入确认框回调');
-              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order})});
-            } else {
-              console.log('You are not sure');
-            }
+              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order,from:message.from})});
+            } else {}
           });
         }catch(e){
           alert('exception=\r\n' + e.toString());
