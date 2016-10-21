@@ -10,11 +10,30 @@
 
   <ion-content scroll="false" class="background">
 
-    <div class="list" style="padding-top:5%;background: rgba(82,82,82,0.8);height:30%">
+    <div class="list" style="padding-top:5%;background: rgba(82,82,82,0.8);height:30%;margin-bottom: 0px;">
       <div class="item" style="border: 0px;background:transparent;color:#fff;padding: 0px;height:100%">
         <div style="margin-bottom:0%;height:70%">
-          <div style="height:60%">
+          <div style="height:60%;position: relative">
+            <span style="font-size: 2.4em;position: absolute;left:4%;top:40%;">
+              <i class="ion-arrow-left-c"></i>
+            </span>
             <i class="ion-person" style="font-size: 4em;;"></i>
+            <span
+              style="font-size: 1.8em;position: absolute;right: 4%;top:50%;"
+              ng-click="openPopover($event)"
+              >
+              <i class="ion-navicon-round"></i>
+            </span>
+            <script id="my-popover.html" type="text/ng-template">
+              <ion-popover-view>
+                <ion-header-bar>
+                  <h1 class="title">我的浮动框标题</h1>
+                </ion-header-bar>
+                <ion-content>
+                  Hello!
+                </ion-content>
+              </ion-popover-view>
+            </script>
           </div>
           <div style="height:20%">
             <span>今日有雨</span>
@@ -40,91 +59,33 @@
 
 
       <div style="border:1px solid #ddd;border-top:0px;border-bottom: 0px;height: 100%;">
-        <!-- tab区域 -->
-        <div class="list" style="margin-bottom: 0px;" ng-if="detail==null||detail==undefined">
 
-          <ul class="ul-tabs " style="height: 40px;border-bottom: 0px;">
-
-            <li style="width:25%;">
-              <div class="cell"
-                   ng-class="{true: 'selected', false: ''}[tabIndex==0]"
-                   ng-click="tab_change(0)"
-                   style="background-color: transparent;">
-                <div style="margin-top:10%;">
-                  <span>
-                    全部
-                  </span>
-                </div>
-              </div>
-            </li>
-
-            <li style="width:25%">
-              <div class="cell"
-                   ng-class="{true: 'selected', false: ''}[tabIndex==1]"
-                   ng-click="tab_change(1)"
-                   style="background-color: transparent;">
-                <div style="margin-top:10%;">
-                  <span>
-                    维修
-                  </span>
-                </div>
-              </div>
-            </li>
-
-
-            <li style="width:25%;">
-              <div class="cell"
-                   ng-class="{true: 'selected', false: ''}[tabIndex==2]"
-                   ng-click="tab_change(2)"
-                   style="background-color: transparent;">
-                <div style="margin-top:10%;">
-                  <span>
-                    车驾管
-                  </span>
-                </div>
-              </div>
-            </li>
-
-            <li style="width:25%;">
-              <div class="cell"
-                   ng-class="{true: 'selected', false: ''}[tabIndex==3]"
-                   ng-click="tab_change(3)"
-                   style="background-color: transparent;">
-                <div style="margin-top:10%;">
-                  <span>
-                    鈑喷
-                  </span>
-                </div>
-              </div>
-            </li>
-
-
-
-          </ul>
-
-        </div>
 
         <!-- 分类订单 -->
 
         <div class="list list-inset" style="height: 100%;margin:10px 10px;background-color: transparent;">
 
           <div class="item"
-               style="border-top:0px;border-left:0px;border-right:0px;border-bottom: 1px solid #222;
-               padding:16px 16px 0px 16px;background-color: transparent;">
+               style="padding:16px 16px 0px 16px;background-color: transparent;border:1px solid #222;position: relative;"
+            >
             <span
-              style="width: 20%;display: inline-block;text-align: center"
+              style="width: 20%;display: inline-block;font-size:1.4em;text-align: center;
+              position: absolute;top: 0%;left:0%;height: 100%;"
               ng-click="page_previous(tabIndex)"
               >
-            <i class="ion-chevron-left"></i>
+            <i class="ion-chevron-left" style="vertical-align: -webkit-baseline-middle;"></i>
             </span>
-            <span style="width: 60%;display: inline-block;text-align: center">
-             {{'第'+(pageIndexes[tabIndex]+1)+'页'}}
+
+            <span style="width: 60%;display: inline-block;text-align: center;font-size: 1.2em;">
+             <b>{{'第'+(pageIndexes[tabIndex]+1)+'页'}}</b>
             </span>
+
             <span
-              style="width: 20%;display: inline-block;text-align: center"
+              style="width: 20%;display: inline-block;text-align: center;font-size: 1.4em;
+              position: absolute;top:0%;right: 0%;height: 100%;"
               ng-click="page_next(tabIndex)"
               >
-            <i class="ion-chevron-right"></i>
+            <i class="ion-chevron-right" style="vertical-align: -webkit-baseline-middle;"></i>
             </span>
           </div>
 
