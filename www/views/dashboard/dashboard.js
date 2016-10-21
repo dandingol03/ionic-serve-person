@@ -4,7 +4,7 @@
 angular.module('starter')
 
   .controller('dashboardController',function($scope,$state,$http,$rootScope,
-                                             Proxy,$stateParams){
+                                             Proxy,$stateParams,$ionicPopover){
 
 
    if($stateParams.action!==undefined&&$stateParams.action!==null&&$stateParams.action!=='')
@@ -46,15 +46,15 @@ angular.module('starter')
       },
       data:
       {
-        request:'getOrdersFromServiceCandidate',
+        request:'getServiceOrdersWithinNotTaken',
       }
     })
       .then(function (res) {
         var json=res.data;
         if(json.re==1)
         {
-          $scope.allOrders=json.data.orders;
-          $scope.orders[0]=json.data.orders;
+          $scope.allOrders=json.data;
+          $scope.orders[0]=json.data;
           $scope.allOrders.map(function(order,i) {
             order.serviceName=$scope.serviceTypeMap[order.serviceType];
             if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
@@ -173,6 +173,22 @@ angular.module('starter')
         $state.go('orderDetail',{order:JSON.stringify({content:order})});
       }
     }
+
+    /***  悬浮窗  ***/
+    $ionicPopover.fromTemplateUrl('/views/popover/order_special_popover.html', {
+      scope: $scope
+    }).then(function(popover) {
+      $scope.popover = popover;
+    });
+
+    $scope.openPopover = function($event) {
+      $scope.popover.show($event);
+    };
+    $scope.closePopover = function() {
+      $scope.popover.hide();
+    };
+    /***  悬浮窗  ***/
+
 
     $scope.go_back=function(){
       window.history.back();
