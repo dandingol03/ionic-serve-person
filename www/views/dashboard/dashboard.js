@@ -47,6 +47,11 @@ angular.module('starter')
       data:
       {
         request:'getOrdersFromServiceCandidate',
+        //request:'getServiceOrdersByState',
+       // info:{
+       //   state:1
+       // }
+
       }
     })
       .then(function (res) {
