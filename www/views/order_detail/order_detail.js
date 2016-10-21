@@ -16,6 +16,56 @@ angular.module('starter')
       $scope.order=order.content;
     }
 
+    $scope.order.audioAttachId=4;
+    if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
+
+      $http({
+        method:"post",
+        url:Proxy.local()+"/svr/request",
+        headers:{
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data:
+        {
+          request:'getAttachByAttachId',
+          info:{
+            attachId:$scope.order.audioAttachId
+          }
+        }
+      }).then(function(res) {
+        var json=res.data;
+        if(json.re==1){
+          alert('urlAddress'+json.data.urlAddress);
+
+          var url=Proxy.local()+'/svr/request?request=downloadAttachment'+'&urlAddress='+json.data.urlAddress;
+          var targetPath=cordova.file.applicationStorageDirectory + "test.caf";
+          var trustHosts = true;
+          var options = {
+            fileKey:'file',
+            headers: {
+              'Authorization': "Bearer " + $rootScope.access_token
+            }
+          };
+          $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
+            .then(function(result) {
+              alert('success');
+            }, function(err) {
+              // Error
+              alert('error='+err);
+              for(var field in err){
+                alert('field='+field+'\r\n'+err[field]);
+              }
+            }, function (progress) {
+              $timeout(function () {
+                $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+              });
+            });
+
+        }
+      })
+
+    }
+
     //TODO:计时
     if(order.timeout!==undefined&&order.timeout!==null)
     {
@@ -223,6 +273,35 @@ angular.module('starter')
         }
       })
     }
+
+
+    // var src = "/src/audio.mp3";
+    // var media = $cordovaMedia.newMedia(src);
+    // var iOSPlayOptions = {
+    //   numberOfLoops: 2,
+    //   playAudioWhenScreenIsLocked : false
+    // }
+    // media.play(iOSPlayOptions); // iOS only!
+    // media.play(); // Android
+    //
+    // media.pause();
+    //
+    // media.stop();
+
+
+
+    $scope.play=function(){
+      var src = cordova.file.applicationStorageDirectory + "test.caf";
+      alert('src='+cordova.file.applicationStorageDirectory + "test.caf")
+      var media = $cordovaMedia.newMedia(src);
+      var iOSPlayOptions = {
+        numberOfLoops: 2,
+        playAudioWhenScreenIsLocked : false
+      }
+      media.play(iOSPlayOptions); // iOS only!
+
+    }
+
 
 
   });

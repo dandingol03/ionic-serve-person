@@ -77,10 +77,13 @@
           </ul>
           <i class="ion-ios-play"
              style="display: inline-block;width: 25%;font-size: 200%;"
-             ng-click="download()"></i>
+             ng-if="order.audioAttachId!=null"
+             ng-click="play()"
+             ></i>
           <i class="ion-videocamera"
              style="display: inline-block;width: 75%;font-size: 200%;"
-             ng-click="download()"></i>
+             ng-if="order.videoAttachId!=null"
+             ng-click="play()"></i>
 
 
 
