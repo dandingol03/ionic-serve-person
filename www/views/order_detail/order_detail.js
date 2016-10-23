@@ -5,7 +5,7 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval){
+                                                $interval,$cordovaMedia){
 
 
      var order=$stateParams.order;
@@ -16,7 +16,7 @@ angular.module('starter')
       $scope.order=order.content;
     }
 
-    $scope.order.audioAttachId=4;
+   // $scope.order.audioAttachId=4;
     if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
 
       $http({
@@ -38,7 +38,14 @@ angular.module('starter')
           alert('urlAddress'+json.data.urlAddress);
 
           var url=Proxy.local()+'/svr/request?request=downloadAttachment'+'&urlAddress='+json.data.urlAddress;
-          var targetPath=cordova.file.applicationStorageDirectory + "test.caf";
+          var filesystem=cordova.file.applicationDirectory;
+          var prefixIndex=filesystem.indexOf('/Application');
+
+          $scope.target='cdvfile://localhost/persistent'+filesystem.substring(prefixIndex,filesystem.length)+'test.caf';
+          alert('target  file=\r\n'+target);
+          console.log('target  file=\r\n'+cordova.file.applicationDirectory + "test.caf");
+          var targetPath=$scope.target;
+          //var targetPath=cordova.file.applicationStorageDirectory + "test.caf";
           var trustHosts = true;
           var options = {
             fileKey:'file',
@@ -153,6 +160,7 @@ angular.module('starter')
 
     //愿意接单
     $scope.takeOrder = function(){
+
       var servicePersonId=null;
       var unit=null;
       var servicePersonName=null;
@@ -220,22 +228,45 @@ angular.module('starter')
           var json=res.data;
           if(json.re==1){
 
-            alert('dddddd');
-            return $http({
-              method: "post",
-              url: Proxy.local() + "/svr/request",
-              headers: {
-                'Authorization': "Bearer " + $rootScope.access_token
-              },
-              data: {
-                request: 'updateCandidateStateByServicePersonId',
-                info: {
-                  orderId: $scope.order.orderId,
-                  servicePersonId: servicePersonId,
-                  candidateState:2
+            if($scope.order.servicePersonId!=null&&$scope.order.servicePersonId!=undefined)
+            {
+              alert('用户指定的服务人员接单');
+              return $http({
+                method: "post",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                },
+                data: {
+                  request: 'updateServiceOrderState',
+                  info: {
+                    orderId: $scope.order.orderId,
+                    servicePersonId: $scope.order.servicePersonId,
+                    orderState:2
+                  }
                 }
-              }
-            });
+              });
+
+            }
+            else{
+              alert('用户没指定,被筛选出的服务人员接单');
+              return $http({
+                method: "post",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                },
+                data: {
+                  request: 'updateCandidateStateByServicePersonId',
+                  info: {
+                    orderId: $scope.order.orderId,
+                    servicePersonId: servicePersonId,
+                    candidateState:2
+                  }
+                }
+              });
+
+            }
 
           }
 
@@ -275,24 +306,9 @@ angular.module('starter')
     }
 
 
-    // var src = "/src/audio.mp3";
-    // var media = $cordovaMedia.newMedia(src);
-    // var iOSPlayOptions = {
-    //   numberOfLoops: 2,
-    //   playAudioWhenScreenIsLocked : false
-    // }
-    // media.play(iOSPlayOptions); // iOS only!
-    // media.play(); // Android
-    //
-    // media.pause();
-    //
-    // media.stop();
-
-
-
     $scope.play=function(){
-      var src = cordova.file.applicationStorageDirectory + "test.caf";
-      alert('src='+cordova.file.applicationStorageDirectory + "test.caf")
+      var src = cordova.file.applicationDirectory+'test.caf';
+      alert('src=' + src);
       var media = $cordovaMedia.newMedia(src);
       var iOSPlayOptions = {
         numberOfLoops: 2,

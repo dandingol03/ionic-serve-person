@@ -49,7 +49,7 @@ angular.module('starter')
       },
       data:
       {
-        request:'getServiceOrdersWithinNotTaken',
+        request:'getServiceOrdersWithinNotTaken'
       }
     })
       .then(function (res) {
