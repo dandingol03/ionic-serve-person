@@ -5,10 +5,10 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval){
+                                                $interval,$cordovaMedia){
 
 
-     var order=$stateParams.order;
+    var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
       if(Object.prototype.toString.call(order)=='[object String]')
@@ -20,40 +20,46 @@ angular.module('starter')
     if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
 
       $http({
-        method:"post",
-        url:Proxy.local()+"/svr/request",
-        headers:{
+        method: "post",
+        url: Proxy.local() + "/svr/request",
+        headers: {
           'Authorization': "Bearer " + $rootScope.access_token,
         },
-        data:
-        {
-          request:'getAttachByAttachId',
-          info:{
-            attachId:$scope.order.audioAttachId
+        data: {
+          request: 'getAttachByAttachId',
+          info: {
+            attachId: $scope.order.audioAttachId
           }
         }
-      }).then(function(res) {
-        var json=res.data;
-        if(json.re==1){
-          alert('urlAddress'+json.data.urlAddress);
+      }).then(function (res) {
+        var json = res.data;
+        if (json.re == 1) {
+          alert('urlAddress' + json.data.urlAddress);
 
-          var url=Proxy.local()+'/svr/request?request=downloadAttachment'+'&urlAddress='+json.data.urlAddress;
-          var targetPath=cordova.file.applicationStorageDirectory + "test.caf";
+          var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+          var filesystem = cordova.file.documentsDirectory;
+          var prefixIndex = filesystem.indexOf('/Application');
+          $scope.target = 'cdvfile://localhost/persistent' + filesystem.substring(prefixIndex, filesystem.length) + 'test.mp3';
+
+          $scope.filepath=filesystem+'serviceAudio.caf';
+          //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+          alert('target path=\r\n' + $scope.target);
+
           var trustHosts = true;
           var options = {
-            fileKey:'file',
+            fileKey: 'file',
             headers: {
               'Authorization': "Bearer " + $rootScope.access_token
             }
           };
-          $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-            .then(function(result) {
+          $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
+            .then(function (result) {
               alert('success');
-            }, function(err) {
+            }, function (err) {
               // Error
-              alert('error='+err);
-              for(var field in err){
-                alert('field='+field+'\r\n'+err[field]);
+              alert('error=' + err);
+              for (var field in err) {
+                alert('field=' + field + '\r\n' + err[field]);
               }
             }, function (progress) {
               $timeout(function () {
@@ -62,7 +68,9 @@ angular.module('starter')
             });
 
         }
-      })
+      }).catch(function(err) {
+        alert('err=\r\n' + err);
+      });
 
     }
 
@@ -122,33 +130,6 @@ angular.module('starter')
         str+=err[field];
       console.error('error=\r\n' + str);
     });
-
-    $scope.download=function(){
-      var url='http://192.168.1.106:3000/svr/request?request=downloadAttachment&filename=carPhoto_5.png'
-      var targetPath=cordova.file.externalRootDirectory + "/carPhoto_5.png";
-      var trustHosts = true;
-      var options = {
-        fileKey:'file',
-        headers: {
-          'Authorization': "Bearer " + $rootScope.access_token
-        },
-        method:'POST'
-      };
-      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-        .then(function(result) {
-          alert('success');
-        }, function(err) {
-          // Error
-          var str='';
-          for(var field in err)
-          {
-            str+=field+':'+err[field];
-          }
-          alert('error=====\r\n'+str);
-        }, function (progress) {
-
-        });
-    }
 
 
     //愿意接单
@@ -291,14 +272,20 @@ angular.module('starter')
 
 
     $scope.play=function(){
-      var src = cordova.file.applicationStorageDirectory + "test.caf";
-      alert('src='+cordova.file.applicationStorageDirectory + "test.caf")
-      var media = $cordovaMedia.newMedia(src);
+
+      /*** xcode path ***
+       * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
+       */
+
+      var filepath=$scope.filepath;
+      filepath = filepath.replace('file://','');
+      var media = $cordovaMedia.newMedia(filepath);
       var iOSPlayOptions = {
         numberOfLoops: 2,
         playAudioWhenScreenIsLocked : false
       }
       media.play(iOSPlayOptions); // iOS only!
+
 
     }
 
