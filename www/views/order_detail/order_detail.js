@@ -39,9 +39,9 @@ angular.module('starter')
           var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
           var filesystem = cordova.file.documentsDirectory;
           var prefixIndex = filesystem.indexOf('/Application');
-          $scope.target = 'cdvfile://localhost/persistent' + filesystem.substring(prefixIndex, filesystem.length) + 'test.mp3';
+          $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
 
-          $scope.filepath=filesystem+'serviceAudio.caf';
+          $scope.filepath=filesystem+'test.mp3';
           //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
           alert('target path=\r\n' + $scope.target);
 
@@ -54,6 +54,10 @@ angular.module('starter')
           };
           $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
             .then(function (result) {
+              for(var field in result)
+              {
+                alert('field=' + field + '\r\n' + result[field]);
+              }
               alert('success');
             }, function (err) {
               // Error
