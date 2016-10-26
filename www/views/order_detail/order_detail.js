@@ -8,7 +8,7 @@ angular.module('starter')
                                                 $interval,$cordovaMedia){
 
 
-     var order=$stateParams.order;
+    var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
       if(Object.prototype.toString.call(order)=='[object String]')
@@ -16,51 +16,56 @@ angular.module('starter')
       $scope.order=order.content;
     }
 
-   // $scope.order.audioAttachId=4;
+    $scope.order.audioAttachId=4;
     if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
 
       $http({
-        method:"post",
-        url:Proxy.local()+"/svr/request",
-        headers:{
+        method: "post",
+        url: Proxy.local() + "/svr/request",
+        headers: {
           'Authorization': "Bearer " + $rootScope.access_token,
         },
-        data:
-        {
-          request:'getAttachByAttachId',
-          info:{
-            attachId:$scope.order.audioAttachId
+        data: {
+          request: 'getAttachByAttachId',
+          info: {
+            attachId: $scope.order.audioAttachId
           }
         }
-      }).then(function(res) {
-        var json=res.data;
-        if(json.re==1){
-          alert('urlAddress'+json.data.urlAddress);
+      }).then(function (res) {
+        var json = res.data;
+        if (json.re == 1) {
+          alert('urlAddress' + json.data.urlAddress);
 
-          var url=Proxy.local()+'/svr/request?request=downloadAttachment'+'&urlAddress='+json.data.urlAddress;
-          var filesystem=cordova.file.applicationDirectory;
-          var prefixIndex=filesystem.indexOf('/Application');
+          var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+          //var filesystem = cordova.file.documentsDirectory;
+          var filesystem = cordova.file.applicationStorageDirectory;
+          var prefixIndex = filesystem.indexOf('/Application');
+          $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
 
-          $scope.target='cdvfile://localhost/persistent'+filesystem.substring(prefixIndex,filesystem.length)+'test.caf';
-          alert('target  file=\r\n'+target);
-          console.log('target  file=\r\n'+cordova.file.applicationDirectory + "test.caf");
-          var targetPath=$scope.target;
-          //var targetPath=cordova.file.applicationStorageDirectory + "test.caf";
+          $scope.filepath=filesystem+'test.mp3';
+          //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+          alert('target path=\r\n' + $scope.target);
+          alert('filepath=\r\n' + $scope.filepath);
+
           var trustHosts = true;
           var options = {
-            fileKey:'file',
+            fileKey: 'file',
             headers: {
               'Authorization': "Bearer " + $rootScope.access_token
             }
           };
-          $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-            .then(function(result) {
+          $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
+            .then(function (result) {
+              for(var field in result)
+              {
+                alert('field=' + field + '\r\n' + result[field]);
+              }
               alert('success');
-            }, function(err) {
+            }, function (err) {
               // Error
-              alert('error='+err);
-              for(var field in err){
-                alert('field='+field+'\r\n'+err[field]);
+              alert('error=' + err);
+              for (var field in err) {
+                alert('field=' + field + '\r\n' + err[field]);
               }
             }, function (progress) {
               $timeout(function () {
@@ -69,7 +74,9 @@ angular.module('starter')
             });
 
         }
-      })
+      }).catch(function(err) {
+        alert('err=\r\n' + err);
+      });
 
     }
 
@@ -130,37 +137,9 @@ angular.module('starter')
       console.error('error=\r\n' + str);
     });
 
-    $scope.download=function(){
-      var url='http://192.168.1.106:3000/svr/request?request=downloadAttachment&filename=carPhoto_5.png'
-      var targetPath=cordova.file.externalRootDirectory + "/carPhoto_5.png";
-      var trustHosts = true;
-      var options = {
-        fileKey:'file',
-        headers: {
-          'Authorization': "Bearer " + $rootScope.access_token
-        },
-        method:'POST'
-      };
-      $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
-        .then(function(result) {
-          alert('success');
-        }, function(err) {
-          // Error
-          var str='';
-          for(var field in err)
-          {
-            str+=field+':'+err[field];
-          }
-          alert('error=====\r\n'+str);
-        }, function (progress) {
-
-        });
-    }
-
 
     //愿意接单
     $scope.takeOrder = function(){
-
       var servicePersonId=null;
       var unit=null;
       var servicePersonName=null;
@@ -228,45 +207,22 @@ angular.module('starter')
           var json=res.data;
           if(json.re==1){
 
-            if($scope.order.servicePersonId!=null&&$scope.order.servicePersonId!=undefined)
-            {
-              alert('用户指定的服务人员接单');
-              return $http({
-                method: "post",
-                url: Proxy.local() + "/svr/request",
-                headers: {
-                  'Authorization': "Bearer " + $rootScope.access_token
-                },
-                data: {
-                  request: 'updateServiceOrderState',
-                  info: {
-                    orderId: $scope.order.orderId,
-                    servicePersonId: $scope.order.servicePersonId,
-                    orderState:2
-                  }
+            alert('dddddd');
+            return $http({
+              method: "post",
+              url: Proxy.local() + "/svr/request",
+              headers: {
+                'Authorization': "Bearer " + $rootScope.access_token
+              },
+              data: {
+                request: 'updateCandidateStateByServicePersonId',
+                info: {
+                  orderId: $scope.order.orderId,
+                  servicePersonId: servicePersonId,
+                  candidateState:2
                 }
-              });
-
-            }
-            else{
-              alert('用户没指定,被筛选出的服务人员接单');
-              return $http({
-                method: "post",
-                url: Proxy.local() + "/svr/request",
-                headers: {
-                  'Authorization': "Bearer " + $rootScope.access_token
-                },
-                data: {
-                  request: 'updateCandidateStateByServicePersonId',
-                  info: {
-                    orderId: $scope.order.orderId,
-                    servicePersonId: servicePersonId,
-                    candidateState:2
-                  }
-                }
-              });
-
-            }
+              }
+            });
 
           }
 
@@ -306,15 +262,37 @@ angular.module('starter')
     }
 
 
+    // var src = "/src/audio.mp3";
+    // var media = $cordovaMedia.newMedia(src);
+    // var iOSPlayOptions = {
+    //   numberOfLoops: 2,
+    //   playAudioWhenScreenIsLocked : false
+    // }
+    // media.play(iOSPlayOptions); // iOS only!
+    // media.play(); // Android
+    //
+    // media.pause();
+    //
+    // media.stop();
+
+
+
     $scope.play=function(){
-      var src = cordova.file.applicationDirectory+'test.caf';
-      alert('src=' + src);
-      var media = $cordovaMedia.newMedia(src);
+
+      /*** xcode path ***
+       * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
+       */
+
+      alert('play');
+      var filepath=$scope.filepath;
+      filepath = filepath.replace('file://','');
+      var media = $cordovaMedia.newMedia(filepath);
       var iOSPlayOptions = {
         numberOfLoops: 2,
         playAudioWhenScreenIsLocked : false
       }
       media.play(iOSPlayOptions); // iOS only!
+
 
     }
 
