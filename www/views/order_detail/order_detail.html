@@ -83,7 +83,7 @@
           <i class="ion-videocamera"
              style="display: inline-block;width: 75%;font-size: 200%;"
              ng-if="order.videoAttachId!=null"
-             ng-click="play()"></i>
+             ng-click="playMovie()"></i>
 
 
 
@@ -111,6 +111,18 @@
       <button class="button button-block button-positive" ng-click="changeOrderState(3)">
         订单完成
       </button>
+    </div>
+
+    <!-- 功能测试 -->
+    <div class="list">
+      <div class="item">
+        <button class="button button-block button-positive" ng-click="createTF()">
+          创建临时文件
+        </button>
+      </div>
+      <div class="item">
+        <div id="videoArea"></div>
+      </div>
     </div>
 
   </ion-content>

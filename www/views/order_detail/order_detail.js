@@ -17,8 +17,10 @@ angular.module('starter')
     }
 
     $scope.order.audioAttachId=4;
-    if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
+    $scope.order.videoAttachId=495;
 
+    //音频下载
+    if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
       $http({
         method: "post",
         url: Proxy.local() + "/svr/request",
@@ -74,8 +76,68 @@ angular.module('starter')
       }).catch(function(err) {
         alert('err=\r\n' + err);
       });
-
     }
+
+    //视频下载
+    if($scope.order.videoAttachId!=null&&$scope.order.videoAttachId!=undefined){
+      $http({
+        method: "post",
+        url: Proxy.local() + "/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data: {
+          request: 'getAttachByAttachId',
+          info: {
+            attachId: $scope.order.videoAttachId
+          }
+        }
+      }).then(function (res) {
+        var json = res.data;
+        if (json.re == 1) {
+          alert('video url=' + json.data.urlAddress);
+
+          var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+          var filesystem = cordova.file.applicationDirectory;
+          $scope.movieTarget = 'cdvfile://localhost/persistent/' + 'test.mp4';
+          $scope.movieFilepath=filesystem+'test.mp4';
+          //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+          alert('target path=\r\n' + $scope.movieTarget);
+
+          var trustHosts = true;
+          var options = {
+            fileKey: 'file',
+            headers: {
+              'Authorization': "Bearer " + $rootScope.access_token
+            }
+          };
+          $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
+            .then(function (res) {
+              var json=res.response;
+              if(Object.prototype.toString.call(json)=='[object String]')
+                json=JSON.parse(json);
+              alert(' video download success');
+            }, function (err) {
+              // Error
+              alert('error=' + err);
+              for (var field in err) {
+                alert('field=' + field + '\r\n' + err[field]);
+              }
+            }, function (progress) {
+              $timeout(function () {
+                $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+              });
+            });
+
+        }
+      }).catch(function(err) {
+        alert('err=\r\n' + err);
+      });
+    }
+
+
+
+
 
     //TODO:计时
     if(order.timeout!==undefined&&order.timeout!==null)
@@ -323,6 +385,28 @@ angular.module('starter')
       media.play(iOSPlayOptions); // iOS only!
     }
 
+
+    $scope.playMovie=function(){
+
+      /*** xcode path ***
+       * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
+       */
+
+      var filepath=$scope.movieFilepath;
+      alert('movie path=' + filepath);
+      filepath = filepath.replace('file://','');
+      window.plugins.streamingMedia.playVideo(filepath);
+
+
+      //var media = $cordovaMedia.newMedia(filepath);
+      //var iOSPlayOptions = {
+      //  numberOfLoops: 2,
+      //  playAudioWhenScreenIsLocked : false
+      //}
+      //media.play(iOSPlayOptions); // iOS only!
+    }
+
+
     $scope.readFile=function(fileEntry) {
 
       fileEntry.file(function (file) {
@@ -362,6 +446,31 @@ angular.module('starter')
         fileWriter.write(dataObj);
       });
     }
+
+
+    $scope.writeFile=function(fileEntry, dataObj) {
+      // Create a FileWriter object for our FileEntry (log.txt).
+      fileEntry.createWriter(function (fileWriter) {
+
+        fileWriter.onwriteend = function() {
+          console.log("Successful file write...");
+          readFile(fileEntry);
+        };
+
+        fileWriter.onerror = function (e) {
+          console.log("Failed file write: " + e.toString());
+        };
+
+        // If data object is not passed in,
+        // create a new Blob instead.
+        if (!dataObj) {
+          dataObj = new Blob(['some file data'], { type: 'text/plain' });
+        }
+
+        fileWriter.write(dataObj);
+      });
+    }
+
 
     $scope.createFile=function(dirEntry, fileName, isAppend) {
       // Creates a new file or returns the file if it already exists.

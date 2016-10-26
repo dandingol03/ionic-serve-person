@@ -28,7 +28,8 @@
     {
       "locator": "../../plugins/com.danding.Audio",
       "id": "com.danding.Audio"
-    }
+    },
+    "cordova-plugin-streaming-media"
   ],
   "cordovaPlatforms": [
     "ios",
