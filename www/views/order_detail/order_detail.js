@@ -39,11 +39,18 @@ angular.module('starter')
           alert('urlAddress' + json.data.urlAddress);
 
           var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
-          var filesystem = cordova.file.documentsDirectory;
-          var prefixIndex = filesystem.indexOf('/Application');
-          $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
+          var fileSystem=null;
+          if(ionic.Platform.isIOS()) {
+            fileSystem = cordova.file.documentsDirectory;
+            $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
+          }else if(ionic.Platform.isAndroid()) {
+            fileSystem=cordova.file.externalApplicationStorageDirectory;
+            $scope.target=fileSystem+'test.mp3';
+          }
 
-          $scope.filepath=filesystem+'test.mp3';
+
+
+          $scope.filepath=fileSystem+'test.mp3';
           //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
           alert('target path=\r\n' + $scope.target);
 
@@ -98,9 +105,16 @@ angular.module('starter')
           alert('video url=' + json.data.urlAddress);
 
           var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
-          var filesystem = cordova.file.applicationDirectory;
-          $scope.movieTarget = 'cdvfile://localhost/persistent/' + 'test.mp4';
-          $scope.movieFilepath=filesystem+'test.mp4';
+          var fileSystem=null;
+          if( ionic.Platform.isIOS()){
+            fileSystem=cordova.file.documentsDirectory;
+          }else if(ionic.Platform.isAndroid()) {
+            fileSystem=cordova.file.externalApplicationStorageDirectory;
+          }
+
+          //$scope.movieTarget = 'cdvfile://localhost/persistent/' + 'test.mp4';
+          $scope.movieTarget = fileSystem + 'test.mp4';
+          $scope.movieFilepath=fileSystem+'test.mp4';
           //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
           alert('target path=\r\n' + $scope.movieTarget);
 
@@ -111,6 +125,7 @@ angular.module('starter')
               'Authorization': "Bearer " + $rootScope.access_token
             }
           };
+
           $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
             .then(function (res) {
               var json=res.response;
@@ -345,11 +360,17 @@ angular.module('starter')
       var filepath=$scope.filepath;
       filepath = filepath.replace('file://','');
       var media = $cordovaMedia.newMedia(filepath);
-      var iOSPlayOptions = {
-        numberOfLoops: 2,
-        playAudioWhenScreenIsLocked : false
-      }
-      media.play(iOSPlayOptions); // iOS only!
+
+      if(ionic.Platform.isIOS()) {
+        var iOSPlayOptions = {
+          numberOfLoops: 2,
+          playAudioWhenScreenIsLocked : false
+        }
+        media.play(iOSPlayOptions); // iOS only!
+      }else if(ionic.Platform.isAndroid()) {
+        media.play();
+      }else{}
+
     }
 
     $scope.playMovie=function(){
@@ -358,18 +379,28 @@ angular.module('starter')
        * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
        */
 
+      var open = cordova.plugins.disusered.open;
+
+      function success() {
+        console.log('Success');
+      }
+
+      function error(code) {
+        if (code === 1) {
+          console.log('No file handler found');
+        } else {
+          console.log('Undefined error');
+        }
+      }
+
+
       var filepath=$scope.movieFilepath;
+      open(filepath, success, error);
       alert('movie path=' + filepath);
+
       filepath = filepath.replace('file://','');
-      window.plugins.streamingMedia.playVideo(filepath);
 
 
-      //var media = $cordovaMedia.newMedia(filepath);
-      //var iOSPlayOptions = {
-      //  numberOfLoops: 2,
-      //  playAudioWhenScreenIsLocked : false
-      //}
-      //media.play(iOSPlayOptions); // iOS only!
     }
 
 
