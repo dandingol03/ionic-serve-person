@@ -16,8 +16,8 @@ angular.module('starter')
       $scope.order=order.content;
     }
 
-    $scope.order.audioAttachId=4;
-    $scope.order.videoAttachId=495;
+    // $scope.order.audioAttachId=4;
+    // $scope.order.videoAttachId=495;
 
     //音频下载
     if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
