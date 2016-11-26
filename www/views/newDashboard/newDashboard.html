@@ -1,0 +1,87 @@
+<ion-nav-view class="slide-left-right" hide-nav-bar="true">
+
+  <ion-view view-title="" hide-nav-bar="true">
+
+
+    <ion-content scroll="false">
+
+
+      <div class="row"
+           style="margin:5%;margin-right:3%;width:90%;height: 5%;
+                  border-radius:7px;border: 1px solid;border-color: #c7eeec;
+                  padding: 0;">
+        <div ng-style="tabIndex==0?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(0)">
+          <div style="width: 100%;height: 100%;display: table;">
+            <span style="display: table-cell;vertical-align: middle;text-align: center;">新订单</span>
+          </div>
+        </div>
+        <div ng-style="tabIndex==1?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(1)">
+          <div style="width: 100%;height: 100%;display: table;">
+            <span style="display: table-cell;vertical-align: middle;text-align: center;">待确认订单</span>
+          </div>
+        </div>
+        <div  ng-style="tabIndex==2?selectedTabStyle1:unSelectedTabStyle1" ng-click="tab_change(2)">
+          <div style="width: 100%;height: 100%;display: table;">
+            <span style="display: table-cell;vertical-align: middle;text-align: center;">服务中订单</span>
+          </div>
+        </div>
+      </div>
+
+
+      <ion-scroll style="height: 80%;">
+
+
+        <!--<div style="display: inline-block;width:15%;">-->
+          <!--<ul class="list">-->
+            <!--<li class="item" ng-repeat="order in orders" style="padding:2%">-->
+
+              <!--{{order.time}}-->
+
+            <!--</li>-->
+          <!--</ul>-->
+        <!--</div>-->
+        <!---->
+        <!--<div style="display: inline-block;width:85%;">-->
+          <!---->
+          <!---->
+          <!---->
+        <!--</div>-->
+
+        <ul class="list">
+          <li class="item" ng-repeat="order in orders" style="padding:2%">
+
+            <div display="inline-block" style="width:35%;float:left;margin-right:5%;">
+              <div class="row" >
+                    <span style="text-align:center;padding-left:15%;font-size:medium">
+                      {{order.orderNum}}
+                    </span>
+              </div>
+              <div class="row" style="font-size:small">
+                <span>{{order.serviceType}}</span>
+              </div>
+            </div>
+
+            <div display="inline-block" style="width:45%;float:left;">
+              <div class="row">
+                <span style="font-size:1.0em;color:#a97516;">{{order.serviceName}}</span>
+              </div>
+            </div>
+
+            <div display="inline-block" style="width:15%;float:left;">
+              <div class="row">
+               <i class=""></i>
+              </div>
+            </div>
+
+
+          </li>
+        </ul>
+
+      </ion-scroll>
+
+
+
+
+    </ion-content>
+  </ion-view>
+</ion-nav-view>

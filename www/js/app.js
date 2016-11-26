@@ -145,6 +145,13 @@ angular.module('starter', ['ionic','ngCordova'])
         }
       })
 
+      .state('newDashboard',{
+        cache:false,
+        url:'/newDashboard',
+        controller:'newDashboardController',
+        templateUrl:'views/newDashboard/newDashboard.html'
+      })
+
       .state('tabs.myInfo',{
         url:'/myInfo',
         views:{
