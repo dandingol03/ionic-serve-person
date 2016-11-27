@@ -3,85 +3,148 @@
   <ion-view view-title="" hide-nav-bar="true">
 
 
-    <ion-content scroll="false">
-
-
-      <div class="row"
-           style="margin:5%;margin-right:3%;width:90%;height: 5%;
-                  border-radius:7px;border: 1px solid;border-color: #c7eeec;
-                  padding: 0;">
-        <div ng-style="tabIndex==0?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(0)">
-          <div style="width: 100%;height: 100%;display: table;">
-            <span style="display: table-cell;vertical-align: middle;text-align: center;">新订单</span>
+    <ion-side-menus>
+      <ion-side-menu side="left">
+        <ion-content style="background: rgb(81, 103, 102);">
+          <div class="list padding">
+            <div class="item">
+              side
+            </div>
           </div>
-        </div>
-        <div ng-style="tabIndex==1?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(1)">
-          <div style="width: 100%;height: 100%;display: table;">
-            <span style="display: table-cell;vertical-align: middle;text-align: center;">待确认订单</span>
+        </ion-content>
+      </ion-side-menu>
+      <ion-side-menu-content>
+        <ion-content scroll="false">
+          <div class="bar bar-header"
+               style="position: static;height:8%;width: 100%;padding-left: 16px;padding-right: 16px;
+                      border-color:#c7eeec;background-color: #0a9dc7;background-image: linear-gradient(0deg, #0a9dc7, #0a9dc7 50%, transparent 50%);">
+            <h1 class="title"
+                style="display: inline-block;width: 90%;margin-left:5%;text-align:center;margin-top:0%;color:#fff;">
+              <span style="display: inline-block;width: 10%;text-align: center;font-size: 2em;"
+                    ng-click="toggleLeft()">
+                <i class="ion-navicon"></i>
+              </span>
+              <span style="display: inline-block;width: 70%;text-align: center;">
+                服务订单
+              </span>
+              <span style="display: inline-block;font-size: 2em;text-align: center;width: 20%;">
+              </span>
+              <span style="display: inline-block;width: 5%;">
+              </span>
+            </h1>
           </div>
-        </div>
-        <div  ng-style="tabIndex==2?selectedTabStyle1:unSelectedTabStyle1" ng-click="tab_change(2)">
-          <div style="width: 100%;height: 100%;display: table;">
-            <span style="display: table-cell;vertical-align: middle;text-align: center;">服务中订单</span>
-          </div>
-        </div>
-      </div>
 
 
-      <ion-scroll style="height: 80%;">
+          <div style="margin:5%;margin-left:7%;margin-right:3%;width:90%;height: 40px;padding: 0;">
 
+            <div style="width: 2%;display: inline-block;height: 100%"></div>
 
-        <!--<div style="display: inline-block;width:15%;">-->
-          <!--<ul class="list">-->
-            <!--<li class="item" ng-repeat="order in orders" style="padding:2%">-->
-
-              <!--{{order.time}}-->
-
-            <!--</li>-->
-          <!--</ul>-->
-        <!--</div>-->
-        <!---->
-        <!--<div style="display: inline-block;width:85%;">-->
-          <!---->
-          <!---->
-          <!---->
-        <!--</div>-->
-
-        <ul class="list">
-          <li class="item" ng-repeat="order in orders" style="padding:2%">
-
-            <div display="inline-block" style="width:35%;float:left;margin-right:5%;">
-              <div class="row" >
-                    <span style="text-align:center;padding-left:15%;font-size:medium">
-                      {{order.orderNum}}
-                    </span>
-              </div>
-              <div class="row" style="font-size:small">
-                <span>{{order.serviceType}}</span>
+            <div ng-style="tabIndex==0?selectedTabStyle:unSelectedTabStyle"
+                 style="border-top-left-radius: 7px;border-bottom-left-radius: 7px;"
+                 ng-click="tab_change(0)">
+              <div style="width: 100%;height: 100%;display: table;">
+                <span style="display: table-cell;vertical-align: middle;text-align: center;">全部</span>
               </div>
             </div>
-
-            <div display="inline-block" style="width:45%;float:left;">
-              <div class="row">
-                <span style="font-size:1.0em;color:#a97516;">{{order.serviceName}}</span>
+            <div ng-style="tabIndex==1?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(1)">
+              <div style="width: 100%;height: 100%;display: table;">
+                <span style="display: table-cell;vertical-align: middle;text-align: center;">维修</span>
               </div>
             </div>
-
-            <div display="inline-block" style="width:15%;float:left;">
-              <div class="row">
-               <i class=""></i>
+            <div ng-style="tabIndex==2?selectedTabStyle:unSelectedTabStyle"
+                 style="border-top-right-radius: 7px;border-bottom-right-radius: 7px;"
+                 ng-click="tab_change(2)">
+              <div style="width: 100%;height: 100%;display: table;">
+                <span style="display: table-cell;vertical-align: middle;text-align: center;">车驾管</span>
               </div>
             </div>
+            <div style="width: 1%;display: inline-block;height: 100%;"></div>
+          </div>
+
+          <div style="width: 100%;height: 90%;">
+            <ion-scroll style="height: 95%;">
+
+              <div class="list padding">
+                <div class="item" ng-repeat="order in orders[tabIndex]"
+                     style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
+
+                  <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
+                    <div style="width:100%;height: 100%;display: table;">
+                      <span style="display: table-cell;vertical-align: middle;font-size: 0.8em;">
+                        <div>
+                          {{order.applyTime|date:'yyyy-MM-dd'}}
+                        </div>
+                        <div>
+                          {{order.applyTime|date:'HH:mm'}}
+                        </div>
+                      </span>
+                    </div>
+                  </div>
+
+                  <div style="position: absolute;width: 1px;height: 100%;left:30%;top:0;background: #aaa;">
+                    <div style="width: 100%;height: 100%;position: relative;">
+                      <div style="    position: absolute;top: 40%;margin-left: -6px;z-index: 9999;background: #fff;">
+                        <span style="font-size:0.8em;"><i class="fa fa-circle-o"></i></span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
+
+                  <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
+                    <div style="width: 100%;height: 100%;display: table;">
+                      <div style="display: table-cell;vertical-align: middle;">
+                        <div style="font-size: 0.8em;color:#222;">
+                          {{order.orderNum}}
+                        </div>
+                        <div style="font-size: 0.8em;">
+                          {{order.serviceName}}
+                        </div>
+                      </div>
+                    </div>
+                  </span>
 
 
-          </li>
-        </ul>
+                  <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;"
+                        ng-click="showOrderDetail(order)">
+                    <div style="width: 100%;height: 100%;display: table;">
+                      <span style="display:table-cell;vertical-align: middle;">
+                        <span style="font-size: 0.8em;">详细</span>
+                        <span style="font-size: 1.8em;"><i class="ion-ios-information-outline"></i></span>
+                      </span>
+                    </div>
+                  </span>
 
-      </ion-scroll>
+
+                </div>
+
+              </div>
+              <div style="width: 100%;height: 80px;"></div>
 
 
+            </ion-scroll>
+          </div>
+
+          <ion-tabs class="tabs-danding tabs-icon-top">
+
+            <ion-tab title="主页" icon-on="ion-ios-filing" icon-off="ion-ios-filing-outline">
+              <!-- Tab 1 content -->
+            </ion-tab>
+
+            <ion-tab title="服务中订单" icon-on="ion-ios-clock" icon-off="ion-ios-clock-outline">
+              <!-- Tab 2 content -->
+            </ion-tab>
+
+            <ion-tab title="个人" icon-on="ion-ios-gear" icon-off="ion-ios-gear-outline">
+              <!-- Tab 3 content -->
+            </ion-tab>
+
+          </ion-tabs>
+
+        </ion-content>
+      </ion-side-menu-content>
+    </ion-side-menus>
 
 
-    </ion-content>
   </ion-view>
 </ion-nav-view>

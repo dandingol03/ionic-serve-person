@@ -167,10 +167,16 @@ img.profile-pic.right {
   margin-bottom: 10px;
 }
 
-
-
 .chat-bubble-left:before{
   background-color: #e6e5eb;
   left: 10px;
   -webkit-transform: rotate(70deg) skew(5deg);
 }
+
+.tabs-danding > .tabs, .tabs.tabs-danding {
+  border-color: #0a9dc7;
+  background-color: rgb(55, 144, 139);
+  background-image: linear-gradient(0deg, rgb(55, 144, 139), rgb(55, 144, 139) 50%, transparent 50%);
+  color: #fff;
+}
+

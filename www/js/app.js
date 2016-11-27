@@ -144,6 +144,18 @@ angular.module('starter', ['ionic','ngCordova'])
           }
         }
       })
+      //
+      // .state('tabs.newDashboard',{
+      //   cache:false,
+      //   url:'/newDashboard/:action',
+      //   views:{
+      //     'newDashboard-tab':{
+      //       controller:'newDashboardController',
+      //       templateUrl:'views/newDashboard/newDashboard.html'
+      //     }
+      //   }
+      // })
+
 
       .state('newDashboard',{
         cache:false,
@@ -181,6 +193,9 @@ angular.module('starter', ['ionic','ngCordova'])
           }
         }
       })
+
+
+
 
       .state('register',{
         url:'/register',
@@ -230,7 +245,7 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.138:3000";
+          return "http://192.168.1.150:3000";
         else
           return "/proxy/node_server";
       }

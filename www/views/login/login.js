@@ -69,7 +69,8 @@ angular.module('starter')
           });
         }
       }).then(function(json) {
-        $state.go('tabs.dashboard');
+        //$state.go('tabs.dashboard');
+        $state.go('newDashboard');
       }).catch(function(err) {
         var str='';
         for(var field in err)
