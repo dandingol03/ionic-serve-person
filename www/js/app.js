@@ -52,7 +52,7 @@ angular.module('starter', ['ionic','ngCordova'])
               //TODO:进入相应订单详情页
               //message里就是存的order
               $rootScope.candidates[message.order.orderId] = {timeout: 0};
-              $state.go('tabs.dashboard',{action:JSON.stringify({type:'redirect',order:message.order,from:message.from,timeout:0})});
+              $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
             } else {}
           });
         }catch(e){
@@ -158,7 +158,6 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
       .state('newDashboard',{
-        cache:false,
         url:'/newDashboard',
         controller:'newDashboardController',
         templateUrl:'views/newDashboard/newDashboard.html'
@@ -204,6 +203,7 @@ angular.module('starter', ['ionic','ngCordova'])
       })
 
       .state('orderDetail',{
+        cache:'false',
         url:'/orderDetail/:order',
         controller:'orderDetailController',
         templateUrl:'views/order_detail/order_detail.html'

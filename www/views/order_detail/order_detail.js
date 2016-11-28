@@ -5,19 +5,66 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval,$cordovaMedia){
+                                                $interval,$cordovaMedia,$ionicLoading){
 
+
+    $scope.subServiceTypeMap={1:'机油,机滤',2:'检查制动系统,更换刹车片',3:'雨刷片更换',
+      4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
+
+
+    $scope.getServicePlace=function (servicePlaceId) {
+      $ionicLoading.show({
+        template:'<p class="item-icon-left">拉取车险订单数据...<ion-spinner icon="ios" class="spinner-calm spinner-bigger"/></p>'
+      });
+      $http({
+        method: "post",
+        url: Proxy.local() + "/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data: {
+          request: 'getServicePlaceNameByPlaceId',
+          info: {
+            placeId:servicePlaceId,
+            type:'unit'
+          }
+        }
+      }).then(function(res) {
+        var json=res.data;
+          $scope.order.servicePlace=json.data;
+          alert('servicePlace=$scope.order.servicePlace');
+        $ionicLoading.hide();
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+        $ionicLoading.hide();
+      });
+    }
 
     var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
       if(Object.prototype.toString.call(order)=='[object String]')
         order = JSON.parse(order);
+      if(order.content.subServiceTypes!=null){
+        var subServiceTypes=order.content.subServiceTypes;
+        var types=subServiceTypes.split(',');
+        var serviceContent=[];
+        types.map(function(type,i) {
+          serviceContent.push($scope.subServiceTypeMap[type]);
+        });
+
+        order.content.subServiceContent=serviceContent;
+      }
       $scope.order=order.content;
+      //TODO:get servicePlace
+      if($scope.order.servicePlaceId!==undefined&&$scope.order.servicePlaceId!==null)
+        $scope.getServicePlace($scope.order.servicePlaceId);
+
     }
 
-    // $scope.order.audioAttachId=4;
-    // $scope.order.videoAttachId=495;
 
     //音频下载
     if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
