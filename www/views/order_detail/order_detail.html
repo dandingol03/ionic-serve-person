@@ -113,10 +113,18 @@
       <div style="width: 100%;" ng-if="order.orderState==1">
         <button class="button button-block button-positive"
                 ng-click="takeOrder()"
-                style="width: 60%;margin-left:20%;">
+                style="width: 60%;margin-left:20%;"
+                ng-if="order.candidateState==1">
           <span>{{timeout}}</span>
           愿意接单
         </button>
+
+        <button class="button button-block button-positive"
+                style="width: 60%;margin-left:20%;"
+                ng-if="order.candidateState==2">
+          已经发出接单请求
+        </button>
+
       </div>
 
 

@@ -331,7 +331,7 @@ angular.module('starter')
           var json=res.data;
           if(json.re==1){
 
-            alert('dddddd');
+
             return $http({
               method: "post",
               url: Proxy.local() + "/svr/request",
@@ -353,6 +353,7 @@ angular.module('starter')
         }).then(function(res) {
 
           if(res.re==1) {
+            $scope.order.candidateState=2;
             console.log('service order has been generated');
             $scope.go_back();
           }

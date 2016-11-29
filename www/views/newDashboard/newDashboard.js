@@ -5,18 +5,9 @@ angular.module('starter')
 
   .controller('newDashboardController',function($scope,$state,$http,$rootScope,
                                              Proxy,$stateParams,$ionicPopover,
-                                                $ionicLoading,$ionicSideMenuDelegate){
+                                                $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate){
 
 
-    $scope.orders = [
-      {orderNum:'S201611260001',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:1},
-      {orderNum:'S201611260002',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:1},
-      {orderNum:'S201611260003',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:1},
-      {orderNum:'S201611260004',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:2},
-      {orderNum:'S201611260005',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:2},
-      {orderNum:'S201611260006',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:2},
-      {orderNum:'S201611260007',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:3},
-      {orderNum:'S201611260008',serviceType:'维修-日常保养',time:'2016-11-26 9:00-11:00',orderState:3}];
 
 
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
@@ -125,6 +116,15 @@ angular.module('starter')
     $scope.toggleLeft = function() {
       $ionicSideMenuDelegate.toggleLeft();
     };
+
+    $scope.changeIndex=function (i) {
+      if(i==2)
+      {
+        //TODO:open self configure panel
+        $ionicSideMenuDelegate.toggleLeft();
+      }
+      $ionicTabsDelegate.select(i);
+    }
 
 
   })
