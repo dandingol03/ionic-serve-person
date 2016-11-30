@@ -43,18 +43,35 @@ angular.module('starter', ['ionic','ngCordova'])
           }else{}
 
           //TODO:message classify
-          var confirmPopup = $ionicPopup.confirm({
-            title: '新订单:'+message.order.orderNum,
-            template: '客户已下单,请查看'
-          });
-          confirmPopup.then(function(res) {
-            if(res) {
-              //TODO:进入相应订单详情页
-              //message里就是存的order
-              $rootScope.candidates[message.order.orderId] = {timeout: 0};
-              $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
-            } else {}
-          });
+          switch(message.type)
+          {
+            case 'orderHasBeenTaken':
+              var confirmPopup = $ionicPopup.confirm({
+                title: '信息',
+                template: '订单号为'+message.order.orderNum+'的订单已成功接单'
+              });
+              confirmPopup.then(function(res) {
+                if(res) {
+                  //TODO:进入相应订单详情页
+                  $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
+                } else {}
+              });
+              break;
+            default:
+              var confirmPopup = $ionicPopup.confirm({
+                title: '新订单:'+message.order.orderNum,
+                template: '客户已下单,请查看'
+              });
+              confirmPopup.then(function(res) {
+                if(res) {
+                  //TODO:进入相应订单详情页
+                  //message里就是存的order
+                  $rootScope.candidates[message.order.orderId] = {timeout: 0};
+                  $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
+                } else {}
+              });
+              break;
+          }
         }catch(e){
           alert('exception=\r\n' + e.toString());
         }
@@ -144,6 +161,8 @@ angular.module('starter', ['ionic','ngCordova'])
           }
         }
       })
+
+
       //
       // .state('tabs.newDashboard',{
       //   cache:false,
