@@ -12,6 +12,7 @@ angular.module('starter')
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
 
 
+
     $scope.getServicePlace=function (servicePlaceId) {
       $ionicLoading.show({
         template:'<p class="item-icon-left">拉取车险订单数据...<ion-spinner icon="ios" class="spinner-calm spinner-bigger"/></p>'
@@ -58,7 +59,9 @@ angular.module('starter')
 
         order.content.subServiceContent=serviceContent;
       }
-      $scope.order=order.content;
+
+        $scope.order=order.content;
+
       //TODO:get servicePlace
       if($scope.order.servicePlaceId!==undefined&&$scope.order.servicePlaceId!==null)
         $scope.getServicePlace($scope.order.servicePlaceId);
@@ -84,48 +87,51 @@ angular.module('starter')
         var json = res.data;
         if (json.re == 1) {
           alert('urlAddress' + json.data.urlAddress);
-
-          var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
-          var fileSystem=null;
-          if(ionic.Platform.isIOS()) {
-            fileSystem = cordova.file.documentsDirectory;
-            $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
-          }else if(ionic.Platform.isAndroid()) {
-            fileSystem=cordova.file.externalApplicationStorageDirectory;
-            $scope.target=fileSystem+'test.mp3';
-          }
-
-
-
-          $scope.filepath=fileSystem+'test.mp3';
-          //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
-          alert('target path=\r\n' + $scope.target);
-
-          var trustHosts = true;
-          var options = {
-            fileKey: 'file',
-            headers: {
-              'Authorization': "Bearer " + $rootScope.access_token
+          if(window.cordova!==undefined&&window.cordova!==null)
+          {
+            var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+            var fileSystem=null;
+            if(ionic.Platform.isIOS()) {
+              fileSystem = cordova.file.documentsDirectory;
+              $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
+            }else if(ionic.Platform.isAndroid()) {
+              fileSystem=cordova.file.externalApplicationStorageDirectory;
+              $scope.target=fileSystem+'test.mp3';
             }
-          };
-          $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
-            .then(function (res) {
-              var json=res.response;
-              if(Object.prototype.toString.call(json)=='[object String]')
-                json=JSON.parse(json);
-              alert('success');
-            }, function (err) {
-              // Error
-              alert('error=' + err);
-              for (var field in err) {
-                alert('field=' + field + '\r\n' + err[field]);
-              }
-            }, function (progress) {
-              $timeout(function () {
-                $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-              });
-            });
 
+
+
+            $scope.filepath=fileSystem+'test.mp3';
+            //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+            alert('target path=\r\n' + $scope.target);
+
+            var trustHosts = true;
+            var options = {
+              fileKey: 'file',
+              headers: {
+                'Authorization': "Bearer " + $rootScope.access_token
+              }
+            };
+
+            $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
+              .then(function (res) {
+                var json=res.response;
+                if(Object.prototype.toString.call(json)=='[object String]')
+                  json=JSON.parse(json);
+                alert('success');
+              }, function (err) {
+                // Error
+                alert('error=' + err);
+                for (var field in err) {
+                  alert('field=' + field + '\r\n' + err[field]);
+                }
+              }, function (progress) {
+                $timeout(function () {
+                  $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                });
+              });
+
+          }
         }
       }).catch(function(err) {
         alert('err=\r\n' + err);
@@ -173,24 +179,27 @@ angular.module('starter')
             }
           };
 
-          $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
-            .then(function (res) {
-              var json=res.response;
-              if(Object.prototype.toString.call(json)=='[object String]')
-                json=JSON.parse(json);
-              alert(' video download success');
-            }, function (err) {
-              // Error
-              alert('error=' + err);
-              for (var field in err) {
-                alert('field=' + field + '\r\n' + err[field]);
-              }
-            }, function (progress) {
-              $timeout(function () {
-                $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+          if(window.cordova!==undefined&&window.cordova!==null)
+          {
+            $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
+              .then(function (res) {
+                var json=res.response;
+                if(Object.prototype.toString.call(json)=='[object String]')
+                  json=JSON.parse(json);
+                alert(' video download success');
+              }, function (err) {
+                // Error
+                alert('error=' + err);
+                for (var field in err) {
+                  alert('field=' + field + '\r\n' + err[field]);
+                }
+              }, function (progress) {
+                $timeout(function () {
+                  $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                });
               });
-            });
 
+          }
         }
       }).catch(function(err) {
         alert('err=\r\n' + err);

@@ -32,20 +32,21 @@
 
     <!-- inset two -->
     <div class="list list-inset"
-         style="margin-bottom:40px;margin-left:0px;margin-right:0px;"
-         ng-if="order.subServiceContent!==undefined&&order.subServiceContent!==null">
-      <div class="item item-divider">
-        服务详情
-      </div>
-      <div class="item" style="padding: 16px;">
+         style="margin-bottom:40px;margin-left:0px;margin-right:0px;">
+      <div ng-if="order.subServiceContent!==undefined&&order.subServiceContent!==null">
+        <div class="item item-divider">
+          服务详情
+        </div>
+        <div class="item" style="padding: 16px;">
         <span style="display: inline-block;width: 30%;">
           服务内容:
         </span>
-        <span style="display: inline-block;width: 70%;text-align: left;">
+          <span style="display: inline-block;width: 70%;text-align: left;">
           <span ng-repeat="subService in order.subServiceContent">
             {{subService}}
           </span>
         </span>
+        </div>
       </div>
 
       <div class="item" style="padding: 16px;">
@@ -85,7 +86,6 @@
         <span style="display: inline-block;width: 40%;text-align: left;">
            <i class="ion-ios-play"
               style="display: inline-block;width: 25%;font-size: 200%;"
-              ng-if="order.audioAttachId!=null"
               ng-click="play()"
            ></i>
         </span>
@@ -93,7 +93,7 @@
 
 
 
-      <div class="item" style="padding: 16px;" ng-if="order.videoAttachId!==null&&order.videoAttachId!==undefined">
+      <div class="item" style="padding: 16px;" ng-if="order.content.videoAttachId!==null&&order.content.videoAttachId!==undefined">
         <span style="display: inline-block;width: 30%;">
           客户视频:
         </span>
