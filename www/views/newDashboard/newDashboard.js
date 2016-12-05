@@ -154,7 +154,7 @@ angular.module('starter')
               var promises=[];
               var  fileSystem=cordova.file.externalApplicationStorageDirectory;
 
-              var splicedOrders = $scope.orders[0].splice(0, 2);
+              var splicedOrders = $scope.orders[0].splice(0, 10);
 
               var statistics={
                 target:splicedOrders.length,
