@@ -5,7 +5,8 @@ angular.module('starter')
 
   .controller('newDashboardController',function($scope,$state,$http,$rootScope,
                                              Proxy,$stateParams,$ionicPopover,
-                                                $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate){
+                                                $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate,
+                                                $cordovaFile,$q,$cordovaFileTransfer){
 
 
 
@@ -124,6 +125,95 @@ angular.module('starter')
         $ionicSideMenuDelegate.toggleLeft();
       }
       $ionicTabsDelegate.select(i);
+    }
+
+
+    //语音播报
+    $scope.orderBroadcast=function () {
+      if($scope.orders[0]!==undefined&&$scope.orders[0]!==null&&$scope.orders[0].length>0)
+      {
+
+        //TODO:新建orders文件夹存放生成的mp3文件
+        if (ionic.Platform.isIOS()) {
+          //IOS平台
+        }else if(ionic.Platform.isAndroid())
+        {
+          var fileSystem=null;
+          fileSystem=cordova.file.externalApplicationStorageDirectory;
+
+
+
+
+          $cordovaFile.createDir(fileSystem, "speech", true)
+            .then(function (success) {
+
+              return {re: 1};
+
+            }).then(function (json) {
+            if(json.re==1) {
+              var promises=[];
+              var  fileSystem=cordova.file.externalApplicationStorageDirectory;
+
+              var splicedOrders = $scope.orders[0].splice(0, 2);
+
+              var statistics={
+                target:splicedOrders.length,
+                promises:[]
+              }
+              for(var i=0;i<splicedOrders.length;i++)
+              {
+                var order=splicedOrders[i];
+                var callback=function (ob,item) {
+
+                  var deferred=$q.defer();
+
+                  var url = Proxy.local() + '/svr/request?request=generateBatchTTSSpeech' + '&text=' +
+                    '订单号为'+item.orderNum+'的订单可以接单'+'&ttsToken='+$rootScope.ttsToken+'&id='+item.orderNum;
+                  var target=fileSystem+'speech/'+item.orderNum+'.mp3';
+                  var trustHosts = true;
+                  var options = {
+                    fileKey: 'file',
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token
+                    }
+                  };
+
+                  $cordovaFileTransfer.download(url, target, options, trustHosts)
+                    .then(function (res) {
+                      deferred.resolve({re: 1});
+                    }, function (err) {
+                      // Error
+                      alert('error=' + err);
+                      for (var field in err) {
+                        alert('field=' + field + '\r\n' + err[field]);
+                      }
+                      deferred.reject({});
+                    }, function (progress) {
+                    });
+                    ob.promises.push(deferred.promise);
+
+
+                };
+                callback(statistics,order);
+              }
+
+              return $q.all(statistics.promises);
+            }
+          }).then(function(json) {
+
+              alert('all is done');
+          }).catch(function(err) {
+              var str='';
+              for(var field in err)
+                str+=err[field];
+            console.error('err=\r\n'+str);
+            });
+
+
+
+        }else{}
+
+      }
     }
 
 

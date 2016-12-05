@@ -67,11 +67,11 @@ angular.module('starter', ['ionic','ngCordova'])
                 //IOS平台
               }else if(ionic.Platform.isAndroid())
               {
-                alert('go into speech generate');
 
-                var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' + '您有一个饿了么订单'+'&ttsToken='+$rootScope.ttsToken;
+                var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                  '您有一个订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
                 fileSystem=cordova.file.externalApplicationStorageDirectory;
-                var target=fileSystem+'speech.mp3';
+                var target=fileSystem+'temp.mp3';
                 var trustHosts = true;
                 var options = {
                   fileKey: 'file',
@@ -83,8 +83,7 @@ angular.module('starter', ['ionic','ngCordova'])
                   .then(function (res) {
                     //TODO:播放录音
 
-                    alert('语音播报');
-                    var filepath=fileSystem+'speech.mp3';
+                    var filepath=fileSystem+'temp.mp3';
                     filepath = filepath.replace('file://','');
                     var media = $cordovaMedia.newMedia(filepath);
 
@@ -314,7 +313,7 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.121:3000";
+          return "http://139.129.96.231:3000";
         else
           return "/proxy/node_server";
       }
