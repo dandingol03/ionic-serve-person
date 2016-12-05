@@ -17,6 +17,7 @@ angular.module('starter')
       $ionicLoading.show({
         template:'<p class="item-icon-left">拉取车险订单数据...<ion-spinner icon="ios" class="spinner-calm spinner-bigger"/></p>'
       });
+
       $http({
         method: "post",
         url: Proxy.local() + "/svr/request",
@@ -44,6 +45,38 @@ angular.module('starter')
       });
     }
 
+    $scope.getServicePlaceByServicePersonId=function () {
+
+      $http({
+        method: "post",
+        url: Proxy.local() + "/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data: {
+          request: 'getServicePlaceByServicePersonId',
+          info: {
+            servicePersonId: $scope.order.servicePersonId,
+            type: 'unit'
+          }
+        }
+      }).then(function (res) {
+        var json = res.data;
+        if (json.re == 1) {
+          $scope.order.servicePlace=json.data;
+        }
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+      });
+    }
+
+
+
+
+
     var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
@@ -62,9 +95,9 @@ angular.module('starter')
 
         $scope.order=order.content;
 
-      //TODO:get servicePlace
-      if($scope.order.servicePlaceId!==undefined&&$scope.order.servicePlaceId!==null)
-        $scope.getServicePlace($scope.order.servicePlaceId);
+      //TODO:拉取维修厂所或者服务地点
+      if($scope.order.servicePersonId!==undefined&&$scope.order.servicePersonId!==null)
+        $scope.getServicePlaceByServicePersonId($scope.order.servicePersonId);
 
     }
 
