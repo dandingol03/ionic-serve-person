@@ -142,7 +142,7 @@ angular.module('starter')
           fileSystem=cordova.file.externalApplicationStorageDirectory;
 
 
-
+          var splicedOrders = $scope.orders[0].splice(0, 10);
 
           $cordovaFile.createDir(fileSystem, "speech", true)
             .then(function (success) {
@@ -153,8 +153,6 @@ angular.module('starter')
             if(json.re==1) {
               var promises=[];
               var  fileSystem=cordova.file.externalApplicationStorageDirectory;
-
-              var splicedOrders = $scope.orders[0].splice(0, 10);
 
               var statistics={
                 target:splicedOrders.length,
@@ -200,8 +198,25 @@ angular.module('starter')
               return $q.all(statistics.promises);
             }
           }).then(function(json) {
+            console.log('all audio file are done');
 
-              alert('all is done');
+
+            if(ionic.Platform.isIOS()) {
+            }else if(ionic.Platform.isAndroid()) {
+              for(var i=0;i<splicedOrders.length;i++) {
+                var order=splicedOrders[i];
+                var cb=function (item) {
+                  var filepath=fileSystem+'speech/'+item.orderNum+'.mp3';
+                  filepath = filepath.replace('file://','');
+                  var media = $cordovaMedia.newMedia(filepath);
+                  media.play();
+                  //TODO:write a callback for media play
+                };
+                cb(order);
+              }
+              media.play();
+            }else{}
+
           }).catch(function(err) {
               var str='';
               for(var field in err)
