@@ -5,7 +5,7 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval,$cordovaMedia,$ionicLoading){
+                                                $interval,$cordovaMedia,$ionicLoading,$timeout){
 
 
     $scope.subServiceTypeMap={1:'机油,机滤',2:'检查制动系统,更换刹车片',3:'雨刷片更换',
