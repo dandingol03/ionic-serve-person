@@ -68,8 +68,28 @@ angular.module('starter')
             }
           });
         }
-      }).then(function(json) {
-        //$state.go('tabs.dashboard');
+      }).then(function(res) {
+        var json=res.data;
+        return $http({
+                method: "post",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token,
+                },
+                data: {
+                  request: 'getTTSToken'
+                }
+              });
+
+      }).then(function(res) {
+        var json=res.data;
+        if(json.re==1) {
+          var ttsToken=json.data;
+          if(ttsToken!==null&&ttsToken!==undefined)
+          {
+            $rootScope.ttsToken=ttsToken;
+          }
+        }
         $state.go('newDashboard');
       }).catch(function(err) {
         var str='';

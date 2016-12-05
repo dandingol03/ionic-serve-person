@@ -64,6 +64,7 @@ angular.module('starter')
         var json = res.data;
         if (json.re == 1) {
           $scope.order.servicePlace=json.data;
+          $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
         }
       }).catch(function (err) {
         var str='';
@@ -517,13 +518,8 @@ angular.module('starter')
         }
       }
 
-
       var filepath=$scope.movieFilepath;
       open(filepath, success, error);
-      alert('movie path=' + filepath);
-
-      filepath = filepath.replace('file://','');
-
 
     }
 

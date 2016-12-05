@@ -72,7 +72,7 @@
           地点:
         </span>
         <span style="display: inline-block;width: 70%;text-align: left;">
-          {{order.servicePlace}}
+          {{order.servicePlace.name}}
         </span>
       </div>
 
@@ -93,7 +93,7 @@
 
 
 
-      <div class="item" style="padding: 16px;" ng-if="order.content.videoAttachId!==null&&order.content.videoAttachId!==undefined">
+      <div class="item" style="padding: 16px;" ng-if="order.videoAttachId!==null&&order.videoAttachId!==undefined">
         <span style="display: inline-block;width: 30%;">
           客户视频:
         </span>
@@ -102,7 +102,6 @@
         <span style="display: inline-block;width: 40%;text-align: left;">
            <i class="ion-videocamera"
               style="display: inline-block;width: 75%;font-size: 200%;"
-              ng-if="order.videoAttachId!=null"
               ng-click="playMovie()"></i>
 
         </span>
