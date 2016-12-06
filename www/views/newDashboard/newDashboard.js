@@ -163,7 +163,7 @@ angular.module('starter')
           fileSystem=cordova.file.externalApplicationStorageDirectory;
 
 
-          var splicedOrders = $scope.orders[0].splice(0, 2);
+          var splicedOrders = $scope.orders[0].splice(0, 8);
 
           $cordovaFile.createDir(fileSystem, "speech", true)
             .then(function (success) {
@@ -228,7 +228,7 @@ angular.module('starter')
             if(ionic.Platform.isIOS()) {
             }else if(ionic.Platform.isAndroid()) {
               var files=[];
-              for(var i=0;i<2;i++) {
+              for(var i=0;i<8;i++) {
                 var order=splicedOrders[i];
                 var cb=function (item) {
                   var filepath=fileSystem+'speech/'+item.orderNum+'.mp3';
