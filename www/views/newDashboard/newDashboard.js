@@ -6,7 +6,8 @@ angular.module('starter')
   .controller('newDashboardController',function($scope,$state,$http,$rootScope,
                                              Proxy,$stateParams,$ionicPopover,
                                                 $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate,
-                                                $cordovaFile,$q,$cordovaFileTransfer){
+                                                $cordovaFile,$q,$cordovaFileTransfer,
+                                                $cordovaMedia,$timeout){
 
 
 
@@ -127,6 +128,26 @@ angular.module('starter')
       $ionicTabsDelegate.select(i);
     }
 
+    $scope.playPool=function (files,interval) {
+      var filePath=files[0];
+      alert('init media');
+      console.log('filePath='+filePath);
+
+      var media = $cordovaMedia.newMedia(filePath);
+      media.play();
+      var newFiles=files;
+      newFiles.splice(0, 1);
+
+      $timeout(function () {
+        alert('next time')
+        media.release();
+        if(newFiles.length>=1)
+          $scope.playPool(newFiles, interval);
+      },interval);
+
+    }
+
+
 
     //语音播报
     $scope.orderBroadcast=function () {
@@ -142,7 +163,7 @@ angular.module('starter')
           fileSystem=cordova.file.externalApplicationStorageDirectory;
 
 
-          var splicedOrders = $scope.orders[0].splice(0, 10);
+          var splicedOrders = $scope.orders[0].splice(0, 2);
 
           $cordovaFile.createDir(fileSystem, "speech", true)
             .then(function (success) {
@@ -178,6 +199,9 @@ angular.module('starter')
 
                   $cordovaFileTransfer.download(url, target, options, trustHosts)
                     .then(function (res) {
+
+
+
                       deferred.resolve({re: 1});
                     }, function (err) {
                       // Error
@@ -203,18 +227,22 @@ angular.module('starter')
 
             if(ionic.Platform.isIOS()) {
             }else if(ionic.Platform.isAndroid()) {
-              for(var i=0;i<splicedOrders.length;i++) {
+              var files=[];
+              for(var i=0;i<2;i++) {
                 var order=splicedOrders[i];
                 var cb=function (item) {
                   var filepath=fileSystem+'speech/'+item.orderNum+'.mp3';
                   filepath = filepath.replace('file://','');
-                  var media = $cordovaMedia.newMedia(filepath);
-                  media.play();
-                  //TODO:write a callback for media play
+                  files.push(filepath);
+                  // var media = $cordovaMedia.newMedia(filepath);
+                  // media.play();
+                  // media.media.getDurationAudio(function(p) {
+                  //   alert('duration='+p);
+                  // });
                 };
                 cb(order);
               }
-              media.play();
+              $scope.playPool(files,6000);
             }else{}
 
           }).catch(function(err) {
