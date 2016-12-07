@@ -115,7 +115,7 @@ angular.module('starter')
         $scope.getServicePlaceByServicePersonId($scope.order.servicePersonId);
 
       //对应服务订单中的审车类别拉取地点
-      if($scope.order.serviceType==21)
+      if($scope.order.serviceType==21||$scope.order.serviceType==22||$scope.order.serviceType==23||$scope.order.serviceType==24)
       {
 
         $http({
@@ -141,8 +141,8 @@ angular.module('starter')
         });
       }
 
-      //对应服务订单中的审证类别拉取地点
-      if($scope.order.serviceType==22)
+      //对应服务订单中的接送机类别拉取地点
+      if($scope.order.serviceType==23)
       {
 
       }
