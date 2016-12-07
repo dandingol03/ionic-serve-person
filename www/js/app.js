@@ -261,9 +261,6 @@ angular.module('starter', ['ionic','ngCordova'])
         }
       })
 
-
-
-
       .state('register',{
         url:'/register',
         controller:'registerController',
@@ -288,6 +285,19 @@ angular.module('starter', ['ionic','ngCordova'])
         controller:'chatterController',
         templateUrl:'views/chatter/chatter.html'
       })
+
+      .state('ordersDone',{
+        url:'/ordersDone',
+        controller:'orderDoneController',
+        templateUrl:'views/ordersDone/ordersDone.html'
+      })
+
+      .state('orderDone_detail',{
+        url:'/orderDone_detail:order',
+        controller:'orderDoneDetailController',
+        templateUrl:'views/orderDone_detail/orderDone_detail.html'
+      })
+
 
 
     $urlRouterProvider.otherwise('/login');
