@@ -118,6 +118,27 @@ angular.module('starter')
       if($scope.order.serviceType==21)
       {
 
+        $http({
+          method: "post",
+          url: Proxy.local() + "/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data: {
+            request: 'getServicePlace',
+            info: {
+              placeId:$scope.order.servicePlaceId
+            }
+          }
+        }).then(function (res) {
+          var json=res.data;
+          $scope.order.servicePlace=json.data;
+        }).catch(function (err) {
+          var str='';
+          for(var field in err)
+            str+=err[field];
+          console.error('err=\r\n'+str);
+        });
       }
 
       //对应服务订单中的审证类别拉取地点
