@@ -40,7 +40,7 @@
               </span>
             </div>
 
-            <div class="item" style="border:0px;padding:14px;background: transparent;">
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('ordersDone')">
               <span style="display: inline-block;width: 20%;text-align: center">
                 <span style="font-size: 1.4em;color:#eee;">
                   <i class="ion-document-text"></i>
@@ -83,7 +83,7 @@
                 </li>
                 <li style="width: 50%;height: 100%;text-align: center;float:left;color:#fff;">
                   <div style="width: 100%;height: 100%;display: table;">
-                    <div style="display: table-cell;vertical-align: middle;">
+                    <div style="display: table-cell;vertical-align: middle;" ng-click="orderBroadcast()">
                       <span style="font-size: 2em;"><i class="ion-mic-a"></i></span>
                       <div>语音播报</div>
                     </div>
@@ -146,7 +146,7 @@
             <ion-scroll style="height: 95%;">
 
               <div class="list padding">
-                <div class="item" ng-repeat="order in orders[tabIndex]"
+                <div class="item" ng-repeat="order in orders[tabIndex] | orderBy:'-applyTime'"
                      style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
 
                   <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">

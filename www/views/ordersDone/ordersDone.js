@@ -3,13 +3,14 @@
  */
 angular.module('starter')
 
-  .controller('newDashboardController',function($scope,$state,$http,$rootScope,
-                                             Proxy,$stateParams,$ionicPopover,
-                                                $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate,
-                                                $cordovaFile,$q,$cordovaFileTransfer,
-                                                $cordovaMedia,$timeout){
+  .controller('orderDoneController',function($scope,$state,$http,$rootScope,
+                                                Proxy,$stateParams,$ionicPopover,
+                                                $ionicLoading, $q, $cordovaMedia){
 
 
+    $scope.go_back=function () {
+      window.history.back();
+    }
 
 
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
@@ -19,14 +20,8 @@ angular.module('starter')
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
 
 
-    $scope.goto=function (state) {
-      $state.go(state);
-    }
 
-    $scope.tabIndex=0;
-    $scope.tab_change = function(i){
-      $scope.tabIndex=i;
-    }
+
     $scope.selectedTabStyle=
     {
       display:'inline-block',color:'#fff',width:'31%',float:'left',height:'100%','border': '1px solid','border-color': 'rgb(55, 144, 139)','background-color':'rgb(55, 144, 139)'
@@ -58,36 +53,20 @@ angular.module('starter')
           'Authorization': "Bearer " + $rootScope.access_token,
         },
         data:
-          {
-            request:'getServiceOrdersWithinNotTaken'
+        {
+          request:'getServiceOrders',
+          info:{
+            orderState:3
           }
+        }
       })
         .then(function (res) {
           var json=res.data;
           if(json.re==1)
           {
-            $scope.orders={0:[],1:[],2:[]};
-            $scope.orders[0]=json.data;
-
-            $scope.orders[0].map(function(order,i) {
-
+            $scope.orders=json.data;
+            $scope.orders.map(function (order, i) {
               order.serviceName=$scope.serviceTypeMap[order.serviceType];
-              if(order.subServiceTypes!=null){
-                var subServiceTypes=order.subServiceTypes;
-                var types=subServiceTypes.split(',');
-                var serviceContent=[];
-                types.map(function(type,i) {
-                  serviceContent.push($scope.subServiceTypeMap[type]);
-                });
-                order.subServiceContent=serviceContent;
-              }
-
-              //estimateTime为订单的预计时间
-
-              if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
-                $scope.orders[1].push(order);
-              if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
-                $scope.orders[2].push(order);
             });
           }
           $ionicLoading.hide();
@@ -108,15 +87,9 @@ angular.module('starter')
 
     $scope.showOrderDetail=function(order){
       //TODO:sync timeout with $rootScope
-      if($rootScope.candidates[order.orderId]!==undefined&&$rootScope.candidates[order.orderId]!==null)
-      {
-        if($rootScope.candidates[order.orderId].timeout!==undefined&&$rootScope.candidates[order.orderId].timeout!==null)
-          $state.go('orderDetail',{order:JSON.stringify({content:order,timeout:$rootScope.candidates[order.orderId].timeout})});
-        else
-          $state.go('orderDetail',{order:JSON.stringify({content:order})});
-      }else{
-        $state.go('orderDetail',{order:JSON.stringify({content:order})});
-      }
+
+        $state.go('orderDone_detail',{order:JSON.stringify({content:order})});
+
     }
 
     $scope.toggleLeft = function() {
@@ -151,11 +124,6 @@ angular.module('starter')
 
     }
 
-    //menu切换回调
-    $scope.$watch($ionicSideMenuDelegate.isOpen(),function (newValue,oldValue,scope) {
-      console.log('new=' + newValue);
-      console.log('old=' + oldValue);
-    });
 
 
 
@@ -222,7 +190,7 @@ angular.module('starter')
                       deferred.reject({});
                     }, function (progress) {
                     });
-                    ob.promises.push(deferred.promise);
+                  ob.promises.push(deferred.promise);
 
 
                 };
@@ -256,11 +224,11 @@ angular.module('starter')
             }else{}
 
           }).catch(function(err) {
-              var str='';
-              for(var field in err)
-                str+=err[field];
+            var str='';
+            for(var field in err)
+              str+=err[field];
             console.error('err=\r\n'+str);
-            });
+          });
 
 
 

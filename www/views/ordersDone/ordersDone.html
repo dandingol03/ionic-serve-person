@@ -1,0 +1,80 @@
+<ion-view view-title="订单明细">
+  <ion-nav-bar class="bar-calm" align-title="center" >
+    <ion-nav-buttons side="left">
+      <button class="button button-icon button-clear bar_arr" style="font-size: 2.4em;"
+              ng-click="go_back()">
+        <i class="ion-chevron-left"></i>
+      </button>
+    </ion-nav-buttons>
+
+  </ion-nav-bar>
+  <ion-content scroll="false">
+
+
+
+    <div style="width: 100%;height: 90%;">
+      <ion-scroll style="height: 95%;">
+
+        <div class="list padding" style="margin-top: 30px;">
+          <div class="item" ng-repeat="order in orders | orderBy:'-applyTime'"
+               style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
+
+            <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
+              <div style="width:100%;height: 100%;display: table;">
+                <span style="display: table-cell;vertical-align: middle;font-size: 0.8em;">
+                  <div>
+                    {{order.applyTime|date:'yyyy-MM-dd'}}
+                  </div>
+                  <div>
+                    {{order.applyTime|date:'HH:mm'}}
+                  </div>
+                </span>
+              </div>
+            </div>
+
+            <div style="position: absolute;width: 1px;height: 100%;left:30%;top:0;background: #aaa;">
+              <div style="width: 100%;height: 100%;position: relative;">
+                <div style="    position: absolute;top: 40%;margin-left: -6px;z-index: 9999;background: #fff;">
+                  <span style="font-size:0.8em;"><i class="fa fa-circle-o"></i></span>
+                </div>
+              </div>
+            </div>
+
+            <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
+
+            <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
+              <div style="width: 100%;height: 100%;display: table;">
+                <div style="display: table-cell;vertical-align: middle;">
+                  <div style="font-size: 0.8em;color:#222;">
+                    {{order.orderNum}}
+                  </div>
+                  <div style="font-size: 0.8em;">
+                    {{order.serviceName}}
+                  </div>
+                </div>
+              </div>
+            </span>
+
+
+            <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;"
+                  ng-click="showOrderDetail(order)">
+              <div style="width: 100%;height: 100%;display: table;">
+                <span style="display:table-cell;vertical-align: middle;">
+                  <span style="font-size: 0.8em;">详细</span>
+                  <span style="font-size: 1.8em;"><i class="ion-ios-information-outline"></i></span>
+                </span>
+              </div>
+            </span>
+
+
+          </div>
+
+        </div>
+        <div style="width: 100%;height: 80px;"></div>
+
+      </ion-scroll>
+    </div>
+
+  </ion-content>
+
+</ion-view>

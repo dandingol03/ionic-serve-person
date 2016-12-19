@@ -5,7 +5,7 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval,$cordovaMedia,$ionicLoading){
+                                                $interval,$cordovaMedia,$ionicLoading,$timeout){
 
 
     $scope.subServiceTypeMap={1:'机油,机滤',2:'检查制动系统,更换刹车片',3:'雨刷片更换',
@@ -64,6 +64,7 @@ angular.module('starter')
         var json = res.data;
         if (json.re == 1) {
           $scope.order.servicePlace=json.data;
+          $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
         }
       }).catch(function (err) {
         var str='';
@@ -514,13 +515,8 @@ angular.module('starter')
         }
       }
 
-
       var filepath=$scope.movieFilepath;
       open(filepath, success, error);
-      alert('movie path=' + filepath);
-
-      filepath = filepath.replace('file://','');
-
 
     }
 

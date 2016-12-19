@@ -9,7 +9,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
 
-  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$http) {
+  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,$cordovaMedia) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
 
@@ -29,8 +29,9 @@ angular.module('starter', ['ionic','ngCordova'])
 
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
+
         try{
-          alert('got message');
+
           var message=null;
           if(device.platform == "Android") {
             message = event.message;
@@ -46,6 +47,7 @@ angular.module('starter', ['ionic','ngCordova'])
           switch(message.type)
           {
             case 'orderHasBeenTaken':
+
               var confirmPopup = $ionicPopup.confirm({
                 title: '信息',
                 template: '订单号为'+message.order.orderNum+'的订单已成功接单'
@@ -58,9 +60,56 @@ angular.module('starter', ['ionic','ngCordova'])
               });
               break;
             default:
+
+              //语音播报
+              var fileSystem=null;
+              if (ionic.Platform.isIOS()) {
+                //IOS平台
+              }else if(ionic.Platform.isAndroid())
+              {
+
+                var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                  '您有一个订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
+                fileSystem=cordova.file.externalApplicationStorageDirectory;
+                var target=fileSystem+'temp.mp3';
+                var trustHosts = true;
+                var options = {
+                  fileKey: 'file',
+                  headers: {
+                    'Authorization': "Bearer " + $rootScope.access_token
+                  }
+                };
+                $cordovaFileTransfer.download(url, target, options, trustHosts)
+                  .then(function (res) {
+                    //TODO:播放录音
+
+                    var filepath=fileSystem+'temp.mp3';
+                    filepath = filepath.replace('file://','');
+                    var media = $cordovaMedia.newMedia(filepath);
+
+                    if(ionic.Platform.isIOS()) {
+                    }else if(ionic.Platform.isAndroid()) {
+                      media.play();
+                    }else{}
+                    alert('success');
+                  }, function (err) {
+                    // Error
+                    alert('error=' + err);
+                    for (var field in err) {
+                      alert('field=' + field + '\r\n' + err[field]);
+                    }
+                  }, function (progress) {
+
+                  });
+
+              }else{
+              }
+
+
+
               var confirmPopup = $ionicPopup.confirm({
                 title: '新订单:'+message.order.orderNum,
-                template: '客户已下单,请查看'
+                template: '是否查看'
               });
               confirmPopup.then(function(res) {
                 if(res) {
@@ -212,9 +261,6 @@ angular.module('starter', ['ionic','ngCordova'])
         }
       })
 
-
-
-
       .state('register',{
         url:'/register',
         controller:'registerController',
@@ -240,6 +286,19 @@ angular.module('starter', ['ionic','ngCordova'])
         templateUrl:'views/chatter/chatter.html'
       })
 
+      .state('ordersDone',{
+        url:'/ordersDone',
+        controller:'orderDoneController',
+        templateUrl:'views/ordersDone/ordersDone.html'
+      })
+
+      .state('orderDone_detail',{
+        url:'/orderDone_detail:order',
+        controller:'orderDoneDetailController',
+        templateUrl:'views/orderDone_detail/orderDone_detail.html'
+      })
+
+
 
     $urlRouterProvider.otherwise('/login');
   })
@@ -264,7 +323,7 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.148:3000";
+          return "http://139.129.96.231:3000";
         else
           return "/proxy/node_server";
       }
