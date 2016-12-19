@@ -74,9 +74,6 @@ angular.module('starter')
     }
 
 
-
-
-
     var order=$stateParams.order;
     if(order!==undefined&&order!==null)
     {
@@ -93,7 +90,7 @@ angular.module('starter')
         order.content.subServiceContent=serviceContent;
       }
 
-        $scope.order=order.content;
+      $scope.order=order.content;
 
       //TODO:拉取维修厂所或者服务地点
       if($scope.order.servicePersonId!==undefined&&$scope.order.servicePersonId!==null)
