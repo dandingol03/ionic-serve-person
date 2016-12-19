@@ -27,6 +27,9 @@ angular.module('starter')
     $scope.tab_change = function(i){
       $scope.tabIndex=i;
     }
+
+    $scope.pageIndex=0;
+
     $scope.selectedTabStyle=
     {
       display:'inline-block',color:'#fff',width:'31%',float:'left',height:'100%','border': '1px solid','border-color': 'rgb(55, 144, 139)','background-color':'rgb(55, 144, 139)'
@@ -89,9 +92,34 @@ angular.module('starter')
               if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
                 $scope.orders[2].push(order);
             });
+
+
+            //拉取服务中的订单
+            return $http({
+              method: "post",
+              url:Proxy.local()+"/svr/request",
+              headers: {
+                'Authorization': "Bearer " + $rootScope.access_token,
+              },
+              data:
+                {
+                  request:'getServiceOrdersInTaken'
+                }
+            });
           }
+        }).then(function (res) {
+          var json=res.data;
+          $scope.takens=[];
+          if(json.data!==undefined&&json.data!==null)
+          {
+            json.data.map(function (order, i) {
+              order.serviceName=$scope.serviceTypeMap[order.serviceType];
+              $scope.takens.push(order);
+            });
+          }
+
           $ionicLoading.hide();
-        }).catch(function(err) {
+      }).catch(function(err) {
         var str='';
         for(var field in err)
         {
@@ -129,6 +157,8 @@ angular.module('starter')
         //TODO:open self configure panel
         $ionicSideMenuDelegate.toggleLeft();
       }
+      if(i!=2)
+        $scope.pageIndex=i;
       $ionicTabsDelegate.select(i);
     }
 

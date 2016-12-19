@@ -23,7 +23,8 @@
                 </span>
               </span>
 
-              <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;">
+              <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;"
+                  ng-click="goto('my_wallet')">
                 我的钱包
               </span>
             </div>
@@ -53,7 +54,7 @@
             </div>
 
 
-            <div class="item" style="border:0px;padding:14px;background: transparent;">
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('my_evaluate')">
               <span style="display: inline-block;width: 20%;text-align: center">
                 <span style="font-size: 1.4em;color:#eee;">
                   <i class="ion-star"></i>
@@ -106,7 +107,12 @@
                 <i class="ion-navicon"></i>
               </span>
               <span style="display: inline-block;width: 70%;text-align: center;">
-                服务订单
+                <span ng-if="pageIndex==0">
+                  可接服务订单
+                </span>
+                <span ng-if="pageIndex==1">
+                  服务中订单
+                </span>
               </span>
               <span style="display: inline-block;font-size: 2em;text-align: center;width: 20%;">
               </span>
@@ -115,42 +121,43 @@
             </h1>
           </div>
 
+          <!-- 可接服务订单 -->
+          <div ng-if="pageIndex==0" style="width: 100%;height: 100%;">
+            <div style="margin:5%;margin-left:7%;margin-right:3%;width:90%;height: 40px;padding: 0;">
 
-          <div style="margin:5%;margin-left:7%;margin-right:3%;width:90%;height: 40px;padding: 0;">
+              <div style="width: 2%;display: inline-block;height: 100%"></div>
 
-            <div style="width: 2%;display: inline-block;height: 100%"></div>
-
-            <div ng-style="tabIndex==0?selectedTabStyle:unSelectedTabStyle"
-                 style="border-top-left-radius: 7px;border-bottom-left-radius: 7px;"
-                 ng-click="tab_change(0)">
-              <div style="width: 100%;height: 100%;display: table;">
-                <span style="display: table-cell;vertical-align: middle;text-align: center;">全部</span>
+              <div ng-style="tabIndex==0?selectedTabStyle:unSelectedTabStyle"
+                   style="border-top-left-radius: 7px;border-bottom-left-radius: 7px;"
+                   ng-click="tab_change(0)">
+                <div style="width: 100%;height: 100%;display: table;">
+                  <span style="display: table-cell;vertical-align: middle;text-align: center;">全部</span>
+                </div>
               </div>
-            </div>
-            <div ng-style="tabIndex==1?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(1)">
-              <div style="width: 100%;height: 100%;display: table;">
-                <span style="display: table-cell;vertical-align: middle;text-align: center;">维修</span>
+              <div ng-style="tabIndex==1?selectedTabStyle:unSelectedTabStyle" ng-click="tab_change(1)">
+                <div style="width: 100%;height: 100%;display: table;">
+                  <span style="display: table-cell;vertical-align: middle;text-align: center;">维修</span>
+                </div>
               </div>
-            </div>
-            <div ng-style="tabIndex==2?selectedTabStyle:unSelectedTabStyle"
-                 style="border-top-right-radius: 7px;border-bottom-right-radius: 7px;"
-                 ng-click="tab_change(2)">
-              <div style="width: 100%;height: 100%;display: table;">
-                <span style="display: table-cell;vertical-align: middle;text-align: center;">车驾管</span>
+              <div ng-style="tabIndex==2?selectedTabStyle:unSelectedTabStyle"
+                   style="border-top-right-radius: 7px;border-bottom-right-radius: 7px;"
+                   ng-click="tab_change(2)">
+                <div style="width: 100%;height: 100%;display: table;">
+                  <span style="display: table-cell;vertical-align: middle;text-align: center;">车驾管</span>
+                </div>
               </div>
+              <div style="width: 1%;display: inline-block;height: 100%;"></div>
             </div>
-            <div style="width: 1%;display: inline-block;height: 100%;"></div>
-          </div>
 
-          <div style="width: 100%;height: 90%;">
-            <ion-scroll style="height: 95%;">
+            <div style="width: 100%;height: 90%;">
+              <ion-scroll style="height: 95%;">
 
-              <div class="list padding">
-                <div class="item" ng-repeat="order in orders[tabIndex] | orderBy:'-applyTime'"
-                     style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
+                <div class="list padding">
+                  <div class="item" ng-repeat="order in orders[tabIndex] | orderBy:'-applyTime'"
+                       style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
 
-                  <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
-                    <div style="width:100%;height: 100%;display: table;">
+                    <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
+                      <div style="width:100%;height: 100%;display: table;">
                       <span style="display: table-cell;vertical-align: middle;font-size: 0.8em;">
                         <div>
                           {{order.applyTime|date:'yyyy-MM-dd'}}
@@ -159,20 +166,20 @@
                           {{order.applyTime|date:'HH:mm'}}
                         </div>
                       </span>
-                    </div>
-                  </div>
-
-                  <div style="position: absolute;width: 1px;height: 100%;left:30%;top:0;background: #aaa;">
-                    <div style="width: 100%;height: 100%;position: relative;">
-                      <div style="    position: absolute;top: 40%;margin-left: -6px;z-index: 9999;background: #fff;">
-                        <span style="font-size:0.8em;"><i class="fa fa-circle-o"></i></span>
                       </div>
                     </div>
-                  </div>
 
-                  <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
+                    <div style="position: absolute;width: 1px;height: 100%;left:30%;top:0;background: #aaa;">
+                      <div style="width: 100%;height: 100%;position: relative;">
+                        <div style="    position: absolute;top: 40%;margin-left: -6px;z-index: 9999;background: #fff;">
+                          <span style="font-size:0.8em;"><i class="fa fa-circle-o"></i></span>
+                        </div>
+                      </div>
+                    </div>
 
-                  <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
+                    <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
+
+                    <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
                     <div style="width: 100%;height: 100%;display: table;">
                       <div style="display: table-cell;vertical-align: middle;">
                         <div style="font-size: 0.8em;color:#222;">
@@ -186,8 +193,8 @@
                   </span>
 
 
-                  <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;"
-                        ng-click="showOrderDetail(order)">
+                    <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;"
+                          ng-click="showOrderDetail(order)">
                     <div style="width: 100%;height: 100%;display: table;">
                       <span style="display:table-cell;vertical-align: middle;">
                         <span style="font-size: 0.8em;">详细</span>
@@ -197,14 +204,98 @@
                   </span>
 
 
+                  </div>
+
                 </div>
-
-              </div>
-              <div style="width: 100%;height: 80px;"></div>
+                <div style="width: 100%;height: 80px;"></div>
 
 
-            </ion-scroll>
+              </ion-scroll>
+            </div>
+
+
           </div>
+
+          <!-- 服务中订单 -->
+          <div ng-if="pageIndex==1">
+
+
+            <div style="width: 100%;height: 90%;">
+
+              <div style="width: 80%;margin-left:10%;padding:16px;text-align: center;margin-top:20px;"
+                   ng-if="takens==undefined||takens==null||takens.length==0">
+                <span style="font-size: 1.1em;color:#ff585f">您没有正在服务中的订单</span>
+              </div>
+
+
+              <ion-scroll style="height: 95%;" ng-if="takens!==undefined&&takens!==null&&takens.length>0">
+
+                <div class="list padding">
+                  <div class="item" ng-repeat="order in takens | orderBy:'-applyTime'"
+                       style="height: 70px;position: relative;border-right: 0px;border-left:0px;">
+
+                    <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
+                      <div style="width:100%;height: 100%;display: table;">
+                      <span style="display: table-cell;vertical-align: middle;font-size: 0.8em;">
+                        <div>
+                          {{order.applyTime|date:'yyyy-MM-dd'}}
+                        </div>
+                        <div>
+                          {{order.applyTime|date:'HH:mm'}}
+                        </div>
+                      </span>
+                      </div>
+                    </div>
+
+                    <div style="position: absolute;width: 1px;height: 100%;left:30%;top:0;background: #aaa;">
+                      <div style="width: 100%;height: 100%;position: relative;">
+                        <div style="    position: absolute;top: 40%;margin-left: -6px;z-index: 9999;background: #fff;">
+                          <span style="font-size:0.8em;"><i class="fa fa-circle-o"></i></span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
+
+                    <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
+                    <div style="width: 100%;height: 100%;display: table;">
+                      <div style="display: table-cell;vertical-align: middle;">
+                        <div style="font-size: 0.8em;color:#222;">
+                          {{order.orderNum}}
+                        </div>
+                        <div style="font-size: 0.8em;">
+                          {{order.serviceName}}
+                        </div>
+                      </div>
+                    </div>
+                  </span>
+
+
+                    <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;"
+                          ng-click="showOrderDetail(order)">
+                    <div style="width: 100%;height: 100%;display: table;">
+                      <span style="display:table-cell;vertical-align: middle;">
+                        <span style="font-size: 0.8em;">详细</span>
+                        <span style="font-size: 1.8em;"><i class="ion-ios-information-outline"></i></span>
+                      </span>
+                    </div>
+                  </span>
+
+
+                  </div>
+
+                </div>
+                <div style="width: 100%;height: 80px;"></div>
+
+
+              </ion-scroll>
+            </div>
+
+
+          </div>
+
+
+
 
           <ion-tabs class="tabs-danding tabs-icon-top">
 

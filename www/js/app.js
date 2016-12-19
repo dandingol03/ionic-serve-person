@@ -299,6 +299,19 @@ angular.module('starter', ['ionic','ngCordova'])
       })
 
 
+      .state('my_wallet',{
+        url:'/my_wallet',
+        controller:'myWalletController',
+        templateUrl:'views/my_wallet/my_wallet.html'
+      })
+
+      .state('my_evaluate',{
+        url:'/my_evaluate',
+        controller:'myEvaluateController',
+        templateUrl:'views/my_evaluate/my_evaluate.html'
+      })
+
+
 
     $urlRouterProvider.otherwise('/login');
   })
@@ -323,7 +336,7 @@ angular.module('starter', ['ionic','ngCordova'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://139.129.96.231:3000";
+          return "http://192.168.1.121:3000";
         else
           return "/proxy/node_server";
       }
