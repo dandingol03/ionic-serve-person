@@ -1,4 +1,4 @@
-<ion-view view-title="">
+<ion-view view-title="订单详情">
   <ion-nav-bar class="bar-calm" align-title="center" >
     <ion-nav-buttons side="left">
       <button class="button button-icon button-clear bar_arr" style="font-size: 2.4em;"
@@ -112,14 +112,33 @@
         </span>
       </div>
 
+
       <div class="item" style="padding: 16px;">
         <span style="display: inline-block;width: 30%;">
           服务费:
         </span>
         <span style="display: inline-block;width: 70%;text-align: left;">
-          {{order.fee}}
+          <span ng-if="order.squareFee!==undefined&&order.squareFee!==null">{{order.squareFee}}</span>
+          <span ng-if="order.squareFee==undefined||order.squareFee==null">
+            还未结算
+          </span>
         </span>
       </div>
+
+      <div class="item" style="padding: 16px;">
+        <span style="display: inline-block;width: 30%;">
+          结算时间:
+        </span>
+        <span style="display: inline-block;width: 70%;text-align: left;">
+          <span ng-if="order.feeDate!==undefined&&order.feeDate!==null">
+            {{order.feeDate|date:'yyyy-MM-dd'}}
+          </span>
+          <span ng-if="order.feeDate==undefined||order.feeDate==null">
+            还未结算
+          </span>
+        </span>
+      </div>
+
 
       <div class="item" style="padding: 16px;">
         <span style="display: inline-block;width: 30%;">

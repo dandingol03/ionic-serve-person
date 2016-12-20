@@ -30,7 +30,11 @@
       "id": "com.danding.Audio"
     },
     "cordova-plugin-streaming-media",
-    "cordova-open"
+    "cordova-open",
+    {
+      "locator": "https://github.com/floatinghotpot/cordova-plugin-iflyspeech.git",
+      "id": "com.rjfun.cordova.plugin.iflyspeech"
+    }
   ],
   "cordovaPlatforms": [
     "ios",
