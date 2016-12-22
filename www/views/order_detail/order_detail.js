@@ -8,7 +8,7 @@ angular.module('starter')
                                                 $interval,$cordovaMedia,$ionicLoading,$timeout){
 
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
-      21:'车驾管-审车',22:'车驾管-审证',23:'车驾管-接送机',24:'车驾管-取送车'};
+      21:'车驾管-审车',22:'车驾管-审证',23:'车驾管-接送机',24:'车驾管-接送站'};
 
     $scope.subServiceTypeMap={1:'机油,机滤',2:'检查制动系统,更换刹车片',3:'雨刷片更换',
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
@@ -16,6 +16,13 @@ angular.module('starter')
 
     $scope.getServicePlaceByServicePersonId=function () {
 
+      var servicePlaceType = null;
+      if($scope.order.serviceType==11||$scope.order.serviceType==12||$scope.order.serviceType==13)
+        servicePlaceType = 'unit';
+      if($scope.order.serviceType==21||$scope.order.serviceType==22)
+        servicePlaceType = 'place';
+      if($scope.order.serviceType==23||$scope.order.serviceType==24)
+        servicePlaceType = 'station';
       $http({
         method: "post",
         url: Proxy.local() + "/svr/request",
@@ -26,14 +33,24 @@ angular.module('starter')
           request: 'getServicePlaceByServicePersonId',
           info: {
             servicePersonId: $scope.order.servicePersonId,
-            type: 'unit'
+            servicePlaceId: $scope.order.servicePlaceId,
+            customerPlaceId:$scope.order.customerPlaceId,
+            type: servicePlaceType
           }
         }
       }).then(function (res) {
         var json = res.data;
         if (json.re == 1) {
           $scope.order.servicePlace=json.data;
-          $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
+
+          if(servicePlaceType == 'unit')
+            $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
+          if(servicePlaceType == 'place')
+            $scope.order.servicePlace.name=$scope.order.servicePlace.name;
+          if(servicePlaceType == 'station'){
+            $scope.order.servicePlace.name=$scope.order.servicePlace.servicePlace;
+          }
+
         }
       }).catch(function (err) {
         var str='';

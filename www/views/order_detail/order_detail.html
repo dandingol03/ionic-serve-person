@@ -14,10 +14,9 @@
     <!-- inset one -->
     <div class="list list-inset" style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:4px;" >
       <div class="item item-divider">
-
         编号
       </div>
-      <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;">
+      <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;" ng-if="order.serviceType!=23&&order.serviceType!=24">
         <span style="width: 30%;display: inline-block;">
           车牌号:
         </span>
@@ -41,11 +40,12 @@
     <!-- inset two -->
     <div class="list list-inset"
          style="margin-bottom:40px;margin-left:0px;margin-right:0px;margin-top:10px;">
-      <div ng-if="order.subServiceContent!==undefined&&order.subServiceContent!==null">
+
+
+      <div>
         <div class="item item-divider">
           服务详情
         </div>
-
 
         <div class="item" style="padding: 16px;">
           <span style="display: inline-block;width: 30%;">
@@ -59,7 +59,7 @@
         </div>
 
         <!-- 维修 日常保养 -->
-        <div class="item" style="padding: 16px;position: relative" ng-if="order.serviceType!=13">
+        <div class="item" style="padding: 16px;position: relative" ng-if="order.serviceType==11">
           <div style="position: absolute;left:5%;top:40%;">
             服务内容:
           </div>
@@ -87,15 +87,10 @@
 
       </div>
 
-      <div ng-if="order.serviceType==12">
-
-        <div class="item item-divider">
-          故障描述
-        </div>
-
+      <!--维修 故障 -->
         <div class="item" style="padding: 16px;" ng-if="order.remark!==undefined&&order.remark!==null">
           <span style="display: inline-block;width: 30%;">
-            文本描述:
+            故障文本描述:
           </span>
           <span style="display: inline-block;width: 70%;text-align: left;">
             <span style="white-space: normal;">
@@ -133,10 +128,6 @@
         </div>
 
 
-
-      </div>
-
-
       <div class="item" style="padding: 16px;">
         <span style="display: inline-block;width: 30%;">
           预约时间:
@@ -163,6 +154,25 @@
           {{order.servicePlace.name}}
         </span>
       </div>
+
+      <div class="item" style="padding: 16px;" ng-if="order.serviceType==23">
+        <span style="display: inline-block;width: 30%;">
+          接机地点:
+        </span>
+        <span style="display: inline-block;width: 70%;text-align: left;font-weight: bolder;">
+          {{order.servicePlace.customerPlace}}
+        </span>
+      </div>
+
+      <div class="item" style="padding: 16px;" ng-if="order.serviceType==24">
+        <span style="display: inline-block;width: 30%;">
+          接站地点:
+        </span>
+        <span style="display: inline-block;width: 70%;text-align: left;font-weight: bolder;">
+          {{order.servicePlace.customerPlace}}
+        </span>
+      </div>
+
 
 
       <div style="width: 100%;" ng-if="order.orderState==1">
