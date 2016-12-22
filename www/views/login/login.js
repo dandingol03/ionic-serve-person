@@ -106,10 +106,12 @@ angular.module('starter')
         $scope.login();
         if(window.cordova!==undefined&&window.cordova!==null)
         {
-
           try{
-            window.plugins.jPushPlugin.getRegistrationID($rootScope.onGetRegistradionID);
-            $scope.login();
+            window.plugins.jPushPlugin.getRegistrationID(function(data) {
+              alert('registrationId=\r\n'+data);
+              $rootScope.registrationId=data;
+              $scope.login();
+            });
           }catch(e)
           {
             alert(e);
@@ -120,7 +122,7 @@ angular.module('starter')
           $scope.login();
 
       }else{
-        $scope.login();
+          $scope.login();
       }
 
 

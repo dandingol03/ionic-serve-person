@@ -41,10 +41,13 @@ angular.module('starter')
           if(json.re==1)
           {
             $scope.orders=json.data;
-            $scope.orders.map(function (order, i) {
-              order.serviceName=$scope.serviceTypeMap[order.serviceType];
-              $scope.balance+=order.squareFee;
-            });
+            if($scope.orders!==undefined&&$scope.orders!==null)
+            {
+              $scope.orders.map(function (order, i) {
+                order.serviceName=$scope.serviceTypeMap[order.serviceType];
+                $scope.balance+=order.squareFee;
+              });
+            }
           }
           $ionicLoading.hide();
         }).catch(function(err) {
