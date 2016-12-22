@@ -50,16 +50,22 @@ angular.module('starter')
           if(json.re==1)
           {
             $scope.orders=json.data;
-            $scope.orders.map(function (order, i) {
-              order.serviceName=$scope.serviceTypeMap[order.serviceType];
-              if(order.evaluate!==undefined&&order.evaluate!==null)
-              {
-                evaluateTotal+=order.evaluate;
-                evaluateCount++;
-              }
-            });
+            if($scope.orders!==undefined&&$scope.orders!==null)
+            {
+              $scope.orders.map(function (order, i) {
+                order.serviceName=$scope.serviceTypeMap[order.serviceType];
+                if(order.evaluate!==undefined&&order.evaluate!==null)
+                {
+                  evaluateTotal+=order.evaluate;
+                  evaluateCount++;
+                }
+              });
+            }
           }
-          $scope.credit_average=evaluateTotal/evaluateCount;
+          if(evaluateCount==0)
+            $scope.credit_average=0;
+          else
+            $scope.credit_average=evaluateTotal/evaluateCount;
           $ionicLoading.hide();
         }).catch(function(err) {
         var str='';

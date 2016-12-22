@@ -9,21 +9,29 @@
 
   </ion-nav-bar>
 
-  <ion-content scroll="false">
+  <ion-content>
 
     <!-- inset one -->
-    <div class="list list-inset" style="margin-bottom:40px;margin-left:0px;margin-right:0px;" >
+    <div class="list list-inset" style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:4px;" >
       <div class="item item-divider">
 
         编号
       </div>
       <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;">
-        车牌号:
-        <span style="position: absolute;right:20%;">{{order.carNum}}</span>
+        <span style="width: 30%;display: inline-block;">
+          车牌号:
+        </span>
+        <span style="width: 70%;display: inline-block;font-weight: bolder;">
+          {{order.carNum}}
+        </span>
       </div>
       <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;">
-        订单号:
-        <span style="position: absolute;right:20%;">{{order.orderNum}}</span>
+        <span style="width: 30%;display: inline-block;">
+          订单号:
+        </span>
+        <span style="width: 70%;display: inline-block;font-weight: bolder;">
+          {{order.orderNum}}
+        </span>
       </div>
 
     </div>
@@ -32,28 +40,108 @@
 
     <!-- inset two -->
     <div class="list list-inset"
-         style="margin-bottom:40px;margin-left:0px;margin-right:0px;">
+         style="margin-bottom:40px;margin-left:0px;margin-right:0px;margin-top:10px;">
       <div ng-if="order.subServiceContent!==undefined&&order.subServiceContent!==null">
         <div class="item item-divider">
           服务详情
         </div>
+
+
         <div class="item" style="padding: 16px;">
-        <span style="display: inline-block;width: 30%;">
-          服务内容:
-        </span>
-          <span style="display: inline-block;width: 70%;text-align: left;">
-          <span ng-repeat="subService in order.subServiceContent">
-            {{subService}}
+          <span style="display: inline-block;width: 30%;">
+            服务类型:
           </span>
-        </span>
+          <span style="display: inline-block;width: 70%;text-align: left;">
+            <span style="font-weight: bolder;">
+              {{order.serviceName}}
+            </span>
+          </span>
         </div>
+
+        <!-- 维修 日常保养 -->
+        <div class="item" style="padding: 16px;position: relative" ng-if="order.serviceType!=13">
+          <div style="position: absolute;left:5%;top:40%;">
+            服务内容:
+          </div>
+          <div style="display: inline-block;width: 30%;">
+          </div>
+          <span style="display: inline-block;width: 70%;text-align: left;">
+            <div ng-repeat="subService in order.subServiceContent">
+                <span style="color:#a1ff38"><i class="fa fa-check"></i></span>
+              <span style="font-weight: bolder;">{{subService}}</span>
+            </div>
+          </span>
+        </div>
+
+        <!--维修 事故 -->
+        <div class="item" style="padding: 16px;" ng-if="order.serviceType==13">
+          <span style="display: inline-block;width: 30%;">
+            事故类型:
+          </span>
+          <span style="display: inline-block;width: 70%;text-align: left;">
+            <span style="font-weight: bolder;">
+              {{order.subServiceContent}}
+            </span>
+          </span>
+        </div>
+
       </div>
+
+      <div ng-if="order.serviceType==12">
+
+        <div class="item item-divider">
+          故障描述
+        </div>
+
+        <div class="item" style="padding: 16px;" ng-if="order.remark!==undefined&&order.remark!==null">
+          <span style="display: inline-block;width: 30%;">
+            文本描述:
+          </span>
+          <span style="display: inline-block;width: 70%;text-align: left;">
+            <span style="white-space: normal;">
+              {{order.remark}}
+            </span>
+          </span>
+        </div>
+
+        <div class="item" style="padding: 16px;" ng-if="order.audioAttachId!==null&&order.audioAttachId!==undefined">
+          <span style="display: inline-block;width: 30%;">
+            客户留言:
+          </span>
+            <span style="display: inline-block;width: 30%;">
+          </span>
+            <span style="display: inline-block;width: 40%;text-align: left;">
+             <i class="ion-ios-play"
+                style="display: inline-block;width: 25%;font-size: 200%;"
+                ng-click="play()"
+             ></i>
+          </span>
+        </div>
+
+        <div class="item" style="padding: 16px;" ng-if="order.videoAttachId!==null&&order.videoAttachId!==undefined">
+          <span style="display: inline-block;width: 30%;">
+            客户视频:
+          </span>
+          <span style="display: inline-block;width: 30%;">
+          </span>
+          <span style="display: inline-block;width: 40%;text-align: left;">
+             <i class="ion-videocamera"
+                style="display: inline-block;width: 75%;font-size: 200%;"
+                ng-click="playMovie()"></i>
+
+          </span>
+        </div>
+
+
+
+      </div>
+
 
       <div class="item" style="padding: 16px;">
         <span style="display: inline-block;width: 30%;">
           预约时间:
         </span>
-        <span style="display: inline-block;width: 70%;text-align: left;">
+        <span style="display: inline-block;width: 70%;text-align: left;font-weight: bolder;">
           {{order.estimateTime|date:'yyyy-MM-dd HH:mm'}}
         </span>
       </div>
@@ -62,7 +150,7 @@
         <span style="display: inline-block;width: 30%;">
           服务费:
         </span>
-        <span style="display: inline-block;width: 70%;text-align: left;">
+        <span style="display: inline-block;width: 70%;text-align: left;font-weight: bolder;">
           {{order.fee}}
         </span>
       </div>
@@ -71,42 +159,10 @@
         <span style="display: inline-block;width: 30%;">
           地点:
         </span>
-        <span style="display: inline-block;width: 70%;text-align: left;">
+        <span style="display: inline-block;width: 70%;text-align: left;font-weight: bolder;">
           {{order.servicePlace.name}}
         </span>
       </div>
-
-
-      <div class="item" style="padding: 16px;" ng-if="order.audioAttachId!==null&&order.audioAttachId!==undefined">
-        <span style="display: inline-block;width: 30%;">
-          客户留言:
-        </span>
-        <span style="display: inline-block;width: 30%;">
-        </span>
-        <span style="display: inline-block;width: 40%;text-align: left;">
-           <i class="ion-ios-play"
-              style="display: inline-block;width: 25%;font-size: 200%;"
-              ng-click="play()"
-           ></i>
-        </span>
-      </div>
-
-
-
-      <div class="item" style="padding: 16px;" ng-if="order.videoAttachId!==null&&order.videoAttachId!==undefined">
-        <span style="display: inline-block;width: 30%;">
-          客户视频:
-        </span>
-        <span style="display: inline-block;width: 30%;">
-        </span>
-        <span style="display: inline-block;width: 40%;text-align: left;">
-           <i class="ion-videocamera"
-              style="display: inline-block;width: 75%;font-size: 200%;"
-              ng-click="playMovie()"></i>
-
-        </span>
-      </div>
-
 
 
       <div style="width: 100%;" ng-if="order.orderState==1">
@@ -131,10 +187,6 @@
         <button class="button button-block button-positive" style="width: 60%;margin-left:20%;"
                 ng-click="changeOrderState(-2)">
           申请改派
-        </button>
-        <button class="button button-block button-positive" style="width: 60%;margin-left:20%;"
-                ng-click="changeOrderState(3)">
-          订单完成
         </button>
       </div>
 

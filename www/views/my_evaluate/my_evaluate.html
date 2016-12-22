@@ -3,7 +3,7 @@
     <ion-content scroll="false">
 
 
-      <div style="width: 100%;height: 23%;background: rgb(55, 144, 139);">
+      <div style="width: 100%;height: 27%;background: rgb(55, 144, 139);">
         <div style="width: 100%;height: 40px;">
           <div style="margin-left:10px;" ng-click="goBack()">
             <span style="font-size: 6em;color:#fff;"><i class="fa fa-angle-left"></i></span>
@@ -29,7 +29,7 @@
 
 
 
-      <div style="width: 100%;height: 76%;">
+      <div style="width: 100%;height: 72%;">
         <ion-scroll style="height: 95%;">
 
           <div class="list padding" style="margin-top: 30px;">
@@ -50,8 +50,7 @@
               </div>
 
 
-              <span style="position: absolute;left:22%;width: 58%;height: 100%;top:0;border-right: 1px solid rgba(88, 73, 58, 0.95)">
-
+              <span style="position: absolute;left:22%;width: 53%;height: 100%;top:0;border-right: 1px solid rgba(88, 73, 58, 0.95)">
                 <div style="width: 100%;height: 100%;display: table;">
                   <div style="display: table-cell;vertical-align: middle;text-align: center;">
                     <div style="font-size: 1em;color:rgba(88, 73, 58, 0.95);">
@@ -59,15 +58,15 @@
                     </div>
                   </div>
                 </div>
-            </span>
+              </span>
 
-              <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;">
+              <span style="width:25%;height:100%;position: absolute;left:75%;top:0;text-align: center;">
                 <div style="width: 100%;height: 100%;display: table;">
                     <span style="display:table-cell;vertical-align: middle;color:rgba(88, 73, 58, 0.95)">
                         评价
                     </span>
                 </div>
-            </span>
+              </span>
             </div>
 
 
@@ -96,61 +95,61 @@
 
               <div style="position: absolute;width: 4%;height: 100%;left:31%;top:0;"></div>
 
-              <span style="position: absolute;left:35%;width: 45%;height: 100%;top:0;">
-              <div style="width: 100%;height: 100%;display: table;">
-                <div style="display: table-cell;vertical-align: middle;">
-                  <div style="font-size: 0.8em;color:#222;">
-                    订单号:{{order.orderNum}}
-                  </div>
-                  <div style="font-size: 0.8em;">
-                    服务类型:{{order.serviceName}}
+              <span style="position: absolute;left:35%;width: 40%;height: 100%;top:0;">
+                <div style="width: 100%;height: 100%;display: table;">
+                  <div style="display: table-cell;vertical-align: middle;">
+                    <div style="font-size: 0.8em;color:#222;">
+                      订单号:{{order.orderNum}}
+                    </div>
+                    <div style="font-size: 0.8em;">
+                      服务类型:{{order.serviceName}}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </span>
+              </span>
 
 
-              <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;">
-              <div style="width: 100%;height: 100%;display: table;">
-                <span style="display:table-cell;vertical-align: middle;">
-                  <div style="width: 75px;height: 25px;"
-                       ng-if="order.evaluate!==undefined&&order.evaluate!==null">
-                    <div style="font-size: 1.1em;color:#ff5030">
-                      {{evaluateHash[order.evaluate]}}
+              <span style="width:25%;height:100%;position: absolute;left:75%;top:0;text-align: center;">
+                <div style="width: 100%;height: 100%;display: table;">
+                  <span style="display:table-cell;vertical-align: middle;text-align: center;">
+                    <div
+                         ng-if="order.evaluate!==undefined&&order.evaluate!==null">
+                      <div style="font-size: 1.1em;color:#ff5030">
+                        {{evaluateHash[order.evaluate]}}
+                      </div>
+
+                      <div ng-if="order.evaluate==1">
+                        <span style="color:#ff383f"><i class="ion-ios-star"></i></span>
+                      </div>
+
+                      <div ng-if="order.evaluate==2">
+                        <span style="color:#ff383f">
+                          <i class="ion-ios-star"></i><i class="ion-ios-star"></i>
+                        </span>
+                      </div>
+
+                       <div ng-if="order.evaluate==3">
+                        <span style="color:#ff383f">
+                          <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
+                        </span>
+                      </div>
+
+                       <div ng-if="order.evaluate==4">
+                        <span style="color:#ff383f">
+                          <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
+                        </span>
+                      </div>
+
+                       <div ng-if="order.evaluate==5">
+                        <span style="color:#ff383f">
+                          <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
+                        </span>
+                      </div>
+
                     </div>
-
-                    <div ng-if="order.evaluate==1">
-                      <span style="color:#ff383f"><i class="ion-ios-star"></i></span>
-                    </div>
-
-                    <div ng-if="order.evaluate==2">
-                      <span style="color:#ff383f">
-                        <i class="ion-ios-star"></i><i class="ion-ios-star"></i>
-                      </span>
-                    </div>
-
-                     <div ng-if="order.evaluate==3">
-                      <span style="color:#ff383f">
-                        <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
-                      </span>
-                    </div>
-
-                     <div ng-if="order.evaluate==4">
-                      <span style="color:#ff383f">
-                        <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
-                      </span>
-                    </div>
-
-                     <div ng-if="order.evaluate==5">
-                      <span style="color:#ff383f">
-                        <i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i><i class="ion-ios-star"></i>
-                      </span>
-                    </div>
-
-                  </div>
-                </span>
-              </div>
-            </span>
+                  </span>
+                </div>
+              </span>
 
 
             </div>
