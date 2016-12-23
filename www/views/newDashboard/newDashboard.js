@@ -106,6 +106,9 @@ angular.module('starter')
                   request:'getServiceOrdersInTaken'
                 }
             });
+          }else
+          {
+            throw new Error('dwdwdw');
           }
         }).then(function (res) {
           var json=res.data;
@@ -120,12 +123,8 @@ angular.module('starter')
 
           $ionicLoading.hide();
       }).catch(function(err) {
-        var str='';
-        for(var field in err)
-        {
-          str+=err[field];
-        }
-        console.error('err=\r\n'+str);
+        var msg=err.message;
+        console.error('err=\r\n'+msg);
         $ionicLoading.hide();
 
       });

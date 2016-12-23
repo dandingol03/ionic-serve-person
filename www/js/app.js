@@ -27,6 +27,17 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
 
+      //数据存在
+      //$rootScope.service_orders
+
+      $rootScope.flags={
+        serviceOrders:{
+          onFresh:true
+        }
+      }
+
+
+
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
 
@@ -71,6 +82,7 @@ angular.module('starter', ['ionic','ngCordova'])
                 var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
                   '您有一个订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
                 fileSystem=cordova.file.externalApplicationStorageDirectory;
+                alert('fileSystem=\r\n' + fileSystem);
                 var target=fileSystem+'temp.mp3';
                 var trustHosts = true;
                 var options = {
@@ -91,13 +103,13 @@ angular.module('starter', ['ionic','ngCordova'])
                     }else if(ionic.Platform.isAndroid()) {
                       media.play();
                     }else{}
-                    alert('success');
+                    console.log('tts speach generate success');
                   }, function (err) {
-                    // Error
-                    alert('error=' + err);
-                    for (var field in err) {
-                      alert('field=' + field + '\r\n' + err[field]);
-                    }
+                    console.log('err=========================');
+                    var str='';
+                    for(var field in err)
+                      str+=field+':'+'\r\n'+err[field];
+                    console.log('error=' + str);
                   }, function (progress) {
 
                   });
