@@ -22,6 +22,13 @@ angular.module('starter')
 
     $scope.getServicePlaceByServicePersonId=function () {
 
+      var servicePlaceType = null;
+      if($scope.order.serviceType==11||$scope.order.serviceType==12||$scope.order.serviceType==13)
+        servicePlaceType = 'unit';
+      if($scope.order.serviceType==21||$scope.order.serviceType==22)
+        servicePlaceType = 'place';
+      if($scope.order.serviceType==23||$scope.order.serviceType==24)
+        servicePlaceType = 'station';
       $http({
         method: "post",
         url: Proxy.local() + "/svr/request",
@@ -32,14 +39,24 @@ angular.module('starter')
           request: 'getServicePlaceByServicePersonId',
           info: {
             servicePersonId: $scope.order.servicePersonId,
-            type: 'unit'
+            servicePlaceId: $scope.order.servicePlaceId,
+            customerPlaceId:$scope.order.customerPlaceId,
+            type: servicePlaceType
           }
         }
       }).then(function (res) {
         var json = res.data;
         if (json.re == 1) {
           $scope.order.servicePlace=json.data;
-          $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
+
+          if(servicePlaceType == 'unit')
+            $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
+          if(servicePlaceType == 'place')
+          {}
+          if(servicePlaceType == 'station'){
+            $scope.order.servicePlace.name=$scope.order.servicePlace.servicePlace;
+          }
+
         }
       }).catch(function (err) {
         var str='';
