@@ -104,18 +104,32 @@
           </span>
         </div>
 
-        <div class="item" style="padding: 16px;" ng-if="order.audioAttachId!==null&&order.audioAttachId!==undefined">
+        <div class="item" style="padding: 16px;">
           <span style="display: inline-block;width: 30%;">
             客户留言:
           </span>
-            <span style="display: inline-block;width: 30%;">
+
+          <span style="display: inline-block;width: 40%;text-align: left;">
+            <span style="display: inline-block;position: relative;">
+                <i class="ion-ios-mic-outline"
+                   style="display: inline-block;font-size: 200%;"
+                   ng-click="play()"
+                ></i>
+              <span ng-class="isPlaying==true?'vibrate-red':''" style="position: absolute;top:-70%;right: -100%;">
+                <div style="font-size: 1.1em;height: 6px;">
+                  <i class="fa fa-window-minimize"></i>
+                </div>
+                <div style="font-size: 0.9em;height: 5px;">
+                  <i class="fa fa-window-minimize"></i>
+                </div>
+                <div style="font-size: 0.2em;height: 5px;">
+                  <i class="fa fa-window-minimize"></i>
+                </div>
+              </span>
           </span>
-            <span style="display: inline-block;width: 40%;text-align: left;">
-             <i class="ion-ios-play"
-                style="display: inline-block;width: 25%;font-size: 200%;"
-                ng-click="play()"
-             ></i>
-          </span>
+
+
+
         </div>
 
         <div class="item" style="padding: 16px;" ng-if="order.videoAttachId!==null&&order.videoAttachId!==undefined">
@@ -132,9 +146,8 @@
           </span>
         </div>
 
-
-
       </div>
+
 
 
       <div class="item" style="padding: 16px;">
@@ -170,7 +183,8 @@
                 ng-click="takeOrder()"
                 style="width: 60%;margin-left:20%;"
                 ng-if="order.candidateState==1">
-          <span>{{timeout}}</span>
+          <span ng-if="timeout<=121">{{timeout}}</span>
+          <span ng-if="timeout>121">已经超时,请返回上个页面重新查看订单</span>
           愿意接单
         </button>
 
@@ -185,7 +199,7 @@
 
       <div style="width: 100%;" ng-if="order.orderState==2">
         <button class="button button-block button-positive" style="width: 60%;margin-left:20%;"
-                ng-click="changeOrderState(-2)">
+                ng-click="makePhone()">
           申请改派
         </button>
       </div>

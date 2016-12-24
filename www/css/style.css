@@ -180,3 +180,22 @@ img.profile-pic.right {
   color: #fff;
 }
 
+.vibrate-red{
+  animation:color-transform 1s infinite;
+  animation-timing-function: ease;
+}
+
+
+@keyframes color-transform {
+  from {border-color:#222;}
+  to {border-color: rgba(255, 168, 204, 0.64);}
+}
+
+@-webkit-keyframes color-transform {
+  from {
+    border-color: #222;
+  }
+  to {
+    border-color: rgba(255, 168, 204, 0.64);
+  }
+}

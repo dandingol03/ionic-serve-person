@@ -3,13 +3,13 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-angular.module('starter', ['ionic','ngCordova'])
+angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
 
 
 
 
-  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,$cordovaMedia) {
+  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,$cordovaMedia,$interval) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
 
@@ -22,20 +22,48 @@ angular.module('starter', ['ionic','ngCordova'])
 
       $rootScope.candidates={};
 
-      window.plugins.jPushPlugin.init();
-      window.plugins.jPushPlugin.setDebugMode(true);
-
-
-
-      //数据存在
-      //$rootScope.service_orders
-
       $rootScope.flags={
         serviceOrders:{
-          onFresh:true
+          onFresh:true,
+          data:{}
         }
       }
 
+      $rootScope.times={
+      }
+
+      $rootScope.timers={
+      }
+
+      $rootScope.$on('ACK_AUTH', function(event, args) {
+        if($rootScope.timers.serviceOrders!==undefined&&$rootScope.timers.serviceOrders!==null)
+        {}
+        else{
+          var timer=function () {
+            $rootScope.flags.serviceOrders.onFresh=true;
+            console.log('data refresh timer.....');
+          }
+          $rootScope.timers.serviceOrders=$interval(timer,120000);
+        }
+
+      });
+
+      //用户注销时删除计时
+      $rootScope.$on('ACK_QUIT',function (event,args) {
+        if($rootScope.timers.serviceOrders!==undefined&&$rootScope.timers.serviceOrders!==null)
+          $interval.cancel($rootScope.timers.serviceOrders);
+      })
+
+
+      //计时器取消
+      $rootScope.$on("$destroy",function () {
+        if($rootScope.timers.serviceOrders!==undefined&&$rootScope.timers.serviceOrders!==null)
+          $interval.cancel($rootScope.timers.serviceOrders);
+      });
+
+
+        window.plugins.jPushPlugin.init();
+      window.plugins.jPushPlugin.setDebugMode(true);
 
 
       //获取自定义消息的回调
@@ -69,6 +97,7 @@ angular.module('starter', ['ionic','ngCordova'])
                   $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
                 } else {}
               });
+              $rootScope.flags.serviceOrders.onFresh=true;
               break;
             default:
 
@@ -117,6 +146,8 @@ angular.module('starter', ['ionic','ngCordova'])
               }else{
               }
 
+
+              $rootScope.flags.serviceOrders.onFresh=true;
 
 
               var confirmPopup = $ionicPopup.confirm({
@@ -238,6 +269,7 @@ angular.module('starter', ['ionic','ngCordova'])
 
 
       .state('newDashboard',{
+        cache:false,
         url:'/newDashboard',
         controller:'newDashboardController',
         templateUrl:'views/newDashboard/newDashboard.html'

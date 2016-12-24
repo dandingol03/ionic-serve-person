@@ -4,9 +4,19 @@
 angular.module('starter')
 
   .controller('loginController',function($scope,$state,$ionicLoading,
-                                         $http,$rootScope,Proxy){
+                                         $http,$rootScope,Proxy,$cordovaPreferences,
+                                         $ionicPlatform){
 
     $scope.user={};
+
+
+    $scope.myTrack = {
+      url: 'https://www.example.com/my_song.mp3',
+      artist: 'Somebody',
+      title: 'Song name',
+      art: 'img/person.jpg'
+    }
+
 
 
     $scope.tt=function(){
@@ -26,17 +36,6 @@ angular.module('starter')
       })
     }
 
-    $scope.onGetRegistradionID = function(data) {
-      try{
-        alert('go waiting....');
-        $rootScope.registrationId=data;
-        alert('registrationId=\r\n' + data);
-        $scope.login();
-      }catch(exception){
-        alert('error=\r\n' + exception.toString());
-      }
-    };
-
     $scope.login=function(){
 
       $http({
@@ -50,9 +49,27 @@ angular.module('starter')
       }).then(function(res) {
         var json=res.data;
         $rootScope.access_token=json.access_token;
+        $rootScope.$emit('ACK_AUTH', 'ack successfully');
         console.log('access_token=\r\n' + $rootScope.access_token);
+
         if(json.access_token!==undefined&&json.access_token!==null)
         {
+          if(window.cordova)
+          {
+            $cordovaPreferences.store('username', $scope.user.username)
+              .success(function(value) {
+              })
+              .error(function(error) {
+                alert("Error: " + error);
+              });
+            $cordovaPreferences.store('password', $scope.user.password)
+              .success(function(value) {
+              })
+              .error(function(error) {
+                alert("Error: " + error);
+              });
+          }
+
           return   $http({
             method: "post",
             url:Proxy.local()+"/svr/request",
@@ -129,71 +146,43 @@ angular.module('starter')
     }
 
 
-    //登录
-    $scope.login_backup = function(){
+    $scope.fetch=function () {
+      $cordovaPreferences.fetch('username')
+        .success(function(value) {
+          if(value!==undefined&&value!==null&&value!='')
+            $scope.user.username=value;
 
-      $http({
-        method:"POST",
-        data:"grant_type=password&password=" + $scope.user.password + "&username=" + $scope.user.username,
-        url:"http://192.168.1.106:3000/login",
-        headers: {
-          'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-          'Content-Type': 'application/x-www-form-urlencoded'
-        }
-      }).then(function(response){
-        alert('request is back');
-        $rootScope.access_token=response.data.access_token;
-        alert('access_token=\r\n' + response.data.access_token);
-        return   $http({
-          method: "post",
-          url: "/proxy/node_server/svr/request",
-          headers: {
-            'Authorization': "Bearer " + $rootScope.access_token,
-          },
-          data:
-          {
-            request:'activatePersonOnline',
-            info:{
-              registrationId:$rootScope.registrationId
-            }
-          }
+          $cordovaPreferences.fetch('password')
+            .success(function(value) {
+              if(value!==undefined&&value!==null&&value!='')
+                $scope.user.password=value;
+
+            })
+            .error(function(error) {
+              alert("Error: " + error);
+            });
+        })
+        .error(function(error) {
+          alert("Error: " + error);
         });
-      }).then(function(res) {
-        var json=res.data;
-        if(json.re==1)
-        {
-
-        }
-        $state.go('register');
-      }).catch(function(err){
-        var error='';
-        alert('error=' + err.toString());
-      });
-
     }
 
-    $scope.searchFreeServicePerson=function(){
-      $http({
-        method:"POST",
-        //url: "/proxy/node_server/svr/request",
-        url: "http://192.168.1.106:3000/svr/request",
-        headers: {
-          'Authorization': "Bearer " + $rootScope.access_token
-        },
-        data:
-        {
-          request:'searchFreeServicePerson'
-        }
-      }).then(function(res) {
 
-      }).catch(function(err) {
-        var str='';
-        for(var field in err)
-          str+=err[field];
-        alert('err=\r\n' + str);
-      });
+
+    //自动获取用户名和密码
+    if(window.cordova)
+    {
+      $ionicPlatform.ready (function () {
+        $scope.fetch();
+      })
     }
 
+    $scope.makePhone=function (phone) {
+      window.PhoneCaller.call(phone,function () {
+      }, function () {
+        console.log('phone call encoutner error');
+      });
+    }
 
   });
 
