@@ -14,6 +14,12 @@ angular.module('starter')
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
 
 
+
+
+    $scope.audio={
+      pos:0
+    }
+
     $scope.getServicePlaceByServicePersonId=function () {
 
       var servicePlaceType = null;
@@ -46,7 +52,7 @@ angular.module('starter')
           if(servicePlaceType == 'unit')
             $scope.order.servicePlace.name=$scope.order.servicePlace.unitName;
           if(servicePlaceType == 'place')
-            $scope.order.servicePlace.name=$scope.order.servicePlace.name;
+          {}
           if(servicePlaceType == 'station'){
             $scope.order.servicePlace.name=$scope.order.servicePlace.servicePlace;
           }
@@ -88,16 +94,29 @@ angular.module('starter')
 
       $scope.order=order.content;
 
+      //TODO:计时
+      $scope.applyTime=new Date($scope.order.applyTime);
+      var timer=function () {
+        var date=new Date();
+        $scope.timeout=parseInt((date.getTime()-$scope.applyTime.getTime())/1000);
+      }
+      $scope.timer=$interval(timer,1000);
+
+
+
       //TODO:拉取维修厂所或者服务地点
       if($scope.order.servicePersonId!==undefined&&$scope.order.servicePersonId!==null)
         $scope.getServicePlaceByServicePersonId($scope.order.servicePersonId);
 
     }
 
-    $scope.getServicePlace=function (servicePlaceId) {
-      $ionicLoading.show({
-        template:'<p class="item-icon-left">拉取车险订单数据...<ion-spinner icon="ios" class="spinner-calm spinner-bigger"/></p>'
-      });
+    $scope.$on("$destroy", function() {
+      if($scope.timer!==undefined&&$scope.timer!==null)
+        $interval.cancel($scope.timer);
+    })
+
+    //音频检测
+    $scope.checkAffiliateAudioSource=function () {
 
       $http({
         method: "post",
@@ -106,28 +125,93 @@ angular.module('starter')
           'Authorization': "Bearer " + $rootScope.access_token,
         },
         data: {
-          request: 'getServicePlaceNameByPlaceId',
+          request: 'getCarServiceOrderAffiliatedAudioSource',
           info: {
-            placeId:servicePlaceId,
-            type:'unit'
+            orderId:$scope.order.orderId
           }
         }
-      }).then(function(res) {
+      }).then(function (res) {
         var json=res.data;
-          $scope.order.servicePlace=json.data;
-          alert('servicePlace=$scope.order.servicePlace');
-        $ionicLoading.hide();
+        var audioAttachId=json.data;
+        if(json.re==1) {
+          //音频下载
+            $http({
+              method: "post",
+              url: Proxy.local() + "/svr/request",
+              headers: {
+                'Authorization': "Bearer " + $rootScope.access_token,
+              },
+              data: {
+                request: 'getAttachByAttachId',
+                info: {
+                  attachId: audioAttachId
+                }
+              }
+            }).then(function (res) {
+              var json = res.data;
+              if (json.re == 1) {
+                alert('urlAddress' + json.data.urlAddress);
+                if(window.cordova!==undefined&&window.cordova!==null)
+                {
+                  var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+                  var fileSystem=null;
+                  if(ionic.Platform.isIOS()) {
+                    fileSystem = cordova.file.documentsDirectory;
+                    $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
+                  }else if(ionic.Platform.isAndroid()) {
+                    alert('cordova file=' + cordova.file);
+                    fileSystem=cordova.file.externalApplicationStorageDirectory;
+                    $scope.target=fileSystem+'test.mp3';
+                  }
+
+
+
+                  $scope.filepath=fileSystem+'test.mp3';
+                  //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+                  alert('target path=\r\n' + $scope.target);
+
+                  var trustHosts = true;
+                  var options = {
+                    fileKey: 'file',
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token
+                    }
+                  };
+
+                  $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
+                    .then(function (res) {
+                      var json=res.response;
+                      if(Object.prototype.toString.call(json)=='[object String]')
+                        json=JSON.parse(json);
+                      alert('success');
+                    }, function (err) {
+                      // Error
+                      alert('error=' + err);
+                      for (var field in err) {
+                        alert('field=' + field + '\r\n' + err[field]);
+                      }
+                    }, function (progress) {
+                      $timeout(function () {
+                        $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                      });
+                    });
+
+                }
+              }
+            }).catch(function(err) {
+              alert('err=\r\n' + err);
+            });
+
+        }
       }).catch(function (err) {
         var str='';
         for(var field in err)
           str+=err[field];
         console.error('err=\r\n'+str);
-        $ionicLoading.hide();
-      });
+      })
     }
 
-    //音频下载
-    if($scope.order.audioAttachId!=null&&$scope.order.audioAttachId!=undefined){
+    $scope.checkAffiliateVideoSource=function () {
       $http({
         method: "post",
         url: Proxy.local() + "/svr/request",
@@ -135,153 +219,95 @@ angular.module('starter')
           'Authorization': "Bearer " + $rootScope.access_token,
         },
         data: {
-          request: 'getAttachByAttachId',
+          request: 'getCarServiceOrderAffiliatedVideoSource',
           info: {
-            attachId: $scope.order.audioAttachId
+            orderId:$scope.order.orderId
           }
         }
       }).then(function (res) {
-        var json = res.data;
-        if (json.re == 1) {
-          alert('urlAddress' + json.data.urlAddress);
-          if(window.cordova!==undefined&&window.cordova!==null)
-          {
-            var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
-            var fileSystem=null;
-            if(ionic.Platform.isIOS()) {
-              fileSystem = cordova.file.documentsDirectory;
-              $scope.target = 'cdvfile://localhost/persistent/' + 'test.mp3';
-            }else if(ionic.Platform.isAndroid()) {
-              fileSystem=cordova.file.externalApplicationStorageDirectory;
-              $scope.target=fileSystem+'test.mp3';
-            }
-
-
-
-            $scope.filepath=fileSystem+'test.mp3';
-            //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
-            alert('target path=\r\n' + $scope.target);
-
-            var trustHosts = true;
-            var options = {
-              fileKey: 'file',
+        var json=res.data;
+        if(json.re==1) {
+          var videoAttachId=json.data;
+          //视频下载
+            $http({
+              method: "post",
+              url: Proxy.local() + "/svr/request",
               headers: {
-                'Authorization': "Bearer " + $rootScope.access_token
+                'Authorization': "Bearer " + $rootScope.access_token,
+              },
+              data: {
+                request: 'getAttachByAttachId',
+                info: {
+                  attachId: videoAttachId
+                }
               }
-            };
+            }).then(function (res) {
+              var json = res.data;
+              if (json.re == 1) {
+                alert('video url=' + json.data.urlAddress);
 
-            $cordovaFileTransfer.download(url, $scope.target, options, trustHosts)
-              .then(function (res) {
-                var json=res.response;
-                if(Object.prototype.toString.call(json)=='[object String]')
-                  json=JSON.parse(json);
-                alert('success');
-              }, function (err) {
-                // Error
-                alert('error=' + err);
-                for (var field in err) {
-                  alert('field=' + field + '\r\n' + err[field]);
+                var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
+                var fileSystem=null;
+                if( ionic.Platform.isIOS()){
+                  fileSystem=cordova.file.documentsDirectory;
+                }else if(ionic.Platform.isAndroid()) {
+                  fileSystem=cordova.file.externalApplicationStorageDirectory;
                 }
-              }, function (progress) {
-                $timeout(function () {
-                  $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-                });
-              });
 
-          }
-        }
-      }).catch(function(err) {
-        alert('err=\r\n' + err);
-      });
-    }
+                //$scope.movieTarget = 'cdvfile://localhost/persistent/' + 'test.mp4';
+                $scope.movieTarget = fileSystem + 'test.mp4';
+                $scope.movieFilepath=fileSystem+'test.mp4';
+                //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
+                alert('target path=\r\n' + $scope.movieTarget);
 
-    //视频下载
-    if($scope.order.videoAttachId!=null&&$scope.order.videoAttachId!=undefined){
-      $http({
-        method: "post",
-        url: Proxy.local() + "/svr/request",
-        headers: {
-          'Authorization': "Bearer " + $rootScope.access_token,
-        },
-        data: {
-          request: 'getAttachByAttachId',
-          info: {
-            attachId: $scope.order.videoAttachId
-          }
-        }
-      }).then(function (res) {
-        var json = res.data;
-        if (json.re == 1) {
-          alert('video url=' + json.data.urlAddress);
+                var trustHosts = true;
+                var options = {
+                  fileKey: 'file',
+                  headers: {
+                    'Authorization': "Bearer " + $rootScope.access_token
+                  }
+                };
 
-          var url = Proxy.local() + '/svr/request?request=downloadAttachment' + '&urlAddress=' + json.data.urlAddress;
-          var fileSystem=null;
-          if( ionic.Platform.isIOS()){
-            fileSystem=cordova.file.documentsDirectory;
-          }else if(ionic.Platform.isAndroid()) {
-            fileSystem=cordova.file.externalApplicationStorageDirectory;
-          }
+                if(window.cordova!==undefined&&window.cordova!==null)
+                {
+                  $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
+                    .then(function (res) {
+                      var json=res.response;
+                      if(Object.prototype.toString.call(json)=='[object String]')
+                        json=JSON.parse(json);
+                      alert(' video download success');
+                    }, function (err) {
+                      // Error
+                      alert('error=' + err);
+                      for (var field in err) {
+                        alert('field=' + field + '\r\n' + err[field]);
+                      }
+                    }, function (progress) {
+                      $timeout(function () {
+                        $scope.downloadProgress = (progress.loaded / progress.total) * 100;
+                      });
+                    });
 
-          //$scope.movieTarget = 'cdvfile://localhost/persistent/' + 'test.mp4';
-          $scope.movieTarget = fileSystem + 'test.mp4';
-          $scope.movieFilepath=fileSystem+'test.mp4';
-          //var targetPath='cdvfile://localhost/persistent/Application/2AF47566-EE4A-41A8-94F5-73ED11427A80/ionic-serve-person.app/test.caf';
-          alert('target path=\r\n' + $scope.movieTarget);
-
-          var trustHosts = true;
-          var options = {
-            fileKey: 'file',
-            headers: {
-              'Authorization': "Bearer " + $rootScope.access_token
-            }
-          };
-
-          if(window.cordova!==undefined&&window.cordova!==null)
-          {
-            $cordovaFileTransfer.download(url, $scope.movieTarget, options, trustHosts)
-              .then(function (res) {
-                var json=res.response;
-                if(Object.prototype.toString.call(json)=='[object String]')
-                  json=JSON.parse(json);
-                alert(' video download success');
-              }, function (err) {
-                // Error
-                alert('error=' + err);
-                for (var field in err) {
-                  alert('field=' + field + '\r\n' + err[field]);
                 }
-              }, function (progress) {
-                $timeout(function () {
-                  $scope.downloadProgress = (progress.loaded / progress.total) * 100;
-                });
-              });
+              }
+            }).catch(function(err) {
+              alert('err=\r\n' + err);
+            });
 
-          }
+
         }
-      }).catch(function(err) {
-        alert('err=\r\n' + err);
-      });
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+      })
     }
 
+    //拉取附带的客户资源
+    $scope.checkAffiliateAudioSource();
+    $scope.checkAffiliateVideoSource();
 
-
-
-
-    //TODO:计时
-    if(order.timeout!==undefined&&order.timeout!==null)
-    {
-      $scope.timer=$interval(function(){
-
-        $rootScope.candidates[$scope.order.orderId].timeout++;
-        $scope.timeout=$rootScope.candidates[$scope.order.orderId].timeout;
-        console.log('timeout=' + $rootScope.candidates[$scope.order.orderId].timeout);
-        if($rootScope.candidates[$scope.order.orderId].timeout>=120)
-        {
-          $interval.cancel($scope.timer);
-          delete $rootScope.candidates[$scope.order.orderId];
-        }
-        },1000);
-    }
 
 
 
@@ -497,13 +523,21 @@ angular.module('starter')
     // media.stop();
 
 
+    $scope.getDuration=function () {
 
-    $scope.play=function(){
+      var filepath=$scope.filepath;
+      filepath = filepath.replace('file://','');
+      var media = $cordovaMedia.newMedia(filepath);
+      if(ionic.Platform.isAndroid()) {
+        media.setVolume(0.1);
+        media.play();
+      }
+    }
 
-      /*** xcode path ***
-       * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
-       */
 
+
+
+    $scope.audioPlay=function () {
       var filepath=$scope.filepath;
       filepath = filepath.replace('file://','');
       var media = $cordovaMedia.newMedia(filepath);
@@ -516,7 +550,71 @@ angular.module('starter')
         media.play(iOSPlayOptions); // iOS only!
       }else if(ionic.Platform.isAndroid()) {
         media.play();
+        var posTimer=function () {
+          media.media.getCurrentPosition(function (pos) {
+            $scope.audio.pos=pos;
+            if(pos>0)
+            {
+            }else{
+              if($scope.timer!==undefined&&$scope.timer!==null)
+                $interval.cancel($scope.timer);
+            }
+          });
+        }
+        $scope.timer=$interval(posTimer,40);
+
+
       }else{}
+    }
+
+
+
+    $scope.play=function(){
+
+      /*** xcode path ***
+       * file:///var/mobile/Containers/Data/Application/76687390-A99F-4220-9EB0-BB5A63154412/Documents/abc.caf
+       */
+
+      if($scope.audio.media!==undefined&&$scope.audio.media!==null)
+      {}else{
+        var filepath=$scope.filepath;
+        filepath = filepath.replace('file://','');
+        $scope.audio.media = $cordovaMedia.newMedia(filepath);
+      }
+
+
+      $scope.audio.media.media.getCurrentPosition(function (pos) {
+        $scope.audio.pos=pos;
+        if(pos>0)
+        {
+          var myPopup = $ionicPopup.alert({
+            template: '音频还未播放结束',
+            title: '信息'
+          });
+        }else{
+          if(ionic.Platform.isIOS()) {
+            var iOSPlayOptions = {
+              numberOfLoops: 2,
+              playAudioWhenScreenIsLocked : false
+            }
+            $scope.audio.media.play(iOSPlayOptions); // iOS only!
+          }else if(ionic.Platform.isAndroid()) {
+            $scope.audio.media.play();
+            $scope.isPlaying=true;
+            var timer=function () {
+              $scope.audio.media.media.getCurrentPosition(function (pos) {
+                if(pos<0)
+                {
+                  $scope.isPlaying=false;
+                  if($scope.audio.timer!==undefined&&$scope.audio.timer!==null)
+                    $interval.cancel($scope.audio.timer);
+                }
+              });
+            }
+            $scope.audio.timer=$interval(timer,500);
+          }else{}
+        }
+      });
 
     }
 
@@ -634,6 +732,39 @@ angular.module('starter')
       });
     }
 
+    $scope.makePhone=function (phone) {
+
+      $http({
+        method: "post",
+        url:Proxy.local()+"/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data:
+          {
+            request:'fetchCustomerPhoneInServiceOrder',
+            info:{
+              order:$scope.order.orderId
+            }
+          }
+      }).then(function (res) {
+        var json=res.data;
+        if(json.re==1) {
+          var phone=json.data;
+          window.PhoneCaller.call(phone,function () {
+            console.log('successfully make phone call');
+          }, function () {
+            console.log('phone call encoutner error');
+          });
+        }
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+      })
+
+    }
 
 
   });

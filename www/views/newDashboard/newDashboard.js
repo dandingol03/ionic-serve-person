@@ -7,7 +7,8 @@ angular.module('starter')
                                              Proxy,$stateParams,$ionicPopover,
                                                 $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate,
                                                 $cordovaFile,$q,$cordovaFileTransfer,
-                                                $cordovaMedia,$timeout){
+                                                $cordovaMedia,$timeout,$cordovaPreferences,
+                                              $ionicHistory){
 
 
 
@@ -19,8 +20,36 @@ angular.module('starter')
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
 
 
+    $rootScope.$on('__REFRESH__', function(event, args) {
+      console.log('...data refresh...');
+    });
+
     $scope.goto=function (state) {
       $state.go(state);
+    }
+
+    //退出
+    $scope.quit=function () {
+      //TODO:inject service person quit
+      $ionicHistory.clearHistory();
+      $ionicHistory.clearCache();
+      if(window.cordova)
+      {
+        $cordovaPreferences.store('username', '')
+          .success(function(value) {
+            $cordovaPreferences.store('password', '')
+              .success(function(value) {
+                $state.go('login');
+              })
+              .error(function(error) {
+                console.error("Error: " + error);
+              })
+          })
+          .error(function(error) {
+            console.error("Error: " + error);
+          })
+      }
+      $rootScope.$emit('ACK_QUIT', 'ack successfully');
     }
 
     $scope.tabIndex=0;
@@ -71,6 +100,7 @@ angular.module('starter')
           {
             $scope.orders={0:[],1:[],2:[]};
             $scope.orders[0]=json.data;
+            $rootScope.flags.serviceOrders.data.notTakens=json.data;
 
             $scope.orders[0].map(function(order,i) {
 
@@ -106,9 +136,13 @@ angular.module('starter')
                   request:'getServiceOrdersInTaken'
                 }
             });
+          }else
+          {
+            throw new Error('dwdwdw');
           }
         }).then(function (res) {
           var json=res.data;
+          $rootScope.flags.serviceOrders.data.takens=json.data;
           $scope.takens=[];
           if(json.data!==undefined&&json.data!==null)
           {
@@ -117,22 +151,63 @@ angular.module('starter')
               $scope.takens.push(order);
             });
           }
-
+          $rootScope.flags.serviceOrders.onFresh=false;
           $ionicLoading.hide();
       }).catch(function(err) {
-        var str='';
-        for(var field in err)
-        {
-          str+=err[field];
-        }
-        console.error('err=\r\n'+str);
+        var msg=err.message;
+        console.error('err=\r\n'+msg);
         $ionicLoading.hide();
 
       });
 
     }
 
-    $scope.getOrders();
+    if($rootScope.flags.serviceOrders.onFresh==true)
+    {
+      $scope.getOrders();
+    }else{
+      var notTakens=$rootScope.flags.serviceOrders.data.notTakens;
+      var takens=$rootScope.flags.serviceOrders.data.takens;
+
+        $scope.orders={0:[],1:[],2:[]};
+        $scope.orders[0]=notTakens;
+      if($scope.orders[0]!==undefined&&$scope.orders[0]!==null&&$scope.orders[0].length>0)
+      {
+        $scope.orders[0].map(function(order,i) {
+
+          order.serviceName=$scope.serviceTypeMap[order.serviceType];
+          if(order.subServiceTypes!=null){
+            var subServiceTypes=order.subServiceTypes;
+            var types=subServiceTypes.split(',');
+            var serviceContent=[];
+            types.map(function(type,i) {
+              serviceContent.push($scope.subServiceTypeMap[type]);
+            });
+            order.subServiceContent=serviceContent;
+          }
+
+          //estimateTime为订单的预计时间
+
+          if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
+            $scope.orders[1].push(order);
+          if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
+            $scope.orders[2].push(order);
+        });
+      }
+
+
+
+      $scope.takens=[];
+      if(takens!==undefined&&takens!==null&&takens.length>0)
+      {
+        takens.map(function (order, i) {
+          order.serviceName=$scope.serviceTypeMap[order.serviceType];
+          $scope.takens.push(order);
+        });
+      }
+
+
+    }
 
     $scope.showOrderDetail=function(order){
       //TODO:sync timeout with $rootScope
