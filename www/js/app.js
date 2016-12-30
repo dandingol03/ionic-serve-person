@@ -7,8 +7,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
 
 
-
-
   .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,$cordovaMedia,$interval) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
@@ -37,7 +35,9 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
       $rootScope.$on('ACK_AUTH', function(event, args) {
         if($rootScope.timers.serviceOrders!==undefined&&$rootScope.timers.serviceOrders!==null)
-        {}
+        {
+
+        }
         else{
           var timer=function () {
             $rootScope.flags.serviceOrders.onFresh=true;
@@ -45,7 +45,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           }
           $rootScope.timers.serviceOrders=$interval(timer,120000);
         }
-
       });
 
       //用户注销时删除计时
@@ -62,7 +61,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       });
 
 
-        window.plugins.jPushPlugin.init();
+      window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
 
 
@@ -253,20 +252,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           }
         }
       })
-
-
-      //
-      // .state('tabs.newDashboard',{
-      //   cache:false,
-      //   url:'/newDashboard/:action',
-      //   views:{
-      //     'newDashboard-tab':{
-      //       controller:'newDashboardController',
-      //       templateUrl:'views/newDashboard/newDashboard.html'
-      //     }
-      //   }
-      // })
-
 
       .state('newDashboard',{
         cache:false,
