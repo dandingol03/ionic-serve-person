@@ -8,7 +8,7 @@ angular.module('starter')
                                                 $ionicLoading,$ionicSideMenuDelegate,$ionicTabsDelegate,
                                                 $cordovaFile,$q,$cordovaFileTransfer,
                                                 $cordovaMedia,$timeout,$cordovaPreferences,
-                                              $ionicHistory){
+                                              $ionicHistory,$ionicPopup){
 
 
 
@@ -27,6 +27,37 @@ angular.module('starter')
     $scope.goto=function (state) {
       $state.go(state);
     }
+
+    //监听用户的取消订单消息
+    $rootScope.$on('ORDER_CANCEL', function(event, data) {
+
+      var confirmPopup = $ionicPopup.confirm({
+        title: '信息',
+        template: data
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          $scope.getOrders();
+        }
+      })
+    });
+
+    //监听用户的完成订单消息
+    $rootScope.$on('ORDER_FINISH', function(event, data) {
+
+      var confirmPopup = $ionicPopup.confirm({
+        title: '信息',
+        template: data
+      });
+      confirmPopup.then(function(res) {
+        if(res) {
+          $scope.getOrders();
+        }
+      })
+    });
+
+
+
 
     //退出
     $scope.quit=function () {
@@ -99,30 +130,33 @@ angular.module('starter')
           if(json.re==1)
           {
             $scope.orders={0:[],1:[],2:[]};
-            $scope.orders[0]=json.data;
-            $rootScope.flags.serviceOrders.data.notTakens=json.data;
+            $rootScope.flags.serviceOrders.data.notTakens=[];
+            if(json.data!==undefined&&json.data!==null)
+            {
+              $scope.orders[0]=json.data;
+              $rootScope.flags.serviceOrders.data.notTakens=json.data;
+              $scope.orders[0].map(function(order,i) {
 
-            $scope.orders[0].map(function(order,i) {
+                order.serviceName=$scope.serviceTypeMap[order.serviceType];
+                if(order.subServiceTypes!=null){
+                  var subServiceTypes=order.subServiceTypes;
+                  var types=subServiceTypes.split(',');
+                  var serviceContent=[];
+                  types.map(function(type,i) {
+                    serviceContent.push($scope.subServiceTypeMap[type]);
+                  });
+                  order.subServiceContent=serviceContent;
+                }
 
-              order.serviceName=$scope.serviceTypeMap[order.serviceType];
-              if(order.subServiceTypes!=null){
-                var subServiceTypes=order.subServiceTypes;
-                var types=subServiceTypes.split(',');
-                var serviceContent=[];
-                types.map(function(type,i) {
-                  serviceContent.push($scope.subServiceTypeMap[type]);
-                });
-                order.subServiceContent=serviceContent;
-              }
+                //estimateTime为订单的预计时间
 
-              //estimateTime为订单的预计时间
+                if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
+                  $scope.orders[1].push(order);
+                if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
+                  $scope.orders[2].push(order);
+              });
 
-              if(order.serviceType=='11'||order.serviceType=='12'||order.serviceType=='13')
-                $scope.orders[1].push(order);
-              if(order.serviceType=='21'||order.serviceType=='22'||order.serviceType=='23'||order.serviceType=='24')
-                $scope.orders[2].push(order);
-            });
-
+            }
 
             //拉取服务中的订单
             return $http({
@@ -138,7 +172,12 @@ angular.module('starter')
             });
           }else
           {
-            throw new Error('dwdwdw');
+            $timeout(function () {
+              var myPopup = $ionicPopup.alert({
+                template: '非法的服务人员帐号',
+                title: '错误'
+              });
+            },400);
           }
         }).then(function (res) {
           var json=res.data;
@@ -161,6 +200,28 @@ angular.module('starter')
       });
 
     }
+
+
+    $scope.changeIndex=function (i) {
+      if(i==2)
+      {
+        //TODO:open self configure panel
+        $ionicSideMenuDelegate.toggleLeft();
+      }
+      if(i!=2)
+        $scope.pageIndex=i;
+      $ionicTabsDelegate.select(i);
+    }
+
+
+    if($rootScope.flags.serviceOrders.pageIndex!==undefined&&$rootScope.flags.serviceOrders.pageIndex!==null
+      &&$rootScope.flags.serviceOrders.pageIndex>0)
+    {
+      $timeout(function () {
+        $scope.changeIndex($rootScope.flags.serviceOrders.pageIndex);
+      }, 100);
+    }
+
 
     if($rootScope.flags.serviceOrders.onFresh==true)
     {
@@ -225,17 +286,6 @@ angular.module('starter')
     $scope.toggleLeft = function() {
       $ionicSideMenuDelegate.toggleLeft();
     };
-
-    $scope.changeIndex=function (i) {
-      if(i==2)
-      {
-        //TODO:open self configure panel
-        $ionicSideMenuDelegate.toggleLeft();
-      }
-      if(i!=2)
-        $scope.pageIndex=i;
-      $ionicTabsDelegate.select(i);
-    }
 
     $scope.playPool=function (files,interval) {
       var filePath=files[0];

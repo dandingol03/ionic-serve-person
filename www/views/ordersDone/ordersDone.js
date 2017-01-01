@@ -9,6 +9,7 @@ angular.module('starter')
 
 
     $scope.go_back=function () {
+      $rootScope.flags.serviceOrders.pageIndex=2;
       window.history.back();
     }
 

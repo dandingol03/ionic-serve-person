@@ -9,7 +9,8 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
 
 
-  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,$cordovaMedia,$interval) {
+  .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,
+                $cordovaMedia,$interval,$http) {
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
 
@@ -98,6 +99,160 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                 } else {}
               });
               $rootScope.flags.serviceOrders.onFresh=true;
+              break;
+            case 'orderCancel':
+              var orderId=message.orderId;
+              $http({
+                method: "POST",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                },
+                data: {
+                  request: 'getCarServiceOrderByOrderId',
+                  info: {
+                    orderId:orderId
+                  }
+                }
+              }).then(function (res) {
+                var json=res.data;
+                if(json.re==1) {
+                  var order=json.data;
+                  $rootScope.flags.serviceOrders.onFresh=true;
+                  $rootScope.$emit('ORDER_CANCEL', '订单号为'+order.orderNum+'的用户取消服务,是否现在立即刷新界面');
+
+                  var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                    '订单号为'+order.orderNum+'的用户取消服务'+'&ttsToken='+$rootScope.ttsToken;
+                  fileSystem=cordova.file.externalApplicationStorageDirectory;
+                  alert('fileSystem=\r\n' + fileSystem);
+                  var target=fileSystem+'temp.mp3';
+                  var trustHosts = true;
+                  var options = {
+                    fileKey: 'file',
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token
+                    }
+                  };
+                  $cordovaFileTransfer.download(url, target, options, trustHosts)
+                    .then(function (res) {
+                      //TODO:播放录音
+
+                      var filepath=fileSystem+'temp.mp3';
+                      filepath = filepath.replace('file://','');
+                      var media = $cordovaMedia.newMedia(filepath);
+
+                      if(ionic.Platform.isIOS()) {
+                      }else if(ionic.Platform.isAndroid()) {
+                        media.play();
+                      }else{}
+                      console.log('tts speach generate success');
+                    }, function (err) {
+                      console.log('err=========================');
+                      var str='';
+                      for(var field in err)
+                        str+=field+':'+'\r\n'+err[field];
+                      console.log('error=' + str);
+                    }, function (progress) {
+
+                    });
+                }
+              })
+              break;
+            case 'agreeWithCandidate':
+              var orderId=message.orderId;
+              $http({
+                method: "POST",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                },
+                data: {
+                  request: 'getCarServiceOrderByOrderId',
+                  info: {
+                   orderId:orderId
+                  }
+                }
+              }).then(function (res) {
+                var json=res.data;
+                if(json.data!==undefined&&json.data!==null)
+                {
+                  var order=json.data;
+                  var confirmPopup = $ionicPopup.confirm({
+                    title: '信息',
+                    template: '订单号为'+order.orderNum+'的订单已成功接单'
+                  });
+                  confirmPopup.then(function(res) {
+                    if(res) {
+                      //TODO:进入相应订单详情页
+                      $state.go('orderDetail',{order:JSON.stringify({content:order})});
+                    } else {}
+                  });
+                  $rootScope.flags.serviceOrders.onFresh=true;
+                }
+              }).catch(function (err) {
+                var str='';
+                for(var field in err)
+                  str+=err[field];
+                console.error('err=\r\n'+str);
+              })
+              break;
+            case 'orderFinish':
+              var orderId=message.orderId;
+              $http({
+                method: "POST",
+                url: Proxy.local() + "/svr/request",
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                },
+                data: {
+                  request: 'getCarServiceOrderByOrderId',
+                  info: {
+                    orderId:orderId
+                  }
+                }
+              }).then(function (res) {
+                var json=res.data;
+                if(json.re==1) {
+                  var order=json.data;
+                  $rootScope.flags.serviceOrders.onFresh=true;
+                  $rootScope.$emit('ORDER_FINISH', '订单号为'+order.orderNum+'的订单已被用户确认为完成,是否现在立即刷新界面');
+
+                  var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                  '订单号为'+order.orderNum+'的订单已被用户确认为完成'+'&ttsToken='+$rootScope.ttsToken;
+                  fileSystem=cordova.file.externalApplicationStorageDirectory;
+                  alert('fileSystem=\r\n' + fileSystem);
+                  var target=fileSystem+'temp.mp3';
+                  var trustHosts = true;
+                  var options = {
+                    fileKey: 'file',
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token
+                    }
+                  };
+                  $cordovaFileTransfer.download(url, target, options, trustHosts)
+                    .then(function (res) {
+                      //TODO:播放录音
+
+                      var filepath=fileSystem+'temp.mp3';
+                      filepath = filepath.replace('file://','');
+                      var media = $cordovaMedia.newMedia(filepath);
+
+                      if(ionic.Platform.isIOS()) {
+                      }else if(ionic.Platform.isAndroid()) {
+                        media.play();
+                      }else{}
+                      console.log('tts speach generate success');
+                    }, function (err) {
+                      console.log('err=========================');
+                      var str='';
+                      for(var field in err)
+                        str+=field+':'+'\r\n'+err[field];
+                      console.log('error=' + str);
+                    }, function (progress) {
+
+                    });
+                }
+              })
               break;
             default:
 
@@ -380,7 +535,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.148:3000";
+          return "http://192.168.1.121:3000";
         else
           return "/proxy/node_server";
       }
