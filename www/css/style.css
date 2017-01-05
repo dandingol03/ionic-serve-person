@@ -206,3 +206,17 @@ img.profile-pic.right {
     border-color: rgba(255, 168, 204, 0.64);
   }
 }
+
+
+.bar-green {
+  background: rgb(55, 144, 139);;
+}
+
+.bar-green .header-item{
+  color:#fff;
+}
+
+.bar-green span,
+.bar-green h1{
+  color:#fff;
+}

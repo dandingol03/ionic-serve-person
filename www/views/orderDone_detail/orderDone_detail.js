@@ -149,6 +149,17 @@ angular.module('starter')
     }
 
 
+    //填取评价级别
+    if($scope.order.evaluate!==undefined&&$scope.order.evaluate!==null)
+    {
+      for(var i=0;i<parseInt($scope.order.evaluate);i++)
+      {
+        $scope.stars[i].checked=true;
+      }
+      $scope.starCount=parseInt($scope.order.evaluate);
+    }
+
+
     $http({
       method:"post",
       url:Proxy.local()+"/svr/request",

@@ -5,7 +5,8 @@ angular.module('starter')
 
   .controller('loginController',function($scope,$state,$ionicLoading,
                                          $http,$rootScope,Proxy,$cordovaPreferences,
-                                         $ionicPlatform){
+                                         $ionicPlatform,$cordovaFile,
+                                         $ionicPopup){
 
     $scope.user={};
 
@@ -68,6 +69,9 @@ angular.module('starter')
               .error(function(error) {
                 alert("Error: " + error);
               });
+          }else{
+            //浏览器环境
+            window.localStorage.user=JSON.stringify($scope.user);
           }
 
           return   $http({
@@ -109,10 +113,43 @@ angular.module('starter')
         }
         $state.go('newDashboard');
       }).catch(function(err) {
-        var str='';
-        for(var field in err)
-          str+=err[field];
-        alert('error=' + str);
+
+        var msg=err.data;
+        if(msg.error=='invalid_grant')
+        {
+          if(msg.error_description=='User credentials are invalid')
+          {
+
+            $http({
+              method: "POST",
+              url: Proxy.local() + "/validateUser?username="+$scope.user.username+'&'+'password='+$scope.user.password,
+              headers: {
+                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                'Content-Type': 'application/x-www-form-urlencoded'
+              }
+            }).then(function (res) {
+              var json=res.data;
+              if(json.re==2)
+              {
+                $ionicPopup.alert({
+                  title: '错误',
+                  template: json.data
+                });
+              }else if(json.re==-1)
+              {
+                $ionicPopup.alert({
+                  title: '错误',
+                  template: '用户名不存在'
+                });
+              }else{}
+            })
+          }
+        }else{
+          var str='';
+          for(var field in err)
+            str+=err[field];
+          alert('error=' + str);
+        }
       });
     }
 
@@ -120,7 +157,7 @@ angular.module('starter')
 
       if($rootScope.registrationId==undefined||$rootScope.registrationId==null||$rootScope.registrationId=='')
       {
-        $scope.login();
+
         if(window.cordova!==undefined&&window.cordova!==null)
         {
           try{
@@ -173,8 +210,34 @@ angular.module('starter')
     if(window.cordova)
     {
       $ionicPlatform.ready (function () {
+
+
+
+        //删出danding.wav文件
+        if(ionic.Platform.isAndroid())
+        {
+          $cordovaFile.removeFile(cordova.file.externalRootDirectory, "danding.wav")
+            .then(function (success) {
+              alert('success=' + success);
+            }, function (error) {
+              // error
+              alert('err=' + error);
+            });
+        }
+
+
         $scope.fetch();
       })
+    }else{
+      //浏览器环境
+      if(window.localStorage.user!==undefined&&window.localStorage.user!==null)
+      {
+        var user=window.localStorage.user;
+        if(Object.prototype.toString.call(user)=='[object String]')
+          user=JSON.parse(user);
+        if(user!==undefined&&user!==null)
+          $scope.user=user;
+      }
     }
 
     $scope.makePhone=function (phone) {

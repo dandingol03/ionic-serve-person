@@ -14,8 +14,6 @@ angular.module('starter')
       4:'轮胎更换',5:'燃油添加剂',6:'空气滤清器',7:'检查火花塞',8:'检查驱动皮带',9:'更换空调滤芯',10:'更换蓄电池,防冻液'};
 
 
-
-
     $scope.audio={
       pos:0
     }
@@ -103,10 +101,76 @@ angular.module('starter')
       $scope.timer=$interval(timer,1000);
 
 
+      $scope.getServicePlaceByServicePlaceId=function (type,placeId) {
+        $http({
+          method: "post",
+          url: Proxy.local() + "/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data: {
+            request: 'getServicePlaceByServicePlaceId',
+            info: {
+              type:type,
+              placeId:placeId
+            }
+          }
+        }).then(function (res) {
+          var json=res.data;
+          if(json.re==1) {
+            $scope.order.servicePlace=json.data;
+          }
+        }).catch(function (err) {
+          var str='';
+          for(var field in err)
+            str+=err[field];
+          console.error('err=\r\n'+str);
+        })
+      }
+
+      $scope.getCustomerPlaceByCustomerPlaceId=function (customerPlaceId) {
+
+        $http({
+          method: "post",
+          url: Proxy.local() + "/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data: {
+            request: 'getCustomerPlaceByCustomerPlaceId',
+            info: {
+              placeId:customerPlaceId
+            }
+          }
+        }).then(function (res) {
+          var json=res.data;
+          if(json.re==1) {
+            $scope.order.customerPlace=json.data;
+          }
+        }).catch(function (err) {
+          var str='';
+          for(var field in err)
+            str+=err[field];
+          console.error('err=\r\n'+str);
+        })
+      }
 
       //TODO:拉取维修厂所或者服务地点
-      if($scope.order.servicePersonId!==undefined&&$scope.order.servicePersonId!==null)
-        $scope.getServicePlaceByServicePersonId($scope.order.servicePersonId);
+      switch($scope.order.serviceType)
+      {
+        case '21':
+          $scope.getServicePlaceByServicePlaceId($scope.order.serviceType,$scope.order.servicePlaceId);
+          break;
+        case '23':
+          $scope.getServicePlaceByServicePlaceId($scope.order.serviceType,$scope.order.servicePlaceId);
+          $scope.getCustomerPlaceByCustomerPlaceId($scope.order.customerPlaceId);
+          break;
+        default:
+          if($scope.order.servicePersonId!==undefined&&$scope.order.servicePersonId!==null)
+            $scope.getServicePlaceByServicePersonId($scope.order.servicePersonId);
+          break;
+      }
+
 
     }
 
@@ -183,7 +247,7 @@ angular.module('starter')
                       var json=res.response;
                       if(Object.prototype.toString.call(json)=='[object String]')
                         json=JSON.parse(json);
-                      alert('success');
+                      $scope.audioDownload=true;
                     }, function (err) {
                       // Error
                       alert('error=' + err);
@@ -275,7 +339,7 @@ angular.module('starter')
                       var json=res.response;
                       if(Object.prototype.toString.call(json)=='[object String]')
                         json=JSON.parse(json);
-                      alert(' video download success');
+                      $scope.videoDownload=true;
                     }, function (err) {
                       // Error
                       alert('error=' + err);
@@ -305,8 +369,11 @@ angular.module('starter')
     }
 
     //拉取附带的客户资源
-    $scope.checkAffiliateAudioSource();
-    $scope.checkAffiliateVideoSource();
+    if(window.cordova)
+    {
+      $scope.checkAffiliateAudioSource();
+      $scope.checkAffiliateVideoSource();
+    }
 
 
 
@@ -314,6 +381,17 @@ angular.module('starter')
     $scope.go_back=function(){
       if($scope.timer!==undefined&&$scope.timer!==null)
         $interval.cancel($scope.timer);
+      switch($scope.order.orderState)
+      {
+        case 1:
+          $rootScope.flags.serviceOrders.pageIndex=0;
+          break;
+        case 2:
+          $rootScope.flags.serviceOrders.pageIndex=1;
+          break;
+        default:
+          break;
+      }
       window.history.back();
     };
 

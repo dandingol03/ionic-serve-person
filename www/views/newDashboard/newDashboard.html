@@ -54,7 +54,7 @@
             </div>
 
 
-            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('my_evaluate')">
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="toggleLeft()">
               <span style="display: inline-block;width: 20%;text-align: center">
                 <span style="font-size: 1.4em;color:#eee;">
                   <i class="ion-star"></i>
@@ -62,7 +62,22 @@
               </span>
 
               <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;">
-                服务评分
+                <span style="vertical-align: middle;">服务评分</span>
+                <span style="color:#dca660;font-size: 1.6em;vertical-align: middle;">
+                  &nbsp;&nbsp;&nbsp;{{credit_average}}
+                </span>
+              </span>
+            </div>
+
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('password_modify')">
+              <span style="display: inline-block;width: 20%;text-align: center">
+                <span style="font-size: 1.4em;color:#eee;">
+                  <i class="fa fa-unlock-alt"></i>
+                </span>
+              </span>
+
+              <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;">
+                修改密码
               </span>
             </div>
 
@@ -86,7 +101,7 @@
                 <li style="width: 50%;height: 100%;text-align: center;float:left;color:#fff;">
                   <div style="width: 100%;height: 100%;display: table;">
                     <div style="display: table-cell;vertical-align: middle;">
-                      <span style="font-size: 2em;color:#da4d02">
+                      <span style="font-size: 2em;color:#da4d02" ng-if="takens.length>0">
                         <i class="fa fa-lightbulb-o"></i>
                       </span>
                       <div>
@@ -115,11 +130,11 @@
                       border-color:#c7eeec;background-color: #0a9dc7;background-image: linear-gradient(0deg, #0a9dc7, #0a9dc7 50%, transparent 50%);">
             <h1 class="title"
                 style="display: inline-block;width: 90%;margin-left:5%;text-align:center;margin-top:0%;color:#fff;">
-              <span style="display: inline-block;width: 10%;text-align: center;font-size: 2em;"
+              <span style="display: inline-block;width: 10%;text-align: center;font-size: 2em;vertical-align: middle;"
                     ng-click="toggleLeft()">
                 <i class="ion-navicon"></i>
               </span>
-              <span style="display: inline-block;width: 70%;text-align: center;">
+              <span style="display: inline-block;width: 70%;text-align: center;vertical-align: middle;">
                 <span ng-if="pageIndex==0">
                   可接服务订单
                 </span>
@@ -127,7 +142,9 @@
                   服务中订单
                 </span>
               </span>
-              <span style="display: inline-block;font-size: 2em;text-align: center;width: 20%;">
+              <span style="display: inline-block;font-size: 2em;text-align: center;width: 20%;color:#fff;vertical-align: middle;"
+                 ng-click="getOrders()">
+                <i class="ion-refresh"></i>
               </span>
               <span style="display: inline-block;width: 5%;">
               </span>
@@ -168,7 +185,7 @@
 
                 <div class="list padding" style="width: 100%;height: 100%;">
                   <div class="item" ng-repeat="order in orders[tabIndex] | orderBy:'-applyTime'"
-                       style="height: 75px;position: relative;border-right: 0px;border-left:0px;width: 100%;"
+                       style="height: 70px;position: relative;border-right: 0px;border-left:0px;width: 100%;"
                        ng-click="showOrderDetail(order)">
 
                     <div style="position: absolute;width: 30%;height: 100%;left:0;top:0;">
@@ -230,11 +247,17 @@
 
                         <!-- 非系统指派订单 -->
                         <div ng-if="order.businesserId==undefined||order.businesserId==null">
-                           <div style="width: 100%;margin-top: 18px;">
-                            <div>
+                           <div style="width: 100%;margin-top: 7px;">
+                            <div style="margin-bottom: 4px;">
                               <span style="font-size: 0.8em;">详细</span>
                               <span style="font-size: 1.8em;vertical-align: middle;"><i class="ion-ios-information-outline"></i></span>
                             </div>
+
+                             <div ng-if="order.candidateState==2">
+                               <span style="padding:2px 8px;border-radius: 12px;border:1px solid #ff6a39;color:#d62518;font-size: 0.9em;">
+                                 已申请
+                               </span>
+                             </div>
                           </div>
                         </div>
 
@@ -313,15 +336,15 @@
 
 
                     <span style="width:20%;height:100%;position: absolute;left:80%;top:0;text-align: center;">
-                    <div style="width: 100%;height: 100%;display: table;">
-                      <span style="display:table-cell;vertical-align: middle;">
-                        <div>
-                          <span style="font-size: 0.8em;">详细</span>
-                          <span style="font-size: 1.8em;"><i class="ion-ios-information-outline"></i></span>
-                        </div>
-                      </span>
-                    </div>
-                  </span>
+                      <div style="width: 100%;height: 100%;display: table;">
+                        <span style="display:table-cell;vertical-align: middle;">
+                          <div style="margin-bottom: 4px;">
+                            <span style="font-size: 0.8em;">详细</span>
+                            <span style="font-size: 1.8em;"><i class="ion-ios-information-outline"></i></span>
+                          </div>
+                        </span>
+                      </div>
+                    </span>
 
 
                   </div>
@@ -341,11 +364,11 @@
 
           <ion-tabs class="tabs-danding tabs-icon-top">
 
-            <ion-tab title="主页" icon-on="ion-ios-filing" icon-off="ion-ios-filing-outline" ng-click="changeIndex(0)">
+            <ion-tab title="主页" ng-click="changeIndex(0)"  icon-on="ion-ios-filing" icon-off="ion-ios-filing-outline" ng-click="changeIndex(0)">
               <!-- Tab 1 content -->
             </ion-tab>
 
-            <ion-tab title="服务中订单" icon-on="ion-ios-clock" icon-off="ion-ios-clock-outline" ng-click="changeIndex(1)">
+            <ion-tab id="serviced" title="服务中订单" ng-click="changeIndex(1)" icon-on="ion-ios-clock" icon-off="ion-ios-clock-outline" >
               <!-- Tab 2 content -->
             </ion-tab>
 
@@ -355,7 +378,7 @@
 
           </ion-tabs>
 
-        </ion-content>
+        </ion-conten
       </ion-side-menu-content>
     </ion-side-menus>
 
