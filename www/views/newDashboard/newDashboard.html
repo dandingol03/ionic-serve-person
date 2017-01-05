@@ -54,7 +54,7 @@
             </div>
 
 
-            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('my_evaluate')">
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="toggleLeft()">
               <span style="display: inline-block;width: 20%;text-align: center">
                 <span style="font-size: 1.4em;color:#eee;">
                   <i class="ion-star"></i>
@@ -62,7 +62,22 @@
               </span>
 
               <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;">
-                服务评分
+                <span style="vertical-align: middle;">服务评分</span>
+                <span style="color:#dca660;font-size: 1.6em;vertical-align: middle;">
+                  &nbsp;&nbsp;&nbsp;{{credit_average}}
+                </span>
+              </span>
+            </div>
+
+            <div class="item" style="border:0px;padding:14px;background: transparent;" ng-click="goto('password_modify')">
+              <span style="display: inline-block;width: 20%;text-align: center">
+                <span style="font-size: 1.4em;color:#eee;">
+                  <i class="fa fa-unlock-alt"></i>
+                </span>
+              </span>
+
+              <span style="display: inline-block;width: 80%;text-align: left;color:#fff;font-size: 1em;font-weight: bolder;">
+                修改密码
               </span>
             </div>
 

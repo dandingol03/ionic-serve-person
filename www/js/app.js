@@ -488,11 +488,13 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
         templateUrl:'views/my_wallet/my_wallet.html'
       })
 
-      .state('my_evaluate',{
-        url:'/my_evaluate',
-        controller:'myEvaluateController',
-        templateUrl:'views/my_evaluate/my_evaluate.html'
+
+      .state('password_modify',{
+        url:'/password_modify',
+        controller:'passwordModifyController',
+        templateUrl:'views/password_modify/password_modify.html'
       })
+
 
 
 
@@ -519,7 +521,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.121:3000";
+          return "http://139.129.96.231:3000";
         else
           return "/proxy/node_server";
       }

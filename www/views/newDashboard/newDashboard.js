@@ -79,6 +79,10 @@ angular.module('starter')
           .error(function(error) {
             console.error("Error: " + error);
           })
+      }else{
+        //浏览器环境
+        localStorage.user=null;
+        $state.go('login');
       }
       $rootScope.$emit('ACK_QUIT', 'ack successfully');
     }
@@ -190,8 +194,48 @@ angular.module('starter')
               $scope.takens.push(order);
             });
           }
-          $rootScope.flags.serviceOrders.onFresh=false;
-          $ionicLoading.hide();
+
+
+          return  $http({
+            method: "post",
+            url:Proxy.local()+"/svr/request",
+            headers: {
+              'Authorization': "Bearer " + $rootScope.access_token,
+            },
+            data:
+              {
+                request:'getHistoryServiceOrders'
+              }
+          });
+
+
+      }).then(function (res) {
+        var json=res.data;
+
+        var evaluateTotal=0;
+        var evaluateCount=0;
+        if(json.re==1)
+        {
+          var orders=json.data;
+          if(orders!==undefined&&orders!==null)
+          {
+            orders.map(function (order, i) {
+              if(order.evaluate!==undefined&&order.evaluate!==null)
+              {
+                evaluateTotal+=order.evaluate;
+                evaluateCount++;
+              }
+            });
+          }
+        }
+        if(evaluateCount==0)
+          $scope.credit_average=0;
+        else
+          $scope.credit_average=evaluateTotal/evaluateCount;
+
+
+        $rootScope.flags.serviceOrders.onFresh=false;
+        $ionicLoading.hide();
       }).catch(function(err) {
         var msg=err.message;
         console.error('err=\r\n'+msg);
@@ -201,6 +245,10 @@ angular.module('starter')
 
     }
 
+
+    $scope.toggleLeft=function () {
+      $ionicSideMenuDelegate.toggleLeft();
+    }
 
     $scope.changeIndex=function (i) {
       if(i==2)
