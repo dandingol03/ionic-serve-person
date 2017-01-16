@@ -23,6 +23,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       $rootScope.flags={
         serviceOrders:{
           onFresh:true,
+          clear:false,
           data:{}
         }
       }
@@ -97,6 +98,55 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                 } else {}
               });
               $rootScope.flags.serviceOrders.onFresh=true;
+              break;
+            case 'customer_appoint':
+              //用户直接指定服务人员
+              var content='您被系统指派了订单，订单号为'+message.order.orderNum;
+
+              var confirmPopup = $ionicPopup.confirm({
+                title: '信息',
+                template: content
+              });
+              confirmPopup.then(function(res) {
+                if(res) {
+                  //TODO:进入相应订单详情页
+                  $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
+                } else {}
+              });
+              $rootScope.flags.serviceOrders.onFresh=true;
+              var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                content+'&ttsToken='+$rootScope.ttsToken;
+              fileSystem=cordova.file.externalApplicationStorageDirectory;
+              var target=fileSystem+'temp.mp3';
+              var trustHosts = true;
+              var options = {
+                fileKey: 'file',
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                }
+              };
+              $cordovaFileTransfer.download(url, target, options, trustHosts)
+                .then(function (res) {
+                  //TODO:播放录音
+
+                  var filepath=fileSystem+'temp.mp3';
+                  filepath = filepath.replace('file://','');
+                  var media = $cordovaMedia.newMedia(filepath);
+
+                  if(ionic.Platform.isIOS()) {
+                  }else if(ionic.Platform.isAndroid()) {
+                    media.play();
+                  }else{}
+                  console.log('tts speach generate success');
+                }, function (err) {
+                  console.log('err=========================');
+                  var str='';
+                  for(var field in err)
+                    str+=field+':'+'\r\n'+err[field];
+                  console.log('error=' + str);
+                }, function (progress) {
+
+                });
               break;
             case 'orderCancel':
               var orderId=message.orderId;
@@ -195,6 +245,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               })
               break;
             case 'orderFinish':
+
               var orderId=message.orderId;
               $http({
                 method: "POST",
@@ -254,15 +305,16 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               break;
             default:
 
-              //语音播报
+              //语音播报,区分订单状态2和订单状态1的
               var fileSystem=null;
               if (ionic.Platform.isIOS()) {
                 //IOS平台
               }else if(ionic.Platform.isAndroid())
               {
 
+                //订单状态为'1'的推送消息
                 var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
-                  '您有一个订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
+                  '您有一个服务订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
                 fileSystem=cordova.file.externalApplicationStorageDirectory;
                 alert('fileSystem=\r\n' + fileSystem);
                 var target=fileSystem+'temp.mp3';
@@ -301,8 +353,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
 
               $rootScope.flags.serviceOrders.onFresh=true;
-
-
               var confirmPopup = $ionicPopup.confirm({
                 title: '新订单:'+message.order.orderNum,
                 template: '是否查看'
@@ -312,6 +362,8 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                   //TODO:进入相应订单详情页
                   //message里就是存的order
                   $rootScope.candidates[message.order.orderId] = {timeout: 0};
+                  //设置为侯选状态
+                  message.order.candidateState=1;
                   $state.go('orderDetail',{order:JSON.stringify({content:message.order})});
                 } else {}
               });
@@ -495,6 +547,11 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
         templateUrl:'views/password_modify/password_modify.html'
       })
 
+      .state('password_forget',{
+        url:'/password_forget',
+        controller:'passwordForgetController',
+        templateUrl:'views/password_forget/password_forget.html'
+      })
 
 
 
@@ -524,8 +581,97 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           return "http://192.168.1.148:3000";
         else
           return "/proxy/node_server";
+      },
+      insurancems:function () {
+        if(window.cordova!==undefined&&window.cordova!==null)
+        {
+          return "http://139.129.96.231";
+        }else{
+          return "/proxy/insurancems";
+        }
       }
     }
     return ob;
+  })
+
+  .factory('$WebSocket',function(){
+    var self=this;
+
+    self.cbs=[];
+
+    self.msgId=1;
+
+    self.getMsgId=function()
+    {
+      return self.msgId++;
+    }
+
+    self.connect=function(cb){
+      self.ws = new window.WebSocket('ws://139.129.96.231:3010');
+      self.ws.onopen=self.onopen;
+      self.ws.onmessage=self.onmessage;
+    }
+    self.onopen=function(message) {
+      console.log('websocket connection is established');
+      self.cbs.map(function(item,i) {
+        item(message);
+      });
+    }
+    self.onerr=function(err) {
+      console.log('connect error');
+    }
+    self.onclose=function(event) {
+      console.log('websocket shutdown from server' + event.code);
+    }
+    self.onmessage=function(event) {
+      var json=event.data;
+      if(Object.prototype.toString.call(json)=='[object String]')
+        json=JSON.parse(json);
+      switch (json.type) {
+        case 'ack':
+          console.log(json.msg);
+          break;
+        case 'notify':
+          console.log('msg come from '+json.from);
+          console.log('msg ='+json.msg);
+          break;
+        default:
+          break;
+      }
+    }
+    self.login=function (username,password,accessToken) {
+      var info= {
+        action:'login',
+        msgid: self.getMsgId(),
+        timems:new Date().getTime(),
+        username:username,
+        password:password
+      };
+      if(Object.prototype.toString.call(info)!='[object String')
+        info=JSON.stringify(info);
+      self.ws.send(info);
+    }
+    self.send=function(msg) {
+      var info=msg;
+      if(Object.prototype.toString.call(info)!='[object String')
+        info=JSON.stringify(info);
+      self.ws.send(info);
+    }
+    self.registeCallback=function(cb) {
+      var flag=false;
+      self.cbs.map(function(item,i) {
+        if(item==cb)
+          flag=true;
+      })
+      if(!flag)
+        self.cbs.push(cb);
+    };
+    self.unregisteCallback=function(cb) {
+      self.cbs.map(function(item,i) {
+        if(item==cb)
+          self.cbs.slice(i, 1);
+      })
+    };
+    return self;
   })
 

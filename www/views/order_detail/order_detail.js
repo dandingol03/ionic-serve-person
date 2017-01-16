@@ -5,7 +5,8 @@ angular.module('starter')
 
   .controller('orderDetailController',function($scope,$stateParams,$http,
                                                $rootScope,$cordovaFileTransfer,Proxy,
-                                                $interval,$cordovaMedia,$ionicLoading,$timeout){
+                                                $interval,$cordovaMedia,$ionicLoading,$timeout,
+                                               $ionicPopup,$state){
 
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
       21:'车驾管-审车',22:'车驾管-审证',23:'车驾管-接送机',24:'车驾管-接送站'};
@@ -436,6 +437,7 @@ angular.module('starter')
       if($scope.order.servicePersonId==null||$scope.order.servicePersonId==undefined){
         var servicePersonId=null;
         var unit=null;
+        var place=null;
         var servicePersonName=null;
         $http({
           method: "post",
@@ -453,6 +455,26 @@ angular.module('starter')
           if(json.re==1) {
             servicePersonId=json.data;
 
+
+            var cmd=null;
+            alert('serviceType=' + $scope.order.serviceType);
+            switch($scope.order.serviceType)
+            {
+              case '11': case '12':  case '13': case '23':  case '24':
+                cmd='getUnitByServicePerson';
+                break;
+              case '21': case 21:
+                cmd='getDetectUnitByServicePerson';
+                break;
+              case '22':
+                cmd='getServicePlaceByServicePerson';
+                break;
+              default:
+                break;
+            }
+
+            alert('cmd=' + cmd);
+
             return  $http({
               method: "post",
               url:Proxy.local()+"/svr/request",
@@ -461,7 +483,7 @@ angular.module('starter')
               },
               data:
               {
-                request:'getUnitByServicePerson',
+                request:cmd,
                 info:{
                   servicePersonId:servicePersonId
                 }
@@ -472,13 +494,13 @@ angular.module('starter')
 
           var json=res.data;
           if(json.re==1) {
-            alert('send')
-            unit=json.data;
+
+            place=json.data;
             var mobilePhone=null;
-            if(unit.mobilePhone!==undefined&&unit.mobilePhone!==null)
+            if(place.mobilePhone!==undefined&&place.mobilePhone!==null)
               mobilePhone=unit.mobilePhone;
-            else if(unit.phone!==undefined&&unit.phone!==null)
-              mobilePhone=unit.phone;
+            else if(place.phone!==undefined&&place.phone!==null)
+              mobilePhone=place.phone;
             return  $http({
               method: "post",
               url:Proxy.local()+"/svr/request",
@@ -489,7 +511,7 @@ angular.module('starter')
               {
                 request:'sendCustomMessage',
                 info:{
-                  unitName:unit.unitName,
+                  unitName:place.unitName!==undefined&&place.unitName!==null?place.unitName:place.name,
                   mobilePhone:mobilePhone,
                   type:'to-customer',
                   order:$scope.order
@@ -500,7 +522,6 @@ angular.module('starter')
         }).then(function(res) {
           var json=res.data;
           if(json.re==1){
-
 
             return $http({
               method: "post",
@@ -524,8 +545,17 @@ angular.module('starter')
           var json=res.data;
           if(json.re==1) {
             $scope.order.candidateState=2;
-            console.log('service order has been candidated');
-            $scope.go_back();
+            //TODO:merge time-prolong with close
+
+            var myPopup = $ionicPopup.alert({
+              template: '已发出接单请求',
+              title: '信息'
+            });
+            $rootScope.flags.serviceOrders.clear=true;
+            $rootScope.flags.serviceOrders.onFresh=true;
+            myPopup.then(function (res) {
+              $state.go('newDashboard');
+            });
           }
         }).catch(function(err) {
           var str='';
@@ -534,10 +564,7 @@ angular.module('starter')
           console.error(str);
         });
 
-      }
-
-      //订单是被指派的
-      else{
+      }else{
         $http({
           method: "post",
           url:Proxy.local()+"/svr/request",

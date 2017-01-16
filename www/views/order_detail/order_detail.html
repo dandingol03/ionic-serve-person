@@ -12,11 +12,11 @@
   <ion-content>
 
     <!-- inset one -->
-    <div class="list list-inset" style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:4px;" >
+    <div class="list list-inset" style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:0px;" >
       <div class="item item-divider">
         编号
       </div>
-      <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;" ng-if="order.serviceType!=23&&order.serviceType!=24&&
+      <div class="item" style="padding:16px;position: relative;border-left:0px;border-right:0px;" ng-if="order.serviceType!=22&&order.serviceType!=23&&order.serviceType!=24&&
             order.serviceType!=11&&order.serviceType!=12&&order.serviceType!=13">
         <span style="width: 30%;display: inline-block;">
           车牌号:
@@ -40,7 +40,7 @@
 
     <!-- inset two -->
     <div class="list list-inset"
-         style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:10px;">
+         style="margin-bottom:0px;margin-left:0px;margin-right:0px;margin-top:0px;border-top:0px;">
 
 
       <div>
@@ -186,7 +186,7 @@
         </span>
       </div>
 
-      <div class="item" style="padding: 16px;">
+      <div class="item" style="padding: 16px;" ng-if="order.servicePlace!==undefined&&order.servicePlace!==null">
         <span style="display: inline-block;width: 30%;">
           地点:
         </span>
