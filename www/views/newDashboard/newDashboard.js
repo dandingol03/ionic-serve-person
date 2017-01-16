@@ -11,6 +11,8 @@ angular.module('starter')
                                               $ionicHistory,$ionicPopup){
 
 
+    if($rootScope.flags.serviceOrders.clear==true)
+      $ionicHistory.clearHistory();
 
 
     $scope.serviceTypeMap={11:'维修-日常保养',12:'维修-故障维修',13:'维修-事故维修',
@@ -57,6 +59,144 @@ angular.module('starter')
     });
 
 
+    //TODO:finish 语音播报
+    $scope.insuranceGetTTSBatch=function () {
+
+      var orders=$scope.orders[0];
+      var batchContent=[];
+      var fileSystem=null;
+      orders.map(function (order, i) {
+        batchContent.push({msg:'您有新的服务订单可以接单,订单号为'+order.orderNum});
+      });
+
+      var arr=[];
+
+      $http({
+        method:"post",
+        params:{
+          data:JSON.stringify(batchContent)
+        },
+        url:Proxy.insurancems()+"/insurance/insuranceGetTTSBatchMobile.do",
+
+      }).then(function (res) {
+        var json=res.data;
+        if(json.re==1) {
+          alert('audio batch ids is coming back');
+          arr=json.data;
+          fileSystem=cordova.file.externalApplicationStorageDirectory;
+          return $cordovaFile.createDir(fileSystem, "speech", true);
+        }
+      }).then(function (json) {
+
+        if(json&&json.fullPath!==undefined&&json.fullPath!==null&&json.path!='') {
+          alert('begin download files');
+
+          var statistics={
+            target:arr.length,
+            promises:[]
+          };
+
+          for(var i=0;i<arr.length;i++) {
+            var single=arr[i];
+            var audioId=single.audioId;
+            var callback=function (ob,item) {
+              var deferred=$q.defer();
+
+              var url = Proxy.insurancems() + '/insurance/insuranceDownloadTTSDateMobile.do?' + '&audioId='+item ;
+              var target=fileSystem+'speech/'+item+'.mp3';
+              var trustHosts = true;
+              var options = {
+                fileKey: 'file',
+                headers: {
+                  'Authorization': "Bearer " + $rootScope.access_token
+                }
+              };
+
+              $cordovaFileTransfer.download(url, target, options, trustHosts)
+                .then(function (res) {
+                  console.log('audio' + item + ' download complete');
+                  deferred.resolve({re: 1});
+                }, function (err) {
+                  // Error
+                  deferred.reject({});
+                  alert('error=' + err);
+                  for (var field in err) {
+                    alert('field=' + field + '\r\n' + err[field]);
+                  }
+                }, function (progress) {
+                });
+
+              ob.promises.push(deferred.promise);
+            }
+            callback(statistics,audioId);
+          }
+          return $q.all(statistics.promises);
+        }
+
+
+      }).then(function () {
+
+        console.log('all files is downloaded completely');
+        if(ionic.Platform.isIOS()) {
+        }else if(ionic.Platform.isAndroid()) {
+
+          alert('all files is download completely');
+          var files=[];
+          for(var i=0;i<arr.length;i++) {
+            var single=arr[i];
+            var audioId=single.audioId;
+            var cb=function (item) {
+              var filepath=fileSystem+'speech/'+item+'.mp3';
+              filepath = filepath.replace('file://','');
+              files.push(filepath);
+              // var media = $cordovaMedia.newMedia(filepath);
+              // media.play();
+              // media.media.getDurationAudio(function(p) {
+              //   alert('duration='+p);
+              // });
+            };
+            cb(audioId);
+          }
+          $scope.playPool(files,6000);
+        }else{}
+
+
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+      })
+
+    }
+
+    $scope.downloadAudio=function (audioId) {
+
+      var url = Proxy.insurancems() + '/insurancems/insurance/insuranceDownloadTTSDateMobile.do?' + '&audioId='+audioId ;
+      //url=Proxy.local()+'/downloadAudio';
+      var fileSystem=null;
+      fileSystem=cordova.file.externalApplicationStorageDirectory;
+      var target=fileSystem+1008+'.mp3';
+      var trustHosts = true;
+      var options = {
+        fileKey: 'file',
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token
+        }
+      };
+
+      $cordovaFileTransfer.download(url, target, options, trustHosts)
+        .then(function (res) {
+          alert('file download success');
+        }, function (err) {
+          // Error
+          alert('error=' + err);
+          for (var field in err) {
+            alert('field=' + field + '\r\n' + err[field]);
+          }
+        }, function (progress) {
+        });
+    }
 
 
     //退出
@@ -337,16 +477,14 @@ angular.module('starter')
 
     $scope.playPool=function (files,interval) {
       var filePath=files[0];
-      alert('init media');
       console.log('filePath='+filePath);
-
       var media = $cordovaMedia.newMedia(filePath);
       media.play();
       var newFiles=files;
       newFiles.splice(0, 1);
 
       $timeout(function () {
-        alert('next time')
+
         media.release();
         if(newFiles.length>=1)
           $scope.playPool(newFiles, interval);
@@ -362,6 +500,54 @@ angular.module('starter')
 
 
 
+    //语音报文
+    $scope.getTTSBroadcastData=function () {
+      alert('get tts');
+      $http({
+        method: "post",
+        url:Proxy.local()+"/svr/request",
+        headers: {
+          'Authorization': "Bearer " + $rootScope.access_token,
+        },
+        data:
+          {
+            request:'getTTSBroadcastData',
+            info:{
+              ttsToken:$rootScope.ttsToken
+            }
+          }
+      }).then(function (res) {
+        var json=res.data;
+        if(json.re==1) {
+          var single=json.data;
+          var mediaBinary=single.binary;
+          //TODO:invoke file api
+          $cordovaFile.createFile(cordova.file.externalRootDirectory, "danding.mp3", true)
+            .then(function (success) {
+              // success
+              console.log('tts media download completely');
+              var dataObj = new Blob([mediaBinary], { type: 'audio/mp3' })
+              $cordovaFile.writeFile(cordova.file.externalRootDirectory, "danding.mp3", dataObj, true)
+                .then(function (success) {
+                  // success
+                }, function (error) {
+                  // error
+                });
+
+            }, function (error) {
+              console.error('tts download encounter error');
+            });
+
+        }
+      }).catch(function (err) {
+        var str='';
+        for(var field in err)
+          str+=err[field];
+        console.error('err=\r\n'+str);
+      })
+    }
+
+
     //语音播报
     $scope.orderBroadcast=function () {
       if($scope.orders[0]!==undefined&&$scope.orders[0]!==null&&$scope.orders[0].length>0)
@@ -375,14 +561,12 @@ angular.module('starter')
           var fileSystem=null;
           fileSystem=cordova.file.externalApplicationStorageDirectory;
 
-
-          var splicedOrders = $scope.orders[0].splice(0, 8);
+          //可接的订单数组
+          var splicedOrders = $scope.orders[0];
 
           $cordovaFile.createDir(fileSystem, "speech", true)
             .then(function (success) {
-
               return {re: 1};
-
             }).then(function (json) {
             if(json.re==1) {
               var promises=[];
@@ -441,7 +625,7 @@ angular.module('starter')
             if(ionic.Platform.isIOS()) {
             }else if(ionic.Platform.isAndroid()) {
               var files=[];
-              for(var i=0;i<8;i++) {
+              for(var i=0;i<splicedOrders.length;i++) {
                 var order=splicedOrders[i];
                 var cb=function (item) {
                   var filepath=fileSystem+'speech/'+item.orderNum+'.mp3';

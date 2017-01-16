@@ -6,7 +6,7 @@ angular.module('starter')
   .controller('loginController',function($scope,$state,$ionicLoading,
                                          $http,$rootScope,Proxy,$cordovaPreferences,
                                          $ionicPlatform,$cordovaFile,
-                                         $ionicPopup){
+                                         $ionicPopup,$WebSocket){
 
     $scope.user={};
 
@@ -17,6 +17,12 @@ angular.module('starter')
       title: 'Song name',
       art: 'img/person.jpg'
     }
+
+    $WebSocket.registeCallback(function(msg) {
+      console.log('//-----ws\r\n' + msg);
+    });
+
+    $WebSocket.connect();
 
 
 
@@ -55,6 +61,9 @@ angular.module('starter')
 
         if(json.access_token!==undefined&&json.access_token!==null)
         {
+          $WebSocket.login($scope.user.username,$scope.user.password);
+
+
           if(window.cordova)
           {
             $cordovaPreferences.store('username', $scope.user.username)
@@ -115,34 +124,37 @@ angular.module('starter')
       }).catch(function(err) {
 
         var msg=err.data;
-        if(msg.error=='invalid_grant')
+        if(msg!==undefined&&msg!==null)
         {
-          if(msg.error_description=='User credentials are invalid')
+          if(msg.error=='invalid_grant')
           {
+            if(msg.error_description=='User credentials are invalid')
+            {
 
-            $http({
-              method: "POST",
-              url: Proxy.local() + "/validateUser?username="+$scope.user.username+'&'+'password='+$scope.user.password,
-              headers: {
-                'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
-                'Content-Type': 'application/x-www-form-urlencoded'
-              }
-            }).then(function (res) {
-              var json=res.data;
-              if(json.re==2)
-              {
-                $ionicPopup.alert({
-                  title: '错误',
-                  template: json.data
-                });
-              }else if(json.re==-1)
-              {
-                $ionicPopup.alert({
-                  title: '错误',
-                  template: '用户名不存在'
-                });
-              }else{}
-            })
+              $http({
+                method: "POST",
+                url: Proxy.local() + "/validateUser?username="+$scope.user.username+'&'+'password='+$scope.user.password,
+                headers: {
+                  'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                  'Content-Type': 'application/x-www-form-urlencoded'
+                }
+              }).then(function (res) {
+                var json=res.data;
+                if(json.re==2)
+                {
+                  $ionicPopup.alert({
+                    title: '错误',
+                    template: json.data
+                  });
+                }else if(json.re==-1)
+                {
+                  $ionicPopup.alert({
+                    title: '错误',
+                    template: '用户名不存在'
+                  });
+                }else{}
+              })
+            }
           }
         }else{
           var str='';
@@ -245,6 +257,10 @@ angular.module('starter')
       }, function () {
         console.log('phone call encoutner error');
       });
+    }
+
+    $scope.goTo=function (state) {
+      $state.go(state);
     }
 
   });
