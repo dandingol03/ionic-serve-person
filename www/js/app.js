@@ -6,7 +6,7 @@
 angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
   .run(function($ionicPlatform,$rootScope,$state,$ionicPopup,$cordovaFileTransfer,Proxy,
-                $cordovaMedia,$interval,$http) {
+                $cordovaMedia,$interval,$http,$cordovaPreferences,$q) {
 
     $ionicPlatform.ready(function() {
       if(window.cordova && window.cordova.plugins&&window.cordova.plugins.Keyboard) {
@@ -62,6 +62,144 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
+
+
+      $rootScope.getAccessToken=function () {
+        var deferred=$q.defer();
+        if($rootScope.access_token!==undefined&&$rootScope.access_token!==null)
+        {
+          deferred.resolve({re: 1, data: $rootScope.access_token});
+        }else {
+          $cordovaPreferences.fetch('username')
+            .success(function (value) {
+              var user={};
+              if (value !== undefined && value !== null && value != '')
+                user.username = value;
+              $cordovaPreferences.fetch('password')
+                .success(function (value) {
+                  if (value !== undefined && value !== null && value != '')
+                    user.password = value;
+                  if (user.username !== undefined && user.username !== null && user.username != ''
+                    && user.password !== undefined && user.password !== null && user.password != '') {
+                    $http({
+                      method: "POST",
+                      data: "grant_type=password&password=" + user.password + "&username=" + user.username,
+                      url: Proxy.local() + '/login',
+                      headers: {
+                        'Authorization': "Basic czZCaGRSa3F0MzpnWDFmQmF0M2JW",
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                      }
+                    }).then(function (res) {
+                      var json = res.data;
+                      var access_token = json.access_token;
+                      $rootScope.access_token = access_token;
+                      deferred.resolve({re: 1, data: access_token});
+                    });
+                  }else{
+                    deferred.resolve({re: 2, data: '请登录app后查看推送通知'});
+                  }
+                });
+            });
+
+        }
+        return deferred.promise;
+      }
+
+      $rootScope.onReceiveNotification=function (event) {
+        try{
+          var extras=null;
+
+          if(device.platform == "Android") {
+            extras=event.extras;
+          }else{
+            return ;
+          }
+
+          if(Object.prototype.toString.call(extras)=='[object String]')
+            extras=JSON.parse(extras);
+
+          switch (extras.type) {
+            case 'orderHasBeenTaken':
+                var orderId=extras.orderId;
+                var date=new Date(extras.date);
+                $rootScope.getAccessToken().then(function (json) {
+                  if(json.re==1) {
+                    $http({
+                      method: "post",
+                      url: Proxy.local() + "/svr/request",
+                      headers: {
+                        'Authorization': "Bearer " + $rootScope.access_token,
+                      },
+                      data: {
+                        request: 'createNotification',
+                        info:{
+                          ownerId:orderId,
+                          content:'订单号为'+extras.orderNum+'的订单已成功接单',
+                          notyTime:date,
+                          recv:'service',
+                          subType:null,
+                          type:'service',
+                          servicePersonId:$rootScope.user.servicePersonId
+
+                        }
+                      }
+                    }).then(function (res) {
+                      var json=res.data;
+                      if (json.re == 1) {
+
+                        var confirmPopup = $ionicPopup.confirm({
+                          title: '信息',
+                          template: '订单号为'+extras.orderNum+'的订单已成功接单'
+                        });
+                      }
+
+                      return  $http({
+                        method: "post",
+                        url: Proxy.local() + "/svr/request",
+                        headers: {
+                          'Authorization': "Bearer " + $rootScope.access_token,
+                        },
+                        data: {
+                          request: 'getCarServiceOrderByOrderId',
+                          info:{
+                            orderId:orderId
+                          }
+                        }
+                      });
+                    }).then(function (res) {
+                      var json=res.data;
+                      var order=json.data;
+                      var confirmPopup = $ionicPopup.confirm({
+                        title: '信息',
+                        template: '订单号为'+extras.orderNum+'的订单已成功接单'
+                      });
+                      confirmPopup.then(function(res) {
+                        if(res) {
+                          //TODO:进入相应订单详情页
+                          $state.go('orderDetail',{order:JSON.stringify({content:order})});
+                        } else {}
+                      });
+                      $rootScope.flags.serviceOrders.onFresh=true;
+                    })
+                  }
+                }).catch(function (err) {
+                  alert(err);
+                })
+
+
+
+
+
+
+              break;
+
+          }
+        }catch(err)
+        {
+          alert('exception=\r\n' + err.toString());
+        }
+      }
+
 
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
@@ -409,6 +547,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
       window.plugins.jPushPlugin.setTags(['custom']);
       document.addEventListener("jpush.receiveMessage", $rootScope.onReceiveMessage, false);
+      document.addEventListener("jpush.receiveNotification", $rootScope.onReceiveNotification, false);
       document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
 
 
