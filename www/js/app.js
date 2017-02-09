@@ -68,7 +68,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
         var deferred=$q.defer();
         if($rootScope.access_token!==undefined&&$rootScope.access_token!==null)
         {
-          alert('xxx');
           deferred.resolve({re: 1, data: $rootScope.access_token});
         }else {
           $cordovaPreferences.fetch('username')
@@ -109,7 +108,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       $rootScope.onReceiveNotification=function (event) {
 
         try{
-          alert('$rootScope.onReceiveNotification');
           var extras=null;
 
           if(device.platform == "Android") {
@@ -120,8 +118,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
           if(Object.prototype.toString.call(extras)=='[object String]')
             extras=JSON.parse(extras);
-          alert('type='+extras.type);
-
 
           switch (extras.type) {
             case 'orderHasBeenTaken':
@@ -254,7 +250,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                     console.error('err=\r\n'+str);
                   })
 
-
                 }
               })
 
@@ -362,6 +357,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
               break;
 
+
             case 'orderCancel':
               var orderId=extras.orderId;
               var orderNum=extras.orderNum;
@@ -461,6 +457,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               break;
 
 
+
           }
         }catch(err)
         {
@@ -471,9 +468,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
-
         try{
-
           var message=null;
           if(device.platform == "Android") {
             message = event.message;
@@ -489,7 +484,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           switch(message.type)
           {
             case 'orderHasBeenTaken':
-
               var confirmPopup = $ionicPopup.confirm({
                 title: '信息',
                 template: '订单号为'+message.order.orderNum+'的订单已成功接单'
@@ -505,7 +499,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
             case 'customer_appoint':
               //用户直接指定服务人员
               var content='您被系统指派了订单，订单号为'+message.order.orderNum;
-
               var confirmPopup = $ionicPopup.confirm({
                 title: '信息',
                 template: content
@@ -531,11 +524,9 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               $cordovaFileTransfer.download(url, target, options, trustHosts)
                 .then(function (res) {
                   //TODO:播放录音
-
                   var filepath=fileSystem+'temp.mp3';
                   filepath = filepath.replace('file://','');
                   var media = $cordovaMedia.newMedia(filepath);
-
                   if(ionic.Platform.isIOS()) {
                   }else if(ionic.Platform.isAndroid()) {
                     media.play();
@@ -548,7 +539,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                     str+=field+':'+'\r\n'+err[field];
                   console.log('error=' + str);
                 }, function (progress) {
-
                 });
               break;
             case 'orderCancel':
@@ -587,7 +577,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                   $cordovaFileTransfer.download(url, target, options, trustHosts)
                     .then(function (res) {
                       //TODO:播放录音
-
                       var filepath=fileSystem+'temp.mp3';
                       filepath = filepath.replace('file://','');
                       var media = $cordovaMedia.newMedia(filepath);
