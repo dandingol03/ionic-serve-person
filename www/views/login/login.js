@@ -11,13 +11,6 @@ angular.module('starter')
     $scope.user={};
 
 
-    $scope.myTrack = {
-      url: 'https://www.example.com/my_song.mp3',
-      artist: 'Somebody',
-      title: 'Song name',
-      art: 'img/person.jpg'
-    }
-
     $WebSocket.registeCallback(function(msg) {
       console.log('//-----ws\r\n' + msg);
     });
@@ -64,6 +57,7 @@ angular.module('starter')
           $WebSocket.login($scope.user.username,$scope.user.password);
 
 
+          //如果为手机平台
           if(window.cordova)
           {
             $cordovaPreferences.store('username', $scope.user.username)
@@ -98,8 +92,30 @@ angular.module('starter')
             }
           });
         }
+      }).then(function (res) {
+        var json=res.data;
+        return $http({
+          method: "post",
+          url: Proxy.local() + "/svr/request",
+          headers: {
+            'Authorization': "Bearer " + $rootScope.access_token,
+          },
+          data: {
+            request: 'getServicePersonIdByPersonId'
+          }
+        });
+
       }).then(function(res) {
         var json=res.data;
+        if(json.re==1) {
+
+          $rootScope.user={
+            username: $scope.user.username,
+            password:$scope.user.password,
+            servicePersonId:json.data
+          }
+        }
+
         return $http({
                 method: "post",
                 url: Proxy.local() + "/svr/request",
@@ -170,7 +186,7 @@ angular.module('starter')
       if($rootScope.registrationId==undefined||$rootScope.registrationId==null||$rootScope.registrationId=='')
       {
 
-        if(window.cordova!==undefined&&window.cordova!==null)
+        if(window.cordova)
         {
           try{
             window.plugins.jPushPlugin.getRegistrationID(function(data) {
