@@ -146,11 +146,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                     }).then(function (res) {
                       var json=res.data;
                       if (json.re == 1) {
-
-                        var confirmPopup = $ionicPopup.confirm({
-                          title: '信息',
-                          template: '订单号为'+extras.orderNum+'的订单已成功接单'
-                        });
                       }
 
                       return  $http({
@@ -186,12 +181,83 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                   alert(err);
                 })
 
+              break;
+            case 'agreeWithCandidate':
+              var orderId=extras.orderId;
+              var date=new Date(extras.date);
+              $rootScope.getAccessToken().then(function (res) {
+                var json=res.data;
+                if(json.re==1) {
+                  $http({
+                    method: "post",
+                    url: Proxy.local() + "/svr/request",
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token,
+                    },
+                    data: {
+                      request: 'createNotification',
+                      info:{
+                        ownerId:orderId,
+                        content:'订单号为'+extras.orderNum+'的订单已成功接单',
+                        notyTime:date,
+                        recv:'service',
+                        subType:null,
+                        type:'service',
+                        servicePersonId:$rootScope.user.servicePersonId
+
+                      }
+                    }
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.re==1) {
+
+                    }
+                    return $http({
+                      method: "POST",
+                      url: Proxy.local() + "/svr/request",
+                      headers: {
+                        'Authorization': "Bearer " + $rootScope.access_token
+                      },
+                      data: {
+                        request: 'getCarServiceOrderByOrderId',
+                        info: {
+                          orderId:orderId
+                        }
+                      }
+                    });
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.data!==undefined&&json.data!==null)
+                    {
+                      var order=json.data;
+                      var confirmPopup = $ionicPopup.confirm({
+                        title: '信息',
+                        template: '订单号为'+order.orderNum+'的订单已成功接单'
+                      });
+                      confirmPopup.then(function(res) {
+                        if(res) {
+                          //TODO:进入相应订单详情页
+                          $state.go('orderDetail',{order:JSON.stringify({content:order})});
+                        } else {}
+                      });
+                      $rootScope.flags.serviceOrders.onFresh=true;
+                    }
+                  }).catch(function (err) {
+                    var str='';
+                    for(var field in err)
+                      str+=err[field];
+                    console.error('err=\r\n'+str);
+                  })
 
 
-
+                }
+              })
 
 
               break;
+
+
+
 
           }
         }catch(err)
