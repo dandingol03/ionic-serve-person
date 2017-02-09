@@ -68,6 +68,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
         var deferred=$q.defer();
         if($rootScope.access_token!==undefined&&$rootScope.access_token!==null)
         {
+          alert('xxx');
           deferred.resolve({re: 1, data: $rootScope.access_token});
         }else {
           $cordovaPreferences.fetch('username')
@@ -106,7 +107,9 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       }
 
       $rootScope.onReceiveNotification=function (event) {
+
         try{
+          alert('$rootScope.onReceiveNotification');
           var extras=null;
 
           if(device.platform == "Android") {
@@ -117,6 +120,8 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
           if(Object.prototype.toString.call(extras)=='[object String]')
             extras=JSON.parse(extras);
+          alert('type='+extras.type);
+
 
           switch (extras.type) {
             case 'orderHasBeenTaken':
@@ -182,11 +187,11 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                 })
 
               break;
+
             case 'agreeWithCandidate':
               var orderId=extras.orderId;
               var date=new Date(extras.date);
-              $rootScope.getAccessToken().then(function (res) {
-                var json=res.data;
+              $rootScope.getAccessToken().then(function (json) {
                 if(json.re==1) {
                   $http({
                     method: "post",
@@ -253,17 +258,17 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                 }
               })
 
-
               break;
 
             case 'customer_appoint':
               //用户直接指定服务人员
+              alert('customer_appoint');
               var orderId=extras.orderId;
               var content='您被系统指派了订单，订单号为'+extras.orderNum;
               var date=new Date(extras.date);
               var fileSystem=null;
-              $rootScope.getAccessToken().then(function (res) {
-                var json=res.data;
+              $rootScope.getAccessToken().then(function (json) {
+                alert('json.re='+json.re);
                 if(json.re==1) {
                   $http({
                     method: "post",
@@ -281,7 +286,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                         subType:null,
                         type:'service',
                         servicePersonId:$rootScope.user.servicePersonId
-
                       }
                     }
                   }).then(function (res) {
@@ -355,8 +359,6 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
                   })
                 }
               })
-
-
 
               break;
 
