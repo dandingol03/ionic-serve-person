@@ -640,8 +640,6 @@ angular.module('starter')
     }
 
 
-
-
     $scope.audioPlay=function () {
       var filepath=$scope.filepath;
       filepath = filepath.replace('file://','');
