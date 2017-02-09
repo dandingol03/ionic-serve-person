@@ -262,13 +262,13 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
             case 'customer_appoint':
               //用户直接指定服务人员
-              alert('customer_appoint');
+
               var orderId=extras.orderId;
               var content='您被系统指派了订单，订单号为'+extras.orderNum;
               var date=new Date(extras.date);
               var fileSystem=null;
               $rootScope.getAccessToken().then(function (json) {
-                alert('json.re='+json.re);
+
                 if(json.re==1) {
                   $http({
                     method: "post",
@@ -362,6 +362,103 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
               break;
 
+            case 'orderCancel':
+              var orderId=extras.orderId;
+              var orderNum=extras.orderNum;
+              var date=new Date(extras.date);
+              var content='订单号为'+orderNum+'的用户取消服务,是否现在立即刷新界面';
+
+
+              $rootScope.getAccessToken().then(function (json) {
+                if(json.re==1) {
+                  $http({
+                    method: "post",
+                    url: Proxy.local() + "/svr/request",
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token,
+                    },
+                    data: {
+                      request: 'createNotification',
+                      info:{
+                        ownerId:orderId,
+                        content:content,
+                        notyTime:date,
+                        recv:'service',
+                        subType:null,
+                        type:'service',
+                        servicePersonId:$rootScope.user.servicePersonId
+                      }
+                    }
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.re==1)
+                    {
+                    }
+                    return  $http({
+                      method: "POST",
+                      url: Proxy.local() + "/svr/request",
+                      headers: {
+                        'Authorization': "Bearer " + $rootScope.access_token
+                      },
+                      data: {
+                        request: 'getCarServiceOrderByOrderId',
+                        info: {
+                          orderId:orderId
+                        }
+                      }
+                    });
+
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.re==1&&json.data!==undefined&&json.data!==null)
+                    {
+                      var order=json.data;
+                      $rootScope.flags.serviceOrders.onFresh=true;
+                      $rootScope.$emit('ORDER_CANCEL', '订单号为'+orderNum+'的用户取消服务,是否现在立即刷新界面');
+
+                      var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                        '订单号为'+order.orderNum+'的用户取消服务'+'&ttsToken='+$rootScope.ttsToken;
+                      fileSystem=cordova.file.externalApplicationStorageDirectory;
+                      alert('fileSystem=\r\n' + fileSystem);
+                      var target=fileSystem+'temp.mp3';
+                      var trustHosts = true;
+                      var options = {
+                        fileKey: 'file',
+                        headers: {
+                          'Authorization': "Bearer " + $rootScope.access_token
+                        }
+                      };
+                      $cordovaFileTransfer.download(url, target, options, trustHosts)
+                        .then(function (res) {
+                          //TODO:播放录音
+
+                          var filepath=fileSystem+'temp.mp3';
+                          filepath = filepath.replace('file://','');
+                          var media = $cordovaMedia.newMedia(filepath);
+
+                          if(ionic.Platform.isIOS()) {
+                          }else if(ionic.Platform.isAndroid()) {
+                            media.play();
+                          }else{}
+                          console.log('tts speach generate success');
+                        }, function (err) {
+                          console.log('err=========================');
+                          var str='';
+                          for(var field in err)
+                            str+=field+':'+'\r\n'+err[field];
+                          console.log('error=' + str);
+                        }, function (progress) {
+
+                        });
+                    }
+
+                  }).catch(function (err) {
+                    alert(err);
+                  })
+                }
+              });
+
+              break;
 
 
           }
