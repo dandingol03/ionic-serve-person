@@ -54,13 +54,11 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           $interval.cancel($rootScope.timers.serviceOrders);
       })
 
-
       //计时器取消
       $rootScope.$on("$destroy",function () {
         if($rootScope.timers.serviceOrders!==undefined&&$rootScope.timers.serviceOrders!==null)
           $interval.cancel($rootScope.timers.serviceOrders);
       });
-
 
       window.plugins.jPushPlugin.init();
       window.plugins.jPushPlugin.setDebugMode(true);
@@ -201,6 +199,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
           alert('exception=\r\n' + err.toString());
         }
       }
+
 
       //获取自定义消息的回调
       $rootScope.onReceiveMessage = function(event) {
@@ -691,11 +690,8 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
       })
 
 
-
     $urlRouterProvider.otherwise('/login');
   })
-
-
 
 
   .directive('textareaAuto', function ($timeout) {
@@ -715,7 +711,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.118:3000";
+          return "http://192.168.1.114 :3000";
         else
           return "/proxy/node_server";
       },
@@ -730,6 +726,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
     }
     return ob;
   })
+
 
   .factory('$WebSocket',function(){
     var self=this;

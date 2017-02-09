@@ -497,9 +497,9 @@ angular.module('starter')
 
             place=json.data;
             var mobilePhone=null;
-            if(place.mobilePhone!==undefined&&place.mobilePhone!==null)
+            if(place.mobilePhone!==undefined&&place.mobilePhone!==null&&place.mobilePhone!=='')
               mobilePhone=unit.mobilePhone;
-            else if(place.phone!==undefined&&place.phone!==null)
+            else if(place.phone!==undefined&&place.phone!==null&&place.phone!=='')
               mobilePhone=place.phone;
             return  $http({
               method: "post",
