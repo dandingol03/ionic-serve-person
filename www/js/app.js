@@ -553,7 +553,110 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               })
 
               break;
+            default:
 
+              var orderId=extras.orderId;
+              var orderNum=extras.orderNum;
+              var content= '您有一个服务订单可以接单,订单号为'+orderNum;
+              var order=null;
+              $rootScope.getAccessToken().then(function (json) {
+                if(json.re==1) {
+                  $http({
+                    method: "post",
+                    url: Proxy.local() + "/svr/request",
+                    headers: {
+                      'Authorization': "Bearer " + $rootScope.access_token,
+                    },
+                    data: {
+                      request: 'createNotification',
+                      info:{
+                        ownerId:orderId,
+                        content:content,
+                        notyTime:date,
+                        recv:'service',
+                        subType:null,
+                        type:'service',
+                        servicePersonId:$rootScope.user.servicePersonId
+                      }
+                    }
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.re==1)
+                    {}
+
+                    return $http({
+                      method: "POST",
+                      url: Proxy.local() + "/svr/request",
+                      headers: {
+                        'Authorization': "Bearer " + $rootScope.access_token
+                      },
+                      data: {
+                        request: 'getCarServiceOrderByOrderId',
+                        info: {
+                          orderId:orderId
+                        }
+                      }
+                    });
+
+                  }).then(function (res) {
+                    var json=res.data;
+                    if(json.re==1&&json.data!==undefined&&json.data!==null)
+                    {
+                       order=json.data;
+                      var fileSystem=null;
+                      var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
+                        '您有一个服务订单可以接单,订单号为'+orderNum+'&ttsToken='+$rootScope.ttsToken;
+                      fileSystem=cordova.file.externalApplicationStorageDirectory;
+                      alert('fileSystem=\r\n' + fileSystem);
+                      var target=fileSystem+'temp.mp3';
+                      var trustHosts = true;
+                      var options = {
+                        fileKey: 'file',
+                        headers: {
+                          'Authorization': "Bearer " + $rootScope.access_token
+                        }
+                      };
+
+
+                      $cordovaFileTransfer.download(url, target, options, trustHosts)
+                        .then(function (res) {
+                          var filepath=fileSystem+'temp.mp3';
+                          filepath = filepath.replace('file://','');
+                          var media = $cordovaMedia.newMedia(filepath);
+
+                          if(ionic.Platform.isIOS()) {
+                          }else if(ionic.Platform.isAndroid()) {
+                            media.play();
+                          }else{}
+                          console.log('tts speach generate success');
+
+
+                          $rootScope.flags.serviceOrders.onFresh=true;
+                          var confirmPopup = $ionicPopup.confirm({
+                            title: '新订单:'+orderNum,
+                            template: '是否查看'
+                          });
+                          confirmPopup.then(function(res) {
+                            if(res) {
+                              //TODO:进入相应订单详情页
+                              //message里就是存的order
+                              $rootScope.candidates[orderId] = {timeout: 0};
+                              //设置为侯选状态
+                              order.candidateState=1;
+                              $state.go('orderDetail',{order:JSON.stringify({content:order})});
+                            } else {}
+                          });
+
+
+                        })
+                    }
+
+                  })
+                }
+              })
+
+
+              break;
 
           }
         }catch(err)
