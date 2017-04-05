@@ -555,6 +555,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               break;
             default:
 
+              alert('go 558')
               var orderId=extras.orderId;
               var orderNum=extras.orderNum;
               var content= '您有一个服务订单可以接单,订单号为'+orderNum;
@@ -904,6 +905,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
               }else if(ionic.Platform.isAndroid())
               {
 
+                alert('go 907');
                 //订单状态为'1'的推送消息
                 var url = Proxy.local() + '/svr/request?request=generateTTSSpeech' + '&text=' +
                   '您有一个服务订单可以接单,订单号为'+message.order.orderNum+'&ttsToken='+$rootScope.ttsToken;
@@ -1003,7 +1005,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
 
       window.plugins.jPushPlugin.getRegistrationID(onGetRegistradionID);
       window.plugins.jPushPlugin.setTags(['custom']);
-      document.addEventListener("jpush.receiveMessage", $rootScope.onReceiveMessage, false);
+      //document.addEventListener("jpush.receiveMessage", $rootScope.onReceiveMessage, false);
       document.addEventListener("jpush.receiveNotification", $rootScope.onReceiveNotification, false);
       document.addEventListener("jpush.setTagsWithAlias", onTagsWithAlias, false);
 
@@ -1168,7 +1170,7 @@ angular.module('starter', ['ionic','ngCordova','ionic-audio'])
     var ob={
       local:function(){
         if(window.cordova!==undefined&&window.cordova!==null)
-          return "http://192.168.1.114:3000";
+          return "http://192.168.0.199:3000";
         else
           return "/proxy/node_server";
       },
